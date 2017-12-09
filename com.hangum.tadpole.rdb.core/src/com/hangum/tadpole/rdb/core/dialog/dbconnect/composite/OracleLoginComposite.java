@@ -31,6 +31,7 @@ import com.hangum.tadpole.commons.libs.core.utils.ValidChecker;
 import com.hangum.tadpole.commons.util.ApplicationArgumentUtils;
 import com.hangum.tadpole.engine.define.DBDefine;
 import com.hangum.tadpole.engine.query.dao.system.UserDBDAO;
+import com.hangum.tadpole.engine.utils.DBLocaleUtils;
 import com.hangum.tadpole.preference.define.GetAdminPreference;
 import com.hangum.tadpole.rdb.core.Messages;
 import com.hangum.tadpole.rdb.core.dialog.dbconnect.sub.PreConnectionInfoGroup;
@@ -60,6 +61,7 @@ public class OracleLoginComposite extends AbstractLoginComposite {
 	protected Text textPassword;
 	protected Text textDatabase;
 	protected Text textPort;
+	protected Combo comboLocale;
 	
 	protected Text textJDBCOptions;
 	
@@ -164,6 +166,19 @@ public class OracleLoginComposite extends AbstractLoginComposite {
 		textJDBCOptions.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 4, 1));
 		textJDBCOptions.setEnabled(isReadOnly);
 		
+		Label lblLocale = new Label(grpConnectionType, SWT.NONE);
+		lblLocale.setText(Messages.get().CharacterSet);
+		
+		comboLocale = new Combo(grpConnectionType, SWT.NONE);
+		comboLocale.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 4, 1));
+		comboLocale.setVisibleItemCount(12);
+			
+		for(String val : DBLocaleUtils.getOracleList()) {
+			comboLocale.add(val);
+			comboLocale.setData(StringUtils.substringBefore(val, "|").trim(), val);
+		}
+		comboLocale.select(0);
+		
 		othersConnectionInfo = new OthersConnectionRDBGroup(this, SWT.NONE, getSelectDB());
 		othersConnectionInfo.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
 		othersConnectionInfo.setEnabled(isReadOnly);
@@ -197,6 +212,7 @@ public class OracleLoginComposite extends AbstractLoginComposite {
 			textPassword.setText(oldUserDB.getPasswd());
 			
 			textJDBCOptions.setText(oldUserDB.getUrl_user_parameter());
+			comboLocale.setText(oldUserDB.getLocale()==null?DBLocaleUtils.NONE_TXT:oldUserDB.getLocale());
 			
 			othersConnectionInfo.setUserData(oldUserDB);
 			
@@ -254,6 +270,7 @@ public class OracleLoginComposite extends AbstractLoginComposite {
 		if(!isValidateInput(isTest)) return false;
 		
 		String dbUrl = "";
+		String selectLocale = StringUtils.trimToEmpty(comboLocale.getText()) == DBLocaleUtils.NONE_TXT?"":StringUtils.trimToEmpty(comboLocale.getText());
 		if(comboConnType.getText().equals("SID")) {
 			dbUrl = String.format(
 						getSelectDB().getDB_URL_INFO(), 
@@ -293,12 +310,12 @@ public class OracleLoginComposite extends AbstractLoginComposite {
 		userDB.setUsers(StringUtils.trimToEmpty(textUser.getText()));
 		userDB.setPasswd(StringUtils.trimToEmpty(textPassword.getText()));
 		
+		userDB.setLocale(selectLocale);
+		userDB.setIs_resource_download(GetAdminPreference.getIsDefaultDonwload());
+
 		// 처음 등록자는 권한이 어드민입니다.
 		userDB.setRole_id(PublicTadpoleDefine.DB_USER_ROLE_TYPE.ADMIN.toString());
-		
-//		userDB.setLocale(comboLocale.getText().trim());
-		userDB.setIs_resource_download(GetAdminPreference.getIsDefaultDonwload());
-		
+
 		// sid or service name
 		userDB.setExt1(comboConnType.getText());
 		if(oldUserDB != null) oldUserDB.setExt1(comboConnType.getText());
