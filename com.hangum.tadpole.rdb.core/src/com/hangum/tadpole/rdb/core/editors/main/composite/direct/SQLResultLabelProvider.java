@@ -25,8 +25,6 @@ import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Image;
-import org.eclipse.swt.widgets.Event;
-import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
 
@@ -293,6 +291,7 @@ public class SQLResultLabelProvider extends LabelProvider implements ITableLabel
 			return nf.format(Long.parseLong(value.toString()));
 		} catch(Exception e){
 			// ignore exception
+			logger.error("column value parse error" + value);
 		}
 
 		return value.toString();

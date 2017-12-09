@@ -53,6 +53,7 @@ import org.eclipse.ui.PlatformUI;
 import com.hangum.tadpole.ace.editor.core.texteditor.function.EditorFunctionService;
 import com.hangum.tadpole.commons.dialogs.message.dao.RequestResultDAO;
 import com.hangum.tadpole.commons.libs.core.define.PublicTadpoleDefine;
+import com.hangum.tadpole.commons.libs.core.define.PublicTadpoleDefine.QUERY_DML_TYPE;
 import com.hangum.tadpole.commons.libs.core.define.PublicTadpoleDefine.RESULT_COMP_TYPE;
 import com.hangum.tadpole.commons.libs.core.define.PublicTadpoleDefine.SQL_STATEMENT_TYPE;
 import com.hangum.tadpole.commons.libs.core.define.PublicTadpoleDefine.SQL_TYPE;
@@ -811,12 +812,12 @@ public class ResultSetComposite extends Composite {
 				// execute query
 				execServiceQuery = Executors.newSingleThreadExecutor();
 				if(intStartCnt == 0) {
-					resultSet = _runSQLSelect(statement, strSQL);
+					resultSet = _runSQLSelect(reqQuery, statement, strSQL);
 				} else {
 					strSQL = PartQueryUtil.makeSelect(getUserDB(), strSQL, intStartCnt, intSelectLimitCnt);
 					
 					if(logger.isDebugEnabled()) logger.debug("part sql called : " + strSQL);
-					resultSet = _runSQLSelect(statement, strSQL);
+					resultSet = _runSQLSelect(reqQuery, statement, strSQL);
 				}
 				
 			} else if(reqQuery.getSqlStatementType() == SQL_STATEMENT_TYPE.PREPARED_STATEMENT) {
@@ -844,7 +845,7 @@ public class ResultSetComposite extends Composite {
 					strSQL = PartQueryUtil.makeSelect(getUserDB(), strSQL, intStartCnt, intSelectLimitCnt);
 					
 					if(logger.isDebugEnabled()) logger.debug("part sql called : " + strSQL);
-					resultSet = _runSQLSelect(preparedStatement, reqQuery.getStatementParameter());
+					resultSet = _runSQLSelect(reqQuery, preparedStatement, reqQuery.getStatementParameter());
 //				}
 			}
 			
@@ -853,7 +854,6 @@ public class ResultSetComposite extends Composite {
 				if(StringUtils.isEmpty(StringUtils.deleteWhitespace(tadpole_system_message))) {
 					tadpole_system_message = CMD_COMPLETE_MSG;
 				}
-				
 			}
 			queryResultDAO.setQueryMsg(tadpole_system_message);
 
@@ -876,11 +876,12 @@ public class ResultSetComposite extends Composite {
 	/**
 	 * prepared statement 로 실행한다.
 	 * 
+	 * @param reqQuery
 	 * @param preparedStatement
 	 * @param statementParameter
 	 * @return
 	 */
-	private ResultSet _runSQLSelect(final PreparedStatement preparedStatement, final Object[] statementParameter) throws Exception {
+	private ResultSet _runSQLSelect(final RequestQuery reqQuery, final PreparedStatement preparedStatement, final Object[] statementParameter) throws Exception {
 		if(logger.isDebugEnabled()) logger.debug("=======  wait for resultset prepared statement .......................................");
 		
 		Future<ResultSet> queryFuture = execServiceQuery.submit(new Callable<ResultSet>() {
@@ -908,9 +909,11 @@ public class ResultSetComposite extends Composite {
 	/**
 	 * select문을 실행합니다.
 	 * 
+	 * @param reqQuery
+	 * @param statement
 	 * @param strSQL
 	 */
-	private ResultSet _runSQLSelect(final Statement statement, final String strSQL) throws Exception {
+	private ResultSet _runSQLSelect(final RequestQuery reqQuery, final Statement statement, final String strSQL) throws Exception {
 		if(logger.isDebugEnabled()) logger.debug("=======  wait for resultset of statement .......................................");
 		
 		Future<ResultSet> queryFuture = execServiceQuery.submit(new Callable<ResultSet>() {
@@ -920,11 +923,15 @@ public class ResultSetComposite extends Composite {
 				// 오라클인 경우 PL/SQL 실행후 dbms_output 출력 메시지를 결과 메시지에 받아온다.
 				if(DBGroupDefine.ORACLE_GROUP == getUserDB().getDBGroup()) {
 					try {
-						dbmsOutput = new OracleDbmsOutputUtil( statement.getConnection() );
-						dbmsOutput.enable( 1000000 ); 
-						statement.execute(SQLConvertCharUtil.toServer(getUserDB(), strSQL));
-						dbmsOutput.show();
-						tadpole_system_message = dbmsOutput.getOutput();
+						if(reqQuery.getSqlDMLType() != QUERY_DML_TYPE.SELECT) { 
+							dbmsOutput = new OracleDbmsOutputUtil( statement.getConnection() );
+							dbmsOutput.enable( 1000000 ); 
+							statement.execute(SQLConvertCharUtil.toServer(getUserDB(), strSQL));
+							dbmsOutput.show();
+							tadpole_system_message = dbmsOutput.getOutput();
+						} else {
+							statement.execute(SQLConvertCharUtil.toServer(getUserDB(), strSQL));
+						}
 					}finally {
 						try {if(dbmsOutput!=null)dbmsOutput.close();} catch (SQLException e) {}
 					}
