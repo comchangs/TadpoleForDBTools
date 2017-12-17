@@ -110,6 +110,14 @@ public class SendEmails {
 		emailDao.setContent(Messages.get().MailBody);
 		emailDao.setTo(strTo);
 		
+		if(!StringUtils.contains(emailDao.getTo(), "@")) {
+			if(StringUtils.contains(_smtpInfoDto.getDomain(), "@")) {
+				emailDao.setTo(emailDao.getTo() + _smtpInfoDto.getDomain());
+			} else {
+				emailDao.setTo(emailDao.getTo() + "@" + _smtpInfoDto.getDomain());
+			}
+		}
+		
 		if(PublicTadpoleDefine.MAIL_TYPE.SEND_GRID.name().equals(strLoginMehtod)) {
 			sendSendgrid(emailDao, _testSmtpInfoDto);
 		} else if(PublicTadpoleDefine.MAIL_TYPE.SMTP.name().equals(strLoginMehtod)) {
