@@ -39,6 +39,9 @@ import com.swtdesigner.SWTResourceManager;
 public class MessageComposite extends Composite {
 	/** Logger for this class. */
 	private static final Logger logger = Logger.getLogger(MessageComposite.class);
+	/** 콘솔에 한번에 뿌려주는 텍스트 */
+	private static final int MAX_LENGTH = 5000;
+	
 	private Text textMessage;
 	Label lblGoogleSearch;
 	private Composite compositeTail;
@@ -93,7 +96,9 @@ public class MessageComposite extends Composite {
 	 */
 	public void addInfoAfterRefresh(UserDBDAO userDB, RequestQuery requestQuery, String msg) {
 		textMessage.setBackground(SWTResourceManager.getColor(248, 248, 255));
-		textMessage.setText(msg);
+		
+		// 쿼리 성공 메시지가 너무 크다면.. 2000자만 보여주도록 한다.
+		textMessage.setText(StringUtils.abbreviate(msg, MAX_LENGTH));
 		lblGoogleSearch.setText("");
 	}
 
@@ -139,9 +144,9 @@ public class MessageComposite extends Composite {
 		}
 
 		if(StringUtils.contains(strNewMessage, "No more data to read from socket") || StringUtils.contains(strNewMessage, "[*]Permission denied")) {
-			textMessage.setText(strNewMessage + CommonMessages.get().Check_DBAccessSystem);
+			textMessage.setText(StringUtils.abbreviate(strNewMessage, MAX_LENGTH) + CommonMessages.get().Check_DBAccessSystem);
 		} else {
-			textMessage.setText(strNewMessage);
+			textMessage.setText(StringUtils.abbreviate(strNewMessage, MAX_LENGTH));
 		}
 		
 		try {
