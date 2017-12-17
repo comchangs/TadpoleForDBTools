@@ -75,8 +75,9 @@ public class ResultSetUtils {
 			for(int i=0; i<rs.getMetaData().getColumnCount(); i++) {
 				final int intColIndex = i+1;
 				final int intShowColIndex = i + intStartIndex;
+				final int colType = rs.getMetaData().getColumnType(intColIndex); 
+				
 				try {
-					int colType = rs.getMetaData().getColumnType(intColIndex); 
 					if (java.sql.Types.LONGVARCHAR == colType || 
 							java.sql.Types.LONGNVARCHAR == colType || 
 							java.sql.Types.CLOB == colType || 
@@ -103,7 +104,7 @@ public class ResultSetUtils {
 						tmpRow.put(intShowColIndex, SQLConvertCharUtil.toClient(userDB, rs.getString(intColIndex)));
 					}
 				} catch(Exception e) {
-					logger.error("ResutSet fetch error", e); //$NON-NLS-1$
+					logger.error(String.format("ResutSet fetch error :%s", e)); //$NON-NLS-1$
 					tmpRow.put(i+intStartIndex, ""); //$NON-NLS-1$
 				}
 			}
