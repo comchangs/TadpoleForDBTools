@@ -264,6 +264,9 @@ public class PublicTadpoleDefine {
 	/** 에디터 결과를 오픈하는 뷰 타입을 정의 */
 	public static enum RESULT_COMP_TYPE {Table, Text};
 	
+	/** CSV export 시 기본 값 */
+	public static String CSV_EXPORT_DEFAULT_VALUE = "	";
+	
 	/** 에디터를 열때 오픈하는 타입을 적습니다. */
 	public static enum EDITOR_OPEN_TYPE {NONE, STRING, FILE};
 	

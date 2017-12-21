@@ -151,7 +151,7 @@ public class UserDBDAO extends TDBDBDAO implements Cloneable {
 		return description;
 	}
 	// ====================================== end
-
+	/** -999 is temp id. */
 	protected int seq = -999;
 	protected int user_seq = -1;
 	

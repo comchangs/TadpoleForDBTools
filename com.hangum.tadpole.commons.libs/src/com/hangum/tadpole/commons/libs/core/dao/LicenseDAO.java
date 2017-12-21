@@ -1,7 +1,6 @@
 package com.hangum.tadpole.commons.libs.core.dao;
 
 import java.text.SimpleDateFormat;
-import java.util.Calendar;
 import java.util.Date;
 
 /**

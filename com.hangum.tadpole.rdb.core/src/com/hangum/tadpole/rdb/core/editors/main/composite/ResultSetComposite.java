@@ -460,11 +460,13 @@ public class ResultSetComposite extends Composite {
 						for (String strSQL : reqQuery.getSql().split(PublicTadpoleDefine.SQL_DELIMITER)) {
 							String strExeSQL = SQLUtil.makeExecutableSQL(tmpUserDB, strSQL);
 							
-							// execute batch update는 ddl문이 있으면 안되어서 실행할 수 있는 쿼리만 걸러 줍니다.
-							if(!SQLUtil.isStatement(strExeSQL)) {
-								listStrExecuteQuery.add(strExeSQL);
-							} else {
-								listStrSQL.add(strExeSQL);
+							if(!strExeSQL.equals("")) { 
+								// execute batch update는 ddl문이 있으면 안되어서 실행할 수 있는 쿼리만 걸러 줍니다.
+								if(!SQLUtil.isStatement(strExeSQL)) {
+									listStrExecuteQuery.add(strExeSQL);
+								} else {
+									listStrSQL.add(strExeSQL);
+								}
 							}
 						}
 						// select 이외의 쿼리 실행
