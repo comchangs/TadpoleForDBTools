@@ -10,11 +10,13 @@
  ******************************************************************************/
 package com.hangum.tadpole.rdb.core.editors.main.utils.plan;
 
+import java.sql.SQLException;
 import java.util.List;
 import java.util.Map;
 
 import org.apache.log4j.Logger;
 
+import com.hangum.tadpole.commons.exception.TadpoleSQLManagerException;
 import com.hangum.tadpole.commons.libs.core.define.PublicTadpoleDefine;
 import com.hangum.tadpole.commons.util.Utils;
 import com.hangum.tadpole.engine.query.dao.system.UserDBDAO;
@@ -31,6 +33,7 @@ import com.hangum.tadpole.engine.utils.RequestQuery;
  */
 public class TiberoExecutePlanUtils {
 	private static final Logger logger = Logger.getLogger(TiberoExecutePlanUtils.class);
+	
 	/**
 	 * tibero query plan을 실행합니다. 
 	 * 
@@ -39,7 +42,7 @@ public class TiberoExecutePlanUtils {
 	 * @param planTableName
 	 * @throws Exception
 	 */
-	public static String plan(UserDBDAO userDB, RequestQuery reqQuery, java.sql.Connection javaConn) throws Exception {
+	public static String plan(UserDBDAO userDB, RequestQuery reqQuery, java.sql.Connection javaConn) throws TadpoleSQLManagerException, SQLException {
 		String strUUID = Utils.getUniqueID();
 		
 		String strExeSQL = "-- " + strUUID + PublicTadpoleDefine.LINE_SEPARATOR + reqQuery.getSql();
@@ -58,7 +61,7 @@ public class TiberoExecutePlanUtils {
 		
 		List<Map<Integer, Object>> resultData = planIDResultDTO.getDataList().getData();
 		if(resultData.isEmpty()) {
-			throw new Exception("Does not found sql plan.");
+			throw new SQLException("No query plan data.");
 		}
 		Map<Integer, Object> mapResult = resultData.get(0);
 		

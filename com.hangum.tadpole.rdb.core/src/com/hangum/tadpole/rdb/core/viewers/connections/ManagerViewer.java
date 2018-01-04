@@ -99,7 +99,6 @@ public class ManagerViewer extends ViewPart {
 
 	@Override
 	public void createPartControl(Composite parent) {
-		
 		setPartName(Messages.get().ManagerViewer_0);
 		
 		compositeMainComposite = new Composite(parent, SWT.NONE);

@@ -12,7 +12,6 @@ package com.hangum.tadpole;
 
 import com.hangum.tadpole.commons.sql.map.SQLMapTest;
 import com.hangum.tadpole.system.TadpoleSystemCommonsTest;
-import com.hangum.tadpole.system.TadpoleSystemConnectorTest;
 import com.hangum.tadpole.system.TadpoleSystem_UserInfoDataTest;
 import com.hangum.tadpole.system.TadpoleSystem_UserQueryTest;
 
@@ -27,7 +26,7 @@ public class AllTests {
 		//$JUnit-BEGIN$
 		suite.addTestSuite(TadpoleSystemCommonsTest.class);
 		
-		suite.addTestSuite(TadpoleSystemConnectorTest.class);
+//		suite.addTestSuite(TadpoleSystemConnectorTest.class);
 //		suite.addTestSuite(TadpoleSystem_UserGroupQueryTest.class);
 		suite.addTestSuite(TadpoleSystem_UserQueryTest.class);
 //		suite.addTestSuite(TadpoleSystem_UserDBQueryTest.class);

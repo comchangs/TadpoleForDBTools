@@ -12,9 +12,11 @@ package com.hangum.tadpole.rdb.core.editors.main.execute.sub;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 
 import org.apache.log4j.Logger;
 
+import com.hangum.tadpole.commons.exception.TadpoleSQLManagerException;
 import com.hangum.tadpole.commons.libs.core.define.PublicTadpoleDefine.SQL_STATEMENT_TYPE;
 import com.hangum.tadpole.engine.define.DBDefine;
 import com.hangum.tadpole.engine.define.DBGroupDefine;
@@ -50,7 +52,7 @@ public class ExecuteQueryPlan {
 	public static QueryExecuteResultDTO runSQLExplainPlan(final UserDBDAO userDB,
 									final RequestQuery reqQuery, 
 									final String planTableName
-						) throws Exception {
+						) throws TadpoleSQLManagerException, SQLException {
 	
 		QueryExecuteResultDTO rsDAO = new QueryExecuteResultDTO();
 

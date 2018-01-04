@@ -9,7 +9,7 @@ import java.util.Map;
 import com.hangum.tadpole.commons.exception.TadpoleSQLManagerException;
 import com.hangum.tadpole.commons.util.DateUtil;
 import com.hangum.tadpole.engine.Messages;
-import com.hangum.tadpole.engine.initialize.TadpoleSystemInitializer;
+import com.hangum.tadpole.engine.initialize.TadpoleEngineUserDB;
 import com.hangum.tadpole.engine.manager.TadpoleSQLManager;
 import com.hangum.tadpole.engine.query.dao.system.UserDAO;
 import com.hangum.tadpole.engine.query.dao.system.bill.AssignedServiceDAO;
@@ -33,7 +33,7 @@ public class TadpoleSystem_Bill {
 		Map<String, Object> queryMap = new HashMap<String, Object>();
 		queryMap.put("user_seq", SessionManager.getUserSeq());
 		
-		SqlMapClient sqlClient = TadpoleSQLManager.getInstance(TadpoleSystemInitializer.getUserDB());
+		SqlMapClient sqlClient = TadpoleSQLManager.getInstance(TadpoleEngineUserDB.getUserDB());
 		return sqlClient.queryForList("userBillList", queryMap);
 	}
 	
@@ -44,7 +44,7 @@ public class TadpoleSystem_Bill {
 	 * @throws SQLException
 	 */
 	public static UserBillDAO insertBill(UserBillDAO dao) throws TadpoleSQLManagerException, SQLException {
-		SqlMapClient sqlClient = TadpoleSQLManager.getInstance(TadpoleSystemInitializer.getUserDB());
+		SqlMapClient sqlClient = TadpoleSQLManager.getInstance(TadpoleEngineUserDB.getUserDB());
 		return (UserBillDAO)sqlClient.insert("insertBill", dao); //$NON-NLS-1$
 	}
 	
@@ -56,7 +56,7 @@ public class TadpoleSystem_Bill {
 	 * @throws SQLException
 	 */
 	public static void startService(UserBillDAO dao) throws TadpoleSQLManagerException, SQLException {
-		SqlMapClient sqlClient = TadpoleSQLManager.getInstance(TadpoleSystemInitializer.getUserDB());
+		SqlMapClient sqlClient = TadpoleSQLManager.getInstance(TadpoleEngineUserDB.getUserDB());
 		sqlClient.update("updateStartService", dao); //$NON-NLS-1$
 	}
 	
@@ -71,7 +71,7 @@ public class TadpoleSystem_Bill {
 	 * @throws SQLException
 	 */
 	public static void insertStartUserService(UserBillDAO bill, UserDAO user, AssignedServiceDAO assignedService) throws Exception {
-		SqlMapClient sqlClient = TadpoleSQLManager.getInstance(TadpoleSystemInitializer.getUserDB());
+		SqlMapClient sqlClient = TadpoleSQLManager.getInstance(TadpoleEngineUserDB.getUserDB());
 		
 		List<AssignedServiceDAO> list = sqlClient.queryForList("getAlreadyService", assignedService);
 		if(bill.getEa() > list.size()) {
@@ -98,7 +98,7 @@ public class TadpoleSystem_Bill {
 	 * @throws Exception
 	 */
 	private static void updateUserInfo(UserDAO user, AssignedServiceDAO assignedService)  throws Exception {
-		SqlMapClient sqlClient = TadpoleSQLManager.getInstance(TadpoleSystemInitializer.getUserDB());
+		SqlMapClient sqlClient = TadpoleSQLManager.getInstance(TadpoleEngineUserDB.getUserDB());
 		
 		// user의 마지막 정보를 가져온다.
 		UserDAO userDaoLastInfo = TadpoleSystem_UserQuery.findUser(user.getEmail());
@@ -122,7 +122,7 @@ public class TadpoleSystem_Bill {
 	 * @throws SQLException
 	 */
 	public static List<AssignedServiceDAO> getUserList(UserBillDAO dao) throws TadpoleSQLManagerException, SQLException {
-		SqlMapClient sqlClient = TadpoleSQLManager.getInstance(TadpoleSystemInitializer.getUserDB());
+		SqlMapClient sqlClient = TadpoleSQLManager.getInstance(TadpoleEngineUserDB.getUserDB());
 		return sqlClient.queryForList("getEachServiceUser", dao);
 	}
 	
@@ -134,7 +134,7 @@ public class TadpoleSystem_Bill {
 	 * @throws SQLException
 	 */
 	public static void deleteUserService(AssignedServiceDAO dao) throws TadpoleSQLManagerException, SQLException {
-		SqlMapClient sqlClient = TadpoleSQLManager.getInstance(TadpoleSystemInitializer.getUserDB());
+		SqlMapClient sqlClient = TadpoleSQLManager.getInstance(TadpoleEngineUserDB.getUserDB());
 		sqlClient.update("deleteUserService", dao);
 		
 		// 사용자 플랜중에 가장 큰 플랜으로 업데이트 한다.
@@ -154,7 +154,7 @@ public class TadpoleSystem_Bill {
 	 * @throws SQLException
 	 */
 	public static Timestamp calcMaxServiceDate(int userSeq) throws TadpoleSQLManagerException, SQLException {
-		SqlMapClient sqlClient = TadpoleSQLManager.getInstance(TadpoleSystemInitializer.getUserDB());
+		SqlMapClient sqlClient = TadpoleSQLManager.getInstance(TadpoleEngineUserDB.getUserDB());
 		Object objDao = sqlClient.queryForObject("calcMaxServiceDate", userSeq);
 		if(objDao != null) {
 			AssignedServiceDAO dao = (AssignedServiceDAO)objDao;

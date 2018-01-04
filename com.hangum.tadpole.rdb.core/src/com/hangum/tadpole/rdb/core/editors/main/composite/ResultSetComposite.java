@@ -52,6 +52,7 @@ import org.eclipse.ui.PlatformUI;
 
 import com.hangum.tadpole.ace.editor.core.texteditor.function.EditorFunctionService;
 import com.hangum.tadpole.commons.dialogs.message.dao.RequestResultDAO;
+import com.hangum.tadpole.commons.exception.TadpoleSQLManagerException;
 import com.hangum.tadpole.commons.libs.core.define.PublicTadpoleDefine;
 import com.hangum.tadpole.commons.libs.core.define.PublicTadpoleDefine.QUERY_DML_TYPE;
 import com.hangum.tadpole.commons.libs.core.define.PublicTadpoleDefine.RESULT_COMP_TYPE;
@@ -60,12 +61,15 @@ import com.hangum.tadpole.commons.libs.core.define.PublicTadpoleDefine.SQL_TYPE;
 import com.hangum.tadpole.commons.libs.core.message.CommonMessages;
 import com.hangum.tadpole.commons.libs.core.utils.LicenseValidator;
 import com.hangum.tadpole.engine.define.DBGroupDefine;
+import com.hangum.tadpole.engine.define.TDBResultCodeDefine;
 import com.hangum.tadpole.engine.manager.TadpoleSQLExtManager;
 import com.hangum.tadpole.engine.manager.TadpoleSQLManager;
 import com.hangum.tadpole.engine.manager.TadpoleSQLTransactionManager;
 import com.hangum.tadpole.engine.permission.PermissionChecker;
 import com.hangum.tadpole.engine.query.dao.system.UserDBDAO;
+import com.hangum.tadpole.engine.query.sql.TadpoleSystem_ExecutedSQL;
 import com.hangum.tadpole.engine.query.sql.TadpoleSystem_SchemaHistory;
+import com.hangum.tadpole.engine.restful.TadpoleException;
 import com.hangum.tadpole.engine.sql.paremeter.lang.GenericTokenParser;
 import com.hangum.tadpole.engine.sql.paremeter.lang.JavaNamedParameterUtil;
 import com.hangum.tadpole.engine.sql.paremeter.lang.OracleStyleSQLNamedParameterUtil;
@@ -402,16 +406,45 @@ public class ResultSetComposite extends Composite {
 	 * @return
 	 */
 	public boolean _executeQuery(final RequestQuery reqQuery) {
+		// 요청 쿼리를 생성한다.
+		final RequestResultDAO reqResultDAO = new RequestResultDAO();
+		reqResultDAO.setStartDateExecute(new Timestamp(System.currentTimeMillis()));
+		reqResultDAO.setIpAddress(reqQuery.getUserIp());
+		
+		// prepared statement 일 경우는 인자도 넣어준다.
+		if(reqQuery.getSqlStatementType() == SQL_STATEMENT_TYPE.PREPARED_STATEMENT) {
+			StringBuffer sbParameter = new StringBuffer("/* TadpoleHub comment is ").append(reqQuery.getMode());
+			sbParameter.append(", Parameter is ");
+			for (int i=0; i<reqQuery.getStatementParameter().length; i++) {
+				Object objParam = reqQuery.getStatementParameter()[i];
+				sbParameter.append(String.format("[ %d = %s ]", i, ""+objParam));
+			}
+			sbParameter.append(" */ \n");	
+			reqResultDAO.setTdb_sql_head(sbParameter.toString());
+		}
+		reqResultDAO.setSql_text(reqQuery.getOriginalSql());
+		
 		// 쿼리가 실행 가능한 상태인지(디비 락상태인지?, 프러덕디비이고 select가 아닌지?,설정인지?) 
 		try {
-			if(!GrantCheckerUtils.ifExecuteQuery(getUserDB(), reqQuery)) {
-				return false;
-			}
-		} catch(Exception e) {
+			if(!GrantCheckerUtils.ifExecuteQuery(getUserDB(), reqQuery)) return false;
+		} catch(TadpoleException e) {
+			// 에러 로그를 기록해야한다.
+			// 히스토리 정보 메타디비에 저장 - RequestResultDAO
+			reqResultDAO.setEndDateExecute(new Timestamp(System.currentTimeMillis()));
+			reqResultDAO.setResult(PublicTadpoleDefine.SUCCESS_FAIL.F.name()); //$NON-NLS-1$
+			reqResultDAO.setTdb_result_code(e.getErrorCode());
+			reqResultDAO.setMesssage(e.getMessage());
+			
+			TadpoleSystem_ExecutedSQL.insertExecuteHistory(
+						getRdbResultComposite().getUserSeq(), 
+						getRdbResultComposite().getUserDB(), 
+						reqResultDAO);
+			
 			executeErrorProgress(reqQuery, e, e.getMessage());
 			return false;
 		}
 		
+		///////////////////////////////////////////////////////////////////////////
 		// 프로그래스 상태와 쿼리 상태를 초기화한다.
 		getRdbResultComposite().resultFolderSel(EditorDefine.RESULT_TAB.RESULT_SET);
 		controlProgress(true);
@@ -431,7 +464,7 @@ public class ResultSetComposite extends Composite {
 		final int intCommitCount 	= Integer.parseInt(GetPreferenceGeneral.getRDBCommitCount());
 		final UserDBDAO tmpUserDB 	= getUserDB();
 		final String errMsg = Messages.get().MainEditor_21;
-		final RequestResultDAO reqResultDAO = new RequestResultDAO();
+		
 		// is profilling
 		final boolean isProfilling = GetPreferenceGeneral.getRDBQueryProfilling();
 		
@@ -439,21 +472,6 @@ public class ResultSetComposite extends Composite {
 			@Override
 			public IStatus run(IProgressMonitor monitor) {
 				monitor.beginTask(reqQuery.getSql(), IProgressMonitor.UNKNOWN);
-				
-				reqResultDAO.setStartDateExecute(new Timestamp(System.currentTimeMillis()));
-				reqResultDAO.setIpAddress(reqQuery.getUserIp());
-				
-				StringBuffer sbParameter = new StringBuffer("/* Execute type is ").append(reqQuery.getMode());
-				// prepared statement 일 경우는 인자도 넣어준다.
-				if(reqQuery.getSqlStatementType() == SQL_STATEMENT_TYPE.PREPARED_STATEMENT) {
-					sbParameter.append(", Parameter is ");
-					for (int i=0; i<reqQuery.getStatementParameter().length; i++) {
-						Object objParam = reqQuery.getStatementParameter()[i];
-						sbParameter.append(String.format("[ %d = %s ]", i, ""+objParam));
-					}
-				}
-				sbParameter.append(" */ \n");
-				reqResultDAO.setStrSQLText(sbParameter.toString() + reqQuery.getOriginalSql());
 				
 				try {
 					if(reqQuery.getExecuteType() == EditorDefine.EXECUTE_TYPE.ALL) {
@@ -572,9 +590,21 @@ public class ResultSetComposite extends Composite {
 							}
 						}
 					}
-					
-				} catch(Exception e) {
+				} catch(TadpoleSQLManagerException e) {
 					reqResultDAO.setResult(PublicTadpoleDefine.SUCCESS_FAIL.F.name()); //$NON-NLS-1$
+					reqResultDAO.setTdb_result_code(TDBResultCodeDefine.NOT_FOUND);
+					reqResultDAO.setMesssage(e.getMessage());
+					
+					return new Status(Status.WARNING, Activator.PLUGIN_ID, e.getMessage(), e);
+				} catch(SQLException e) {
+					reqResultDAO.setResult(PublicTadpoleDefine.SUCCESS_FAIL.F.name()); //$NON-NLS-1$
+					reqResultDAO.setTdb_result_code(TDBResultCodeDefine.BAD_REQUEST);
+					reqResultDAO.setMesssage(e.getMessage());
+					
+					return new Status(Status.WARNING, Activator.PLUGIN_ID, e.getMessage(), e);
+				} catch(TadpoleException e) {
+					reqResultDAO.setResult(PublicTadpoleDefine.SUCCESS_FAIL.F.name()); //$NON-NLS-1$
+					reqResultDAO.setTdb_result_code(e.getErrorCode());
 					reqResultDAO.setMesssage(e.getMessage());
 					
 					return new Status(Status.WARNING, Activator.PLUGIN_ID, e.getMessage(), e);
@@ -675,7 +705,7 @@ public class ResultSetComposite extends Composite {
 							} else {
 								for(int i=0; i<listStrSQL.size(); i++) {
 									String strSQL = listStrSQL.get(i);
-									reqResultDAO.setStrSQLText(strSQL);
+									reqResultDAO.setSql_text(strSQL);
 									// 배치 쿼리를 수행했을 경우 SELECT 결과가 없을수도 있다.
 									try {
 										listLongHistorySeq.add(getRdbResultComposite().getCompositeQueryHistory().saveExecutedSQLData(reqResultDAO, listRSDao.get(i)));
@@ -738,14 +768,11 @@ public class ResultSetComposite extends Composite {
 	 * @return
 	 * @throws Exception
 	 */
-	public QueryExecuteResultDTO runSelect(final RequestQuery reqQuery, final int queryTimeOut, final String strUserEmail, final int intSelectLimitCnt, final int intStartCnt) throws Exception {
+	public QueryExecuteResultDTO runSelect(final RequestQuery reqQuery, final int queryTimeOut, final String strUserEmail, final int intSelectLimitCnt, final int intStartCnt) 
+			throws TadpoleSQLManagerException, TadpoleException, SQLException {
 		String strSQL = reqQuery.getSql();
-		
-		try {
-			PermissionChecker.isExecute(getDbUserRoleType(), getUserDB(), strSQL);
-		} catch(Exception e) {
-			throw e;
-		}
+
+		PermissionChecker.isExecute(getDbUserRoleType(), getUserDB(), strSQL);
 		if(logger.isDebugEnabled()) logger.debug("==> real execute query : " + strSQL);
 		
 		tadpole_system_message = "";
@@ -858,9 +885,12 @@ public class ResultSetComposite extends Composite {
 				}
 			}
 			queryResultDAO.setQueryMsg(tadpole_system_message);
-
-		} catch(Exception e) {
-			throw e;
+		} catch(TadpoleSQLManagerException tme) {
+			throw tme;
+		} catch(TadpoleException te) {
+			throw te;
+		} catch(SQLException se) {
+			throw se;
 		} finally {
 			isCheckRunning = false;
 			try { if(preparedStatement != null) preparedStatement.close(); } catch(Exception e) {}
@@ -883,7 +913,7 @@ public class ResultSetComposite extends Composite {
 	 * @param statementParameter
 	 * @return
 	 */
-	private ResultSet _runSQLSelect(final RequestQuery reqQuery, final PreparedStatement preparedStatement, final Object[] statementParameter) throws Exception {
+	private ResultSet _runSQLSelect(final RequestQuery reqQuery, final PreparedStatement preparedStatement, final Object[] statementParameter) throws TadpoleException {
 		if(logger.isDebugEnabled()) logger.debug("=======  wait for resultset prepared statement .......................................");
 		
 		Future<ResultSet> queryFuture = execServiceQuery.submit(new Callable<ResultSet>() {
@@ -900,12 +930,18 @@ public class ResultSetComposite extends Composite {
 				return preparedStatement.executeQuery();
 			}
 		});
-		
+
 		/* SELECT ALRM_DATE 와같은 select다음에 한글 모음이 들어갔을때 아래와 같은 에러가 발생한다.
 		 * Caused by: java.lang.NullPointerException
 			at oracle.jdbc.driver.T4C8Oall.getNumRows(T4C8Oall.java:973)
 		 */
-		return queryFuture.get();
+		try {
+			return queryFuture.get();
+		} catch(Exception e) {
+//			logger.error("**** exception" + e.getMessage());
+			
+			throw new TadpoleException(TDBResultCodeDefine.BAD_REQUEST, e.getMessage());
+		}
 	}
 
 	/**
@@ -915,7 +951,7 @@ public class ResultSetComposite extends Composite {
 	 * @param statement
 	 * @param strSQL
 	 */
-	private ResultSet _runSQLSelect(final RequestQuery reqQuery, final Statement statement, final String strSQL) throws Exception {
+	private ResultSet _runSQLSelect(final RequestQuery reqQuery, final Statement statement, final String strSQL) throws TadpoleException {
 		if(logger.isDebugEnabled()) logger.debug("=======  wait for resultset of statement .......................................");
 		
 		Future<ResultSet> queryFuture = execServiceQuery.submit(new Callable<ResultSet>() {
@@ -949,7 +985,13 @@ public class ResultSetComposite extends Composite {
 		 * Caused by: java.lang.NullPointerException
 			at oracle.jdbc.driver.T4C8Oall.getNumRows(T4C8Oall.java:973)
 		 */
-		return queryFuture.get();
+		try {
+			return queryFuture.get();
+		} catch(Exception e) {
+//			logger.error("**** inter exception" + e.getMessage());
+			
+			throw new TadpoleException(TDBResultCodeDefine.BAD_REQUEST, e.getMessage());
+		}
 	}
 
 	/**
@@ -1037,18 +1079,18 @@ public class ResultSetComposite extends Composite {
 		
 		// 확장포인트에 실행결과를 위임합니다. 
 		IMainEditorExtension[] extensions = getRdbResultComposite().getMainEditor().getMainEditorExtions();
-		if(extensions == null) return;
-		for (IMainEditorExtension iMainEditorExtension : extensions) {
-			try {
-				if(listRsDAO != null && listRsDAO.size() >= 1) {
-					iMainEditorExtension.queryEndedExecute(listRsDAO.get(0));
+		if(extensions != null) {
+			for (IMainEditorExtension iMainEditorExtension : extensions) {
+				try {
+					if(listRsDAO != null && listRsDAO.size() >= 1) {
+						iMainEditorExtension.queryEndedExecute(listRsDAO.get(0));
+					}
+				} catch(Exception e) {
+					logger.error("sql result extension", e);
 				}
-			} catch(Exception e) {
-				logger.error("sql result extension", e);
 			}
 		}
 
-		// 주의) 일반적으로는 포커스가 잘 가지만, 
 		// progress bar가 열렸을 경우 포커스가 잃어 버리게 되어 포커스를 주어야 합니다.
 		getRdbResultComposite().setOrionTextFocus();
 	}
@@ -1093,7 +1135,7 @@ public class ResultSetComposite extends Composite {
 	 * @param listLongHistorySeq
 	 * @param listStrExecuteQuery
 	 */
-	public void executeFinish(final RequestQuery reqQuery, final List<QueryExecuteResultDTO> listRSDao, List<Long> listLongHistorySeq, List<String> listStrExecuteQuery) {
+	private void executeFinish(final RequestQuery reqQuery, final List<QueryExecuteResultDTO> listRSDao, List<Long> listLongHistorySeq, List<String> listStrExecuteQuery) {
 		// 결과에 메시지가 있으면 시스템 메시지에 결과 메시지를 출력한다. (오라클 시스템 메시지 등)
 		StringBuffer sbMSG = new StringBuffer();
 		for (QueryExecuteResultDTO queryExecuteResultDTO : listRSDao) {
@@ -1124,7 +1166,7 @@ public class ResultSetComposite extends Composite {
 			}
 			if(!listRSDao.isEmpty()) changeResultType(reqQuery, listRSDao, listLongHistorySeq);
 			
-//		// 하나의 쿼리만 수행
+		// 하나의 쿼리만 수행
 		} else {
 			
 			// 결과에 메시지가 있으면 시스템 메시지에 결과 메시지를 출력한다. 종료.

@@ -11,6 +11,7 @@
 package com.hangum.tadpole.engine.sql.util.resultset;
 
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -118,7 +119,7 @@ public class ResultSetUtilDTO {
 	public ResultSetUtilDTO(
 						final UserDBDAO userDB, 
 						final String reqQuery,
-						final boolean isShowRownum, final ResultSet rs, final int limitCount, int intLastIndex) throws Exception {
+						final boolean isShowRownum, final ResultSet rs, final int limitCount, int intLastIndex) throws SQLException {
 		this.userDB = userDB;
 		this.reqQuery = reqQuery;
 		

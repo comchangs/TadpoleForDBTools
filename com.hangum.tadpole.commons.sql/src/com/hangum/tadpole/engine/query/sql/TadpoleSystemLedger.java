@@ -22,7 +22,7 @@ import org.apache.log4j.Logger;
 
 import com.hangum.tadpole.commons.exception.TadpoleSQLManagerException;
 import com.hangum.tadpole.commons.util.ApplicationArgumentUtils;
-import com.hangum.tadpole.engine.initialize.TadpoleSystemInitializer;
+import com.hangum.tadpole.engine.initialize.TadpoleEngineUserDB;
 import com.hangum.tadpole.engine.manager.TadpoleSQLManager;
 import com.hangum.tadpole.engine.query.dao.system.UserDBDAO;
 import com.hangum.tadpole.engine.query.dao.system.ledger.DelegerHistoryDAO;
@@ -88,7 +88,7 @@ public class TadpoleSystemLedger {
 			mapParam.put("endTime", formatter.format(dateEd));
 		}
 		
-		SqlMapClient sqlClient = TadpoleSQLManager.getInstance(TadpoleSystemInitializer.getUserDB());
+		SqlMapClient sqlClient = TadpoleSQLManager.getInstance(TadpoleEngineUserDB.getUserDB());
 		return sqlClient.queryForList("getMySQLListLedger", mapParam);
 	}
 	
@@ -99,7 +99,7 @@ public class TadpoleSystemLedger {
 	 * @throws TadpoleSQLManagerException, SQLException
 	 */
 	public static LedgerDAO insertLedger(LedgerDAO ledger) throws TadpoleSQLManagerException, SQLException {
-		SqlMapClient sqlClient = TadpoleSQLManager.getInstance(TadpoleSystemInitializer.getUserDB());
+		SqlMapClient sqlClient = TadpoleSQLManager.getInstance(TadpoleEngineUserDB.getUserDB());
 		java.lang.Integer intSeq = (java.lang.Integer)sqlClient.insert("insert_ledger", ledger);
 		ledger.setSeq(intSeq);
 		
@@ -112,7 +112,7 @@ public class TadpoleSystemLedger {
 	 * @param ledgerDAO
 	 */
 	public static void insertLedgerResult(LedgerDAO ledgerDAO) throws TadpoleSQLManagerException, SQLException {
-		SqlMapClient sqlClient = TadpoleSQLManager.getInstance(TadpoleSystemInitializer.getUserDB());
+		SqlMapClient sqlClient = TadpoleSQLManager.getInstance(TadpoleEngineUserDB.getUserDB());
 		sqlClient.update("update_ledger_result", ledgerDAO);
 	}
 	

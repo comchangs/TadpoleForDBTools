@@ -35,9 +35,6 @@ public class Perspective implements IPerspectiveFactory {
 	public static final String ID = "com.hangum.tadpole.application.start.perspective";
 	private static final Logger logger = Logger.getLogger(Perspective.class);
 	
-	public final static String DEFAULT = "default";
-	public final static String APIUSER = "api";
-	
 	public void createInitialLayout(IPageLayout layout) {
 		final String strRepresentRole = SessionManager.getRepresentRole();
 		if(strRepresentRole.equals(PublicTadpoleDefine.USER_ROLE_TYPE.API_USER.name())) {
@@ -67,8 +64,6 @@ public class Perspective implements IPerspectiveFactory {
 		} catch(Exception e) {
 			logger.error(e);
 		}
-		
-		
 	}
 
 	/**

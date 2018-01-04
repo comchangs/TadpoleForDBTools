@@ -17,8 +17,10 @@ import org.eclipse.ui.PlatformUI;
 
 import com.hangum.tadpole.commons.libs.core.define.PublicTadpoleDefine;
 import com.hangum.tadpole.commons.libs.core.message.CommonMessages;
+import com.hangum.tadpole.engine.define.TDBResultCodeDefine;
 import com.hangum.tadpole.engine.permission.PermissionChecker;
 import com.hangum.tadpole.engine.query.dao.system.UserDBDAO;
+import com.hangum.tadpole.engine.restful.TadpoleException;
 import com.hangum.tadpole.engine.security.TadpoleSecurityManager;
 import com.hangum.tadpole.engine.sql.util.SQLUtil;
 import com.hangum.tadpole.engine.utils.EditorDefine;
@@ -68,10 +70,10 @@ public class GrantCheckerUtils {
 	 * @param reqQuery
 	 * @throws Exception
 	 */
-	public static boolean ifExecuteQuery(UserDBDAO userDB, RequestQuery reqQuery) throws Exception {
+	public static boolean ifExecuteQuery(UserDBDAO userDB, RequestQuery reqQuery) throws TadpoleException {
 		// security check.
 		if(!TadpoleSecurityManager.getInstance().isLock(userDB)) {
-			throw new Exception(Messages.get().ResultMainComposite_1);
+			throw new TadpoleException(TDBResultCodeDefine.UNAUTHENTICATED, "The database is locked.");
 		}
 		
 		if(logger.isDebugEnabled()) {
@@ -80,7 +82,6 @@ public class GrantCheckerUtils {
 			logger.debug("==> getSqlDMLType : " + reqQuery.getSqlDMLType() );
 			logger.debug("==[end]====================================================");
 		}
-		
 		
 		// 실행해도 되는지 묻는다.
 		if(PublicTadpoleDefine.YES_NO.YES.name().equals(userDB.getQuestion_dml())

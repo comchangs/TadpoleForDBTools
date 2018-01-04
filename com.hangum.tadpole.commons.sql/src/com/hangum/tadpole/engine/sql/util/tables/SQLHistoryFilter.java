@@ -37,7 +37,7 @@ public class SQLHistoryFilter extends ViewerFilter {
 			
 		RequestResultDAO sqlDAO = (RequestResultDAO)element;
 		
-		if(StringUtils.deleteWhitespace(sqlDAO.getStrSQLText()).toLowerCase().matches(searchString)) return true;
+		if(StringUtils.deleteWhitespace(sqlDAO.getSql_text()).toLowerCase().matches(searchString)) return true;
 		if((""+sqlDAO.getStartDateExecute()).toLowerCase().matches(searchString)) return true;
 		if((""+sqlDAO.getEndDateExecute()).toLowerCase().matches(searchString)) return true;
 		if(sqlDAO.getMesssage().toLowerCase().matches(searchString)) return true;

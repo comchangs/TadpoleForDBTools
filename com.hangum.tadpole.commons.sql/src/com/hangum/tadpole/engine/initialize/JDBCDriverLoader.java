@@ -15,8 +15,13 @@ import java.lang.reflect.Method;
 import java.net.URL;
 import java.net.URLClassLoader;
 
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
+import org.eclipse.core.runtime.FileLocator;
+
+import com.hangum.tadpole.commons.util.ApplicationArgumentUtils;
+import com.hangum.tadpole.engine.TadpoleEngineActivator;
 
 /**
  * Jar Class loader
@@ -26,6 +31,36 @@ import org.apache.log4j.Logger;
  */
 public class JDBCDriverLoader {
 	private static final Logger logger = Logger.getLogger(JDBCDriverLoader.class);
+	
+	/**
+	 * initialize jdbc driver
+	 * 
+	 */
+	public static void initializeJDBCDriver() {
+		final String strJDBCDir = ApplicationArgumentUtils.JDBC_RESOURCE_DIR;
+		File jdbcLocationDir = new File(strJDBCDir);
+
+		if(!jdbcLocationDir.exists()) {
+			try {
+				jdbcLocationDir.mkdirs();
+				
+				File fileEngine = FileLocator.getBundleFile(TadpoleEngineActivator.getDefault().getBundle());
+				String filePath = fileEngine.getAbsolutePath() + "/libs/driver";
+				if(logger.isInfoEnabled()) logger.info("##### TDB JDBC URI: " + filePath);
+				
+				FileUtils.copyDirectory(new File(filePath), new File(strJDBCDir));
+			} catch(Exception e) {
+				logger.error("Initialize JDBC driver file", e);
+			}
+		}
+		
+		// driver loading
+		try {
+			JDBCDriverLoader.addJARDir(strJDBCDir);
+		} catch(Exception e) {
+			logger.error("JDBC driver loading", e);
+		}
+	}
 	
 	/**
 	 * add jar loader of file

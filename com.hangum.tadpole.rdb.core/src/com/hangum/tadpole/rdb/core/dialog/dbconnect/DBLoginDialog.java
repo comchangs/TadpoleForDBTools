@@ -12,7 +12,6 @@ package com.hangum.tadpole.rdb.core.dialog.dbconnect;
 
 import java.util.List;
 
-import org.apache.commons.lang.ClassUtils;
 import org.apache.log4j.Logger;
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.dialogs.IDialogConstants;
@@ -44,7 +43,6 @@ import com.hangum.tadpole.engine.query.sql.TadpoleSystem_UserDBQuery;
 import com.hangum.tadpole.preference.define.GetAdminPreference;
 import com.hangum.tadpole.rdb.core.Messages;
 import com.hangum.tadpole.rdb.core.dialog.dbconnect.composite.AbstractLoginComposite;
-import com.hangum.tadpole.rdb.core.dialog.driver.JDBCDriverManageDialog;
 import com.hangum.tadpole.rdb.core.viewers.connections.ManagerViewer;
 import com.hangum.tadpole.session.manager.SessionManager;
 import com.swtdesigner.SWTResourceManager;
@@ -196,34 +194,34 @@ public class DBLoginDialog extends Dialog {
 	private void initDBWidget() {
 		if(loginComposite != null) loginComposite.dispose();
 		
-		if(!ApplicationArgumentUtils.isOnlineServer()) {
-			DBDefine dbDefine = (DBDefine)comboDBList.getData(comboDBList.getText());
-			if(
-//					dbDefine == DBDefine.DYNAMODB_DEFAULT |
-					dbDefine == DBDefine.ALTIBASE_DEFAULT |
-					dbDefine == DBDefine.CUBRID_DEFAULT |
-					dbDefine == DBDefine.MYSQL_DEFAULT |
-					dbDefine == DBDefine.MARIADB_DEFAULT |
-					dbDefine == DBDefine.MSSQL_DEFAULT |
-					dbDefine == DBDefine.ORACLE_DEFAULT |
-					dbDefine == DBDefine.SQLite_DEFAULT |
-					dbDefine == DBDefine.TIBERO_DEFAULT |
-					dbDefine == DBDefine.POSTGRE_DEFAULT 
-			) {
-				try {
-					ClassUtils.getClass(dbDefine.getDriverClass());
-				} catch (ClassNotFoundException e) {
-					logger.error(String.format("%s driver not found. %s", dbDefine.getDriverClass(), e.getMessage()));
-					
-					if(MessageDialog.openConfirm(null, Messages.get().DriverNotFound, Messages.get().DriverNotFoundMSG)) {
-						JDBCDriverManageDialog dialog = new JDBCDriverManageDialog(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell());
-						if(Dialog.OK ==  dialog.open()) {
-							if(dialog.isUploaded()) MessageDialog.openInformation(null, CommonMessages.get().Information, Messages.get().jdbcdriver);
-						}
-					}
-				}	// try catch
-			}
-		}
+//		if(!ApplicationArgumentUtils.isOnlineServer()) {
+//			DBDefine dbDefine = (DBDefine)comboDBList.getData(comboDBList.getText());
+//			if(
+////					dbDefine == DBDefine.DYNAMODB_DEFAULT |
+//					dbDefine == DBDefine.ALTIBASE_DEFAULT |
+//					dbDefine == DBDefine.CUBRID_DEFAULT |
+//					dbDefine == DBDefine.MYSQL_DEFAULT |
+//					dbDefine == DBDefine.MARIADB_DEFAULT |
+//					dbDefine == DBDefine.MSSQL_DEFAULT |
+//					dbDefine == DBDefine.ORACLE_DEFAULT |
+//					dbDefine == DBDefine.SQLite_DEFAULT |
+//					dbDefine == DBDefine.TIBERO_DEFAULT |
+//					dbDefine == DBDefine.POSTGRE_DEFAULT 
+//			) {
+//				try {
+//					ClassUtils.getClass(dbDefine.getDriverClass());
+//				} catch (ClassNotFoundException e) {
+//					logger.error(String.format("%s driver not found. %s", dbDefine.getDriverClass(), e.getMessage()));
+//					
+//					if(MessageDialog.openConfirm(null, Messages.get().DriverNotFound, Messages.get().DriverNotFoundMSG)) {
+//						JDBCDriverManageDialog dialog = new JDBCDriverManageDialog(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell());
+//						if(Dialog.OK ==  dialog.open()) {
+//							if(dialog.isUploaded()) MessageDialog.openInformation(null, CommonMessages.get().Information, Messages.get().jdbcdriver);
+//						}
+//					}
+//				}	// try catch
+//			}
+//		}
 
 		createDBWidget(null);
 		compositeBody.layout();

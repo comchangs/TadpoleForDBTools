@@ -22,11 +22,13 @@ import org.apache.log4j.Logger;
 
 import com.hangum.tadpole.commons.libs.core.define.PublicTadpoleDefine;
 import com.hangum.tadpole.commons.sql.core.manager.TDBObjectParser;
+import com.hangum.tadpole.engine.define.TDBResultCodeDefine;
 import com.hangum.tadpole.engine.query.dao.mysql.ProcedureFunctionDAO;
 import com.hangum.tadpole.engine.query.dao.mysql.TableColumnDAO;
 import com.hangum.tadpole.engine.query.dao.mysql.TableDAO;
 import com.hangum.tadpole.engine.query.dao.system.UserDBDAO;
 import com.hangum.tadpole.engine.query.dao.system.accesscontrol.AccessCtlObjectDAO;
+import com.hangum.tadpole.engine.restful.TadpoleException;
 import com.hangum.tadpole.engine.sql.parser.define.ParserDefine;
 import com.hangum.tadpole.engine.sql.util.SQLUtil;
 
@@ -64,7 +66,7 @@ public class DBAccessCtlManager {
 	 * @param strSQL
 	 * @throws Exception
 	 */
-	public void tableFilterTest(final UserDBDAO userDB, final String strSQL) throws Exception {
+	public void tableFilterTest(final UserDBDAO userDB, final String strSQL) throws TadpoleException {
 		if(userDB.getDbAccessCtl().getAllAccessCtl().isEmpty()) return;
 		if(logger.isDebugEnabled()) logger.debug("####################### SQL: " + strSQL);
 		
@@ -119,14 +121,14 @@ public class DBAccessCtlManager {
 		                if(logger.isDebugEnabled()) logger.debug("\t#### parse procedure " + fullName);
 		                if(mapProcedureAccessCtl.containsKey(fullName)) {
 		                	if(logger.isDebugEnabled()) logger.debug(String.format("\t type: %s, table: %s 있습니다.", PublicTadpoleDefine.FILTER_TYPE.EXCLUDE.name(), fullName));
-	    					throw new Exception(String.format("Procedure: %s은 접근 할 수 없습니다.", fullName));
+	    					throw new TadpoleException(TDBResultCodeDefine.FORBIDDEN, String.format("Procedure: %s은 접근 할 수 없습니다.", fullName));
 		                }
 					} else {
 						String fullName = StringUtils.contains(procedureName, ".")?procedureName:userDB.getSchema() + "." + procedureName;
 		                
 		                if(logger.isDebugEnabled()) logger.debug("\t#### parse procedure " + fullName);
 		                if(!mapProcedureAccessCtl.containsKey(fullName)) {
-		                	throw new Exception(String.format("Procedure: %s은 접근 할 수 없습니다.", fullName));
+		                	throw new TadpoleException(TDBResultCodeDefine.FORBIDDEN, String.format("Procedure: %s은 접근 할 수 없습니다.", fullName));
 		                }
 					}
 				}
@@ -215,7 +217,7 @@ public class DBAccessCtlManager {
 		}
 				
 		if(!isClearTable || !isClearFunction) {
-			throw new Exception(String.format("%s%s", strMsgTable, strMsgFunction));
+			throw new TadpoleException(TDBResultCodeDefine.FORBIDDEN, String.format("%s%s", strMsgTable, strMsgFunction));
 		}
 	}
 	

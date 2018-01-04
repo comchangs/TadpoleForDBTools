@@ -10,32 +10,22 @@
  ******************************************************************************/
 package com.hangum.tadpole.application;
 
-import java.util.Locale;
-import java.util.Properties;
-
-import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.wizard.WizardDialog;
-import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.application.EntryPoint;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.application.WorkbenchAdvisor;
 
+import com.hangum.tadpole.application.initialize.EnginDBInitializer;
 import com.hangum.tadpole.application.initialize.wizard.SystemInitializeWizard;
 import com.hangum.tadpole.application.start.ApplicationWorkbenchAdvisor;
 import com.hangum.tadpole.commons.libs.core.define.PublicTadpoleDefine;
 import com.hangum.tadpole.commons.libs.core.message.CommonMessages;
-import com.hangum.tadpole.commons.util.LoadConfigFile;
-import com.hangum.tadpole.engine.initialize.ApplicationLicenseInitialize;
-import com.hangum.tadpole.engine.initialize.TadpoleSystemInitializer;
+import com.hangum.tadpole.engine.initialize.TadpoleHubStartupInitializer;
 import com.hangum.tadpole.engine.manager.TadpoleApplicationContextManager;
-import com.hangum.tadpole.engine.query.dao.system.UserInfoDataDAO;
-import com.hangum.tadpole.engine.query.sql.TadpoleSystem_UserInfoData;
-import com.hangum.tadpole.preference.define.AdminPreferenceDefine;
-import com.hangum.tadpole.preference.define.GetAdminPreference;
 
 /**
  * This class controls all aspects of the application's execution
@@ -43,16 +33,16 @@ import com.hangum.tadpole.preference.define.GetAdminPreference;
  */
 public class Application implements EntryPoint {
 	private static final Logger logger = Logger.getLogger(Application.class);
-
+	
+	/**
+	 * create ui
+	 */
 	public int createUI() {
 		Display display = PlatformUI.createDisplay();
 		
-		Locale locale = RWT.getLocale();
-		Locale.setDefault(locale);
-		RWT.getUISession().setLocale(locale);
-		RWT.setLocale(locale);
-		
-		systemInitialize();
+		if(!TadpoleApplicationContextManager.isSystemInitialize()) {
+			systemInitialize();
+		}
 	
 		WorkbenchAdvisor advisor = new ApplicationWorkbenchAdvisor();		
 		return PlatformUI.createAndRunWorkbench( display, advisor );
@@ -61,23 +51,13 @@ public class Application implements EntryPoint {
 	/**
 	 * System initialize
 	 * 
-	 * 0. License load
-	 * 1. jdbc driver load
-	 * 2. If the system table does not exist, create a table.
-	 * 2.1 System initialize
 	 */
 	private void systemInitialize() {
-		if(TadpoleApplicationContextManager.isSystemInitialize()) return;
-		
 		try {
-			// load license 
-			ApplicationLicenseInitialize.load();
-			
-			// load default config file
-			LoadConfigFile.initializeConfigFile();
+			TadpoleHubStartupInitializer.initializeLoadConfigAndJDBCDriver();
 			
 			// initialize system 
-			if(!TadpoleSystemInitializer.initSystem()) {
+			if(!EnginDBInitializer.initSystem()) {
 				if(logger.isInfoEnabled()) logger.info("Initialize System default setting.");
 				
 				WizardDialog dialog = new WizardDialog(null, new SystemInitializeWizard());
@@ -86,34 +66,15 @@ public class Application implements EntryPoint {
 				}
 			}
 			
-			/* define login type */
-			Properties prop = LoadConfigFile.getConfigFile();
-			String txtLoginMethod = StringUtils.trim(prop.getProperty("LOGIN_METHOD", AdminPreferenceDefine.SYSTEM_LOGIN_METHOD_VALUE));
-			UserInfoDataDAO userInfoDao = TadpoleSystem_UserInfoData.updateAdminValue(AdminPreferenceDefine.SYSTEM_LOGIN_METHOD, txtLoginMethod);
-			GetAdminPreference.updateAdminSessionData(AdminPreferenceDefine.SYSTEM_LOGIN_METHOD, userInfoDao);
-			
-			/** 뷰에 보여주어야할 프러덕 필터 값을 가져온다 */
-			GetAdminPreference.updateAdminSessionData(AdminPreferenceDefine.SYSTEM_VIEW_PRODUCT_TYPE_FILTER, 
-					new UserInfoDataDAO(PublicTadpoleDefine.systemAdminId, AdminPreferenceDefine.SYSTEM_VIEW_PRODUCT_TYPE_FILTER, 
-							StringUtils.trim(prop.getProperty("tadpole.db.producttype.remove.filter", ""))
-				)
-			);
-			
-			/** 뷰에 보여주어야할 그룹이름 필터 값을 가져온다 */
-			GetAdminPreference.updateAdminSessionData(AdminPreferenceDefine.SYSTEM_VIEW_GROUP_NAME_FILTER, 
-					new UserInfoDataDAO(PublicTadpoleDefine.systemAdminId, AdminPreferenceDefine.SYSTEM_VIEW_GROUP_NAME_FILTER,
-							StringUtils.trim(prop.getProperty("tadpole.db.groupname.remove.filter", ""))
-					)
-			);
-			
-			/** cert user info */
-			PublicTadpoleDefine.CERT_USER_INFO = StringUtils.trim(prop.getProperty("CERT_USER_INFO", ""));
+			// initialize system value
+			TadpoleHubStartupInitializer.initializeSystemValue();
 			
 		} catch(Exception e) {
-			logger.error("Initialization failed.", e); //$NON-NLS-1$
+			logger.error("Tadpole Hub initialization failed.", e); //$NON-NLS-1$
 			MessageDialog.openError(null, CommonMessages.get().Error, com.hangum.tadpole.application.start.Messages.get().ApplicationWorkbenchWindowAdvisor_2 + PublicTadpoleDefine.LINE_SEPARATOR + PublicTadpoleDefine.LINE_SEPARATOR + "[Error message]" + PublicTadpoleDefine.LINE_SEPARATOR + e.getMessage());
 			
 			System.exit(0);
 		}
 	}
+	
 }

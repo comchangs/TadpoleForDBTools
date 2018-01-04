@@ -203,7 +203,7 @@ public class ResultSetUtils {
 	 * @return
 	 */
 	public static Map<Integer, String> getColumnName(UserDBDAO userDB, Map<Integer, String> columnTableName,
-			boolean isShowRowNum, ResultSet rs) throws Exception {
+			boolean isShowRowNum, ResultSet rs) throws SQLException {
 		return getColumnName(isShowRowNum, rs);
 //		Map<Integer, String> mapColumnName = getColumnName(isShowRowNum, rs);
 //		DBAccessControlDAO dbAccessCtlDao = userDB.getDbAccessCtl();
@@ -253,7 +253,7 @@ public class ResultSetUtils {
 	 * @return
 	 * @throws Exception
 	 */
-	public static Map<Integer, String> getColumnName(boolean isShowRowNum, ResultSet rs) throws Exception {
+	public static Map<Integer, String> getColumnName(boolean isShowRowNum, ResultSet rs) throws SQLException {
 		Map<Integer, String> mapColumnName = new HashMap<Integer, String>();
 		int intStartIndex = 0;
 		
@@ -280,7 +280,7 @@ public class ResultSetUtils {
 	 * @return
 	 * @throws Exception
 	 */
-	public static Map<Integer, String> getColumnLabelName(UserDBDAO userDB, Map<Integer, String> columnTableName, boolean isShowRowNum, ResultSet rs) throws Exception {
+	public static Map<Integer, String> getColumnLabelName(UserDBDAO userDB, Map<Integer, String> columnTableName, boolean isShowRowNum, ResultSet rs) throws SQLException {
 		return getColumnLabelName(isShowRowNum, rs);
 //		Map<Integer, String> mapColumnName = getColumnLabelName(isShowRowNum, rs);
 //		DBAccessControlDAO dbAccessCtlDao = userDB.getDbAccessCtl();
@@ -329,7 +329,7 @@ public class ResultSetUtils {
 	 * @return
 	 * @throws Exception
 	 */
-	public static Map<Integer, String> getColumnLabelName(boolean isShowRowNum, ResultSet rs) throws Exception {
+	public static Map<Integer, String> getColumnLabelName(boolean isShowRowNum, ResultSet rs) throws SQLException {
 		Map<Integer, String> mapColumnName = new HashMap<Integer, String>();
 		int intStartIndex = 0;
 		
@@ -358,7 +358,7 @@ public class ResultSetUtils {
 	 * @return
 	 * @throws Exception
 	 */
-	public static Map<Integer, String> getColumnTableName(final UserDBDAO userDB, boolean isShowRowNum, ResultSet rs) throws Exception {
+	public static Map<Integer, String> getColumnTableName(final UserDBDAO userDB, boolean isShowRowNum, ResultSet rs) throws SQLException {
 		Map<Integer, String> mapColumnName = new HashMap<Integer, String>();
 		int intStartIndex = 0;
 		

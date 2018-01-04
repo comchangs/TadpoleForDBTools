@@ -104,8 +104,6 @@ public class ApplicationWorkbenchWindowAdvisor extends WorkbenchWindowAdvisor {
         login();
     }
     
-    
-    
     /**
      * login 
      */
@@ -255,12 +253,11 @@ public class ApplicationWorkbenchWindowAdvisor extends WorkbenchWindowAdvisor {
 //    	return super.preWindowShellClose();
 //    }
 
-
-    /**
-     * new version checker (특정 사용환경에만 사용할 수 있도록 하기 위해 주석 처리)
-     */
-    private void newVersionChecker() {
-    	
+//    /**
+//     * new version checker (특정 사용환경에만 사용할 수 있도록 하기 위해 주석 처리)
+//     */
+//    private void newVersionChecker() {
+//    	
 //		if(!CookieUtils.isUpdateChecker()) {
 //	    	boolean isNew = NewVersionChecker.getInstance().check();
 //	    	if(isNew) {
@@ -269,15 +266,15 @@ public class ApplicationWorkbenchWindowAdvisor extends WorkbenchWindowAdvisor {
 //	    		dialog.open();
 //    		}	// is nuew
 //    	}	// is update checker
-    	
-    }
+//    	
+//    }
     
     @Override
     public void postWindowOpen() {
-    	if(ApplicationArgumentUtils.isOnlineServer()) return;    	
-    	if(SessionManager.isSystemAdmin()) {
-    		newVersionChecker();
-    	}
+//    	if(ApplicationArgumentUtils.isOnlineServer()) return;    	
+//    	if(SessionManager.isSystemAdmin()) {
+//    		newVersionChecker();
+//    	}
     	
     	// fullscreen
 //    	getWindowConfigurer().getWindow().getShell().setMaximized(true);

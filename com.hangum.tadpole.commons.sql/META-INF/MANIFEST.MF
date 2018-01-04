@@ -4,7 +4,7 @@ Bundle-Name: Tadpole DB Hub Engine
 Bundle-SymbolicName: com.hangum.tadpole.engine;singleton:=true
 Bundle-Version: 1.0.0
 Bundle-Vendor: TadpoleHub Co.Ltd
-Bundle-RequiredExecutionEnvironment: JavaSE-1.7
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Require-Bundle: org.eclipse.rap.ui;bundle-version="1.5.0";resolution:=optional,
  org.eclipse.core.runtime;bundle-version="3.5.0",
  com.hangum.tadpole.commons.libs;bundle-version="1.0.0",
@@ -35,8 +35,8 @@ Bundle-ClassPath: libs/ibatis-2.3.4.726-patched-tadpole.jar,
  libs/driver/mongo/mongodb-driver-3.4.2.jar,
  libs/driver/mongo/mongodb-driver-async-3.4.2.jar,
  libs/driver/mongo/mongodb-driver-core-3.4.2.jar,
- libs/driver/mysql/mysql-connector-java-5.1.41-bin.jar,
- libs/driver/pgsql/postgresql-9.4-1204.jdbc41.jar
+ libs/driver/pgsql/postgresql-9.4-1204.jdbc41.jar,
+ libs/driver/mysql/mysql-connector-java-5.1.41-bin.jar
 Export-Package: 
  com.hangum.tadpole.db.metadata,
  com.hangum.tadpole.db.metadata.constants,

@@ -1,6 +1,7 @@
 package com.hangum.tadpole.engine.manager;
 
 import java.sql.Connection;
+import java.sql.SQLException;
 
 import org.apache.log4j.Logger;
 
@@ -29,7 +30,7 @@ public class TadpoleSQLExtManager extends BasicDBInfo {
 	
 	private TadpoleSQLExtManager() {}
 	
-	public Connection getConnection(final UserDBDAO userDB) throws Exception {
+	public Connection getConnection(final UserDBDAO userDB) throws TadpoleSQLManagerException, SQLException {
 		Connection conn = null;
 		
 		if(DBGroupDefine.DYNAMODB_GROUP == userDB.getDBGroup()) {

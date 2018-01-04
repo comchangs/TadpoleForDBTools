@@ -22,6 +22,8 @@ public class ExecutedSqlResourceDataDAO {
 	long seq;
 	Timestamp startDateExecute;
 	long executed_sql_resource_seq;
+	/** 테드폴허브에서 추가하는 헤더 */
+	String tdb_sql_head;
     String sql_data;
     Timestamp ctreate_time;
     
@@ -62,6 +64,20 @@ public class ExecutedSqlResourceDataDAO {
 	 */
 	public void setExecuted_sql_resource_seq(long executed_sql_resource_seq) {
 		this.executed_sql_resource_seq = executed_sql_resource_seq;
+	}
+
+	/**
+	 * @return the tdb_sql_head
+	 */
+	public String getTdb_sql_head() {
+		return tdb_sql_head;
+	}
+
+	/**
+	 * @param tdb_sql_head the tdb_sql_head to set
+	 */
+	public void setTdb_sql_head(String tdb_sql_head) {
+		this.tdb_sql_head = tdb_sql_head;
 	}
 
 	/**

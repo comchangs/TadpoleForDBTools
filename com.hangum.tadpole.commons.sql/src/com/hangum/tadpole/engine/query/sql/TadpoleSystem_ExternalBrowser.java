@@ -16,7 +16,7 @@ import java.util.List;
 import org.apache.log4j.Logger;
 
 import com.hangum.tadpole.commons.exception.TadpoleSQLManagerException;
-import com.hangum.tadpole.engine.initialize.TadpoleSystemInitializer;
+import com.hangum.tadpole.engine.initialize.TadpoleEngineUserDB;
 import com.hangum.tadpole.engine.manager.TadpoleSQLManager;
 import com.hangum.tadpole.engine.query.dao.system.ExternalBrowserInfoDAO;
 import com.hangum.tadpole.engine.query.dao.system.UserDBDAO;
@@ -39,7 +39,7 @@ public class TadpoleSystem_ExternalBrowser {
 	 * @throws TadpoleSQLManagerException, SQLException
 	 */
 	public static List<ExternalBrowserInfoDAO> getExternalBrowser(UserDBDAO userDBDao) throws TadpoleSQLManagerException, SQLException {		
-		SqlMapClient sqlClient = TadpoleSQLManager.getInstance(TadpoleSystemInitializer.getUserDB());
+		SqlMapClient sqlClient = TadpoleSQLManager.getInstance(TadpoleEngineUserDB.getUserDB());
 		return sqlClient.queryForList("getExternalBrowser", userDBDao.getSeq());
 	}
 }

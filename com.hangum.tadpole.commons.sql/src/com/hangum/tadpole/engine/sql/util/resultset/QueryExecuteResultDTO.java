@@ -11,6 +11,7 @@
 package com.hangum.tadpole.engine.sql.util.resultset;
 
 import java.sql.ResultSet;
+import java.sql.SQLException;
 
 import com.hangum.tadpole.commons.libs.core.define.PublicTadpoleDefine;
 import com.hangum.tadpole.commons.libs.core.define.PublicTadpoleDefine.QUERY_EXECUTE_STATUS;
@@ -36,12 +37,12 @@ public class QueryExecuteResultDTO extends ResultSetUtilDTO {
 			ResultSet resultSet, 
 			int intSelectLimitCnt, 
 			int intLastIndex
-	) throws Exception {
+	) throws SQLException {
 		super(userDB, reqQuery, isShowRownum, resultSet, intSelectLimitCnt, intLastIndex);
 	}
 
 	public QueryExecuteResultDTO(
-			UserDBDAO userDB, String reqQuery, boolean isShowRownum, ResultSet rs, int queryResultCount) throws Exception {
+			UserDBDAO userDB, String reqQuery, boolean isShowRownum, ResultSet rs, int queryResultCount) throws SQLException {
 		super(userDB, reqQuery, isShowRownum, rs, queryResultCount, 0);
 	}
 	

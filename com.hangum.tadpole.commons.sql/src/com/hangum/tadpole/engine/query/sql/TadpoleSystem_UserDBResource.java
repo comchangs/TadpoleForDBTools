@@ -23,7 +23,7 @@ import com.hangum.tadpole.commons.exception.TadpoleSQLManagerException;
 import com.hangum.tadpole.commons.libs.core.define.PublicTadpoleDefine;
 import com.hangum.tadpole.commons.libs.core.define.PublicTadpoleDefine.RESOURCE_TYPE;
 import com.hangum.tadpole.engine.Messages;
-import com.hangum.tadpole.engine.initialize.TadpoleSystemInitializer;
+import com.hangum.tadpole.engine.initialize.TadpoleEngineUserDB;
 import com.hangum.tadpole.engine.manager.TadpoleSQLManager;
 import com.hangum.tadpole.engine.query.dao.ResourceManagerDAO;
 import com.hangum.tadpole.engine.query.dao.system.UserDBDAO;
@@ -51,7 +51,7 @@ public class TadpoleSystem_UserDBResource {
 	 * @throws TadpoleSQLManagerException, SQLException
 	 */
 	public static List<ResourceManagerDAO> getRESTFulAPIList() throws TadpoleSQLManagerException, SQLException {
-		SqlMapClient sqlClient = TadpoleSQLManager.getInstance(TadpoleSystemInitializer.getUserDB());
+		SqlMapClient sqlClient = TadpoleSQLManager.getInstance(TadpoleEngineUserDB.getUserDB());
 		return (List<ResourceManagerDAO>)sqlClient.queryForList("getRESTFulAPIList", SessionManager.getUserSeq()); //$NON-NLS-1$
 	}
 	
@@ -70,7 +70,7 @@ public class TadpoleSystem_UserDBResource {
 		mapCredential.put("user_seq", intUserSEQ); //$NON-NLS-1$
 		mapCredential.put("restapi_uri", strUserDomainURL); //$NON-NLS-1$
 		
-		SqlMapClient sqlClient = TadpoleSQLManager.getInstance(TadpoleSystemInitializer.getUserDB());
+		SqlMapClient sqlClient = TadpoleSQLManager.getInstance(TadpoleEngineUserDB.getUserDB());
 		UserDBResourceDAO userResource = (UserDBResourceDAO)sqlClient.queryForObject("findRESTURL", mapCredential); //$NON-NLS-1$
 		
 		if(userResource == null) {
@@ -87,7 +87,7 @@ public class TadpoleSystem_UserDBResource {
 	 * @throws TadpoleSQLManagerException, SQLException
 	 */
 	public static UserDBResourceDAO findAPIKey(String strAPIKey) throws TadpoleSQLManagerException, SQLException {
-		SqlMapClient sqlClient = TadpoleSQLManager.getInstance(TadpoleSystemInitializer.getUserDB());
+		SqlMapClient sqlClient = TadpoleSQLManager.getInstance(TadpoleEngineUserDB.getUserDB());
 		UserDBResourceDAO userResource = (UserDBResourceDAO)sqlClient.queryForObject("findAPIKey", strAPIKey); //$NON-NLS-1$
 		
 		return userResource;
@@ -104,7 +104,7 @@ public class TadpoleSystem_UserDBResource {
 	 */
 	public static UserDBResourceDAO saveResource(UserDBDAO userDB, UserDBResourceDAO userDBResource, String contents) throws TadpoleSQLManagerException, SQLException {
 		// 기존에 등록 되어 있는지 검사한다
-		SqlMapClient sqlClient = TadpoleSQLManager.getInstance(TadpoleSystemInitializer.getUserDB());
+		SqlMapClient sqlClient = TadpoleSQLManager.getInstance(TadpoleEngineUserDB.getUserDB());
 		UserDBResourceDAO retUserDBResource =  (UserDBResourceDAO)sqlClient.insert("userDbResourceInsert", userDBResource); //$NON-NLS-1$
 		
 		// content data를 저장합니다.
@@ -121,7 +121,7 @@ public class TadpoleSystem_UserDBResource {
 	 * @throws TadpoleSQLManagerException, SQLException
 	 */
 	public static void updateResourceHeader(ResourceManagerDAO userDBResource) throws TadpoleSQLManagerException, SQLException {
-		SqlMapClient sqlClient = TadpoleSQLManager.getInstance(TadpoleSystemInitializer.getUserDB());
+		SqlMapClient sqlClient = TadpoleSQLManager.getInstance(TadpoleEngineUserDB.getUserDB());
 		sqlClient.update("userDbResourceUpdate", userDBResource); //$NON-NLS-1$
 	}
 	
@@ -145,7 +145,7 @@ public class TadpoleSystem_UserDBResource {
 	 * @throws TadpoleSQLManagerException, SQLException
 	 */
 	public static void updateResourceAuto(UserDBResourceDAO userDBResource, String contents) throws TadpoleSQLManagerException, SQLException {
-		SqlMapClient sqlClient = TadpoleSQLManager.getInstance(TadpoleSystemInitializer.getUserDB());
+		SqlMapClient sqlClient = TadpoleSQLManager.getInstance(TadpoleEngineUserDB.getUserDB());
 		sqlClient.delete("userDbResourceDataAutoDelete", userDBResource.getResource_seq()); //$NON-NLS-1$
 		
 		insertResourceData(userDBResource, contents);
@@ -159,7 +159,7 @@ public class TadpoleSystem_UserDBResource {
 	 * @throws TadpoleSQLManagerException, SQLException
 	 */
 	public static void updateResource(UserDBResourceDAO userDBResource, String contents) throws TadpoleSQLManagerException, SQLException {
-		SqlMapClient sqlClient = TadpoleSQLManager.getInstance(TadpoleSystemInitializer.getUserDB());
+		SqlMapClient sqlClient = TadpoleSQLManager.getInstance(TadpoleEngineUserDB.getUserDB());
 		sqlClient.update("userDbResourceDataDelete", userDBResource.getResource_seq()); //$NON-NLS-1$
 		
 		insertResourceData(userDBResource, contents);
@@ -186,7 +186,7 @@ public class TadpoleSystem_UserDBResource {
 			defDao.setUser_seq(SessionManager.getUserSeq());
 			
 			// 기존에 등록 되어 있는지 검사한다
-			SqlMapClient sqlClient = TadpoleSQLManager.getInstance(TadpoleSystemInitializer.getUserDB());
+			SqlMapClient sqlClient = TadpoleSQLManager.getInstance(TadpoleEngineUserDB.getUserDB());
 			UserDBResourceDAO retUserDBResource =  (UserDBResourceDAO)sqlClient.insert("userDbResourceInsert", defDao); //$NON-NLS-1$
 			insertResourceData(retUserDBResource, newContents);
 			
@@ -215,7 +215,7 @@ public class TadpoleSystem_UserDBResource {
 	 * @throws TadpoleSQLManagerException, SQLException
 	 */
 	private static void insertResourceData(UserDBResourceDAO userDBResource, String contents) throws TadpoleSQLManagerException, SQLException {
-		SqlMapClient sqlClient = TadpoleSQLManager.getInstance(TadpoleSystemInitializer.getUserDB());
+		SqlMapClient sqlClient = TadpoleSQLManager.getInstance(TadpoleEngineUserDB.getUserDB());
 		
 		// content data를 저장합니다.
 		UserDBResourceDataDAO dataDao = new UserDBResourceDataDAO();
@@ -240,7 +240,7 @@ public class TadpoleSystem_UserDBResource {
 		Map<String, Object> queryMap = new HashMap<String, Object>();
 		queryMap.put("seq", 		userDB.getSeq()); //$NON-NLS-1$
 		
-		SqlMapClient sqlClient = TadpoleSQLManager.getInstance(TadpoleSystemInitializer.getUserDB());
+		SqlMapClient sqlClient = TadpoleSQLManager.getInstance(TadpoleEngineUserDB.getUserDB());
 		List<UserDBResourceDAO> listUserDBResources =  (List<UserDBResourceDAO>)sqlClient.queryForList("userDbResourceTree", queryMap); //$NON-NLS-1$
 		for (UserDBResourceDAO userDBResourceDAO : listUserDBResources) {
 			if(PublicTadpoleDefine.SHARED_TYPE.PUBLIC.toString().equals(userDBResourceDAO.getShared_type())) {
@@ -269,7 +269,7 @@ public class TadpoleSystem_UserDBResource {
 	 * @throws TadpoleSQLManagerException, SQLException
 	 */
 	public static List<ResourceManagerDAO> userDbResource(UserDBDAO userDB) throws TadpoleSQLManagerException, SQLException {
-		SqlMapClient sqlClient = TadpoleSQLManager.getInstance(TadpoleSystemInitializer.getUserDB());
+		SqlMapClient sqlClient = TadpoleSQLManager.getInstance(TadpoleEngineUserDB.getUserDB());
 		return (List<ResourceManagerDAO>)sqlClient.queryForList("userDbResourceManager", userDB); //$NON-NLS-1$
 	}
 	
@@ -282,7 +282,7 @@ public class TadpoleSystem_UserDBResource {
 	 * @throws TadpoleSQLManagerException, SQLException
 	 */
 	public static void userDBResourceDuplication(UserDBDAO userDB, UserDBResourceDAO dbResourceDAO) throws TadpoleSQLManagerException, SQLException {
-		SqlMapClient sqlClient = TadpoleSQLManager.getInstance(TadpoleSystemInitializer.getUserDB());		
+		SqlMapClient sqlClient = TadpoleSQLManager.getInstance(TadpoleEngineUserDB.getUserDB());		
 		if(!sqlClient.queryForList("userDBResourceDuplication", dbResourceDAO).isEmpty()) { //$NON-NLS-1$
 			throw new TadpoleRuntimeException(Messages.get().TadpoleSystem_UserDBResource_6);
 		}
@@ -301,7 +301,7 @@ public class TadpoleSystem_UserDBResource {
 	 * @param dao
 	 */
 	public static void userDBResourceDupUpdate(UserDBDAO userDB, ResourceManagerDAO dao) throws TadpoleSQLManagerException, SQLException {
-		SqlMapClient sqlClient = TadpoleSQLManager.getInstance(TadpoleSystemInitializer.getUserDB());		
+		SqlMapClient sqlClient = TadpoleSQLManager.getInstance(TadpoleEngineUserDB.getUserDB());		
 		if(!sqlClient.queryForList("userDBResourceDuplicationUpdate", dao).isEmpty()) { //$NON-NLS-1$
 			throw new TadpoleRuntimeException(Messages.get().TadpoleSystem_UserDBResource_6);
 		}
@@ -327,7 +327,7 @@ public class TadpoleSystem_UserDBResource {
 		queryMap.put("db_seq", 		userDB.getSeq()); //$NON-NLS-1$
 		queryMap.put("user_seq", 	SessionManager.getUserSeq()); //$NON-NLS-1$
 		
-		SqlMapClient sqlClient = TadpoleSQLManager.getInstance(TadpoleSystemInitializer.getUserDB());
+		SqlMapClient sqlClient = TadpoleSQLManager.getInstance(TadpoleEngineUserDB.getUserDB());
 		UserDBResourceDAO resourcesDao =  (UserDBResourceDAO)sqlClient.queryForObject("userDBResourceDefault", queryMap); //$NON-NLS-1$
 		if(resourcesDao == null) return null;
 		
@@ -346,7 +346,7 @@ public class TadpoleSystem_UserDBResource {
 	 * @throws TadpoleSQLManagerException, SQLException
 	 */
 	public static void delete(UserDBResourceDAO userDBErd) throws TadpoleSQLManagerException, SQLException {
-		SqlMapClient sqlClient = TadpoleSQLManager.getInstance(TadpoleSystemInitializer.getUserDB());
+		SqlMapClient sqlClient = TadpoleSQLManager.getInstance(TadpoleEngineUserDB.getUserDB());
 		sqlClient.update("userDBResourceDelete", userDBErd); //$NON-NLS-1$
 	}
 	
@@ -357,7 +357,7 @@ public class TadpoleSystem_UserDBResource {
 	 * @throws TadpoleSQLManagerException, SQLException
 	 */
 	public static String getResourceData(UserDBResourceDAO userDBResource) throws TadpoleSQLManagerException, SQLException {
-		SqlMapClient sqlClient = TadpoleSQLManager.getInstance(TadpoleSystemInitializer.getUserDB());
+		SqlMapClient sqlClient = TadpoleSQLManager.getInstance(TadpoleEngineUserDB.getUserDB());
 		List<UserDBResourceDataDAO> datas =  (List<UserDBResourceDataDAO>)sqlClient.queryForList("userDBResourceData", userDBResource); //$NON-NLS-1$
 		
 		StringBuffer retData = new StringBuffer();
@@ -377,7 +377,7 @@ public class TadpoleSystem_UserDBResource {
 	 * @throws SQLException
 	 */
 	public static List<UserDBResourceDataDAO> getResouceDataHistory(ResourceManagerDAO userDBResource) throws TadpoleSQLManagerException, SQLException {
-		SqlMapClient sqlClient = TadpoleSQLManager.getInstance(TadpoleSystemInitializer.getUserDB());
+		SqlMapClient sqlClient = TadpoleSQLManager.getInstance(TadpoleEngineUserDB.getUserDB());
 		List<UserDBResourceDataDAO> datas =  (List<UserDBResourceDataDAO>)sqlClient.queryForList("getResouceDataHistory", userDBResource.getResource_seq()); //$NON-NLS-1$
 		return datas;
 	}

@@ -71,7 +71,7 @@ public class TadpoleSQLTransactionManager extends AbstractTadpoleManager {
 	 * @return
 	 * @throws Exception
 	 */
-	public static Connection getInstance(final String userId, final UserDBDAO userDB) throws Exception {
+	public static Connection getInstance(final String userId, final UserDBDAO userDB) throws TadpoleSQLManagerException, SQLException {
 		if(!userDB.is_isUseEnable()) {
 			throw new TadpoleSQLManagerException("You do not have DB database permissions.");
 		}
@@ -107,8 +107,12 @@ public class TadpoleSQLTransactionManager extends AbstractTadpoleManager {
 				_transactionDAO.setKey(searchKey);
 				
 				dbManager.put(searchKey, _transactionDAO);
+			} catch(CloneNotSupportedException cnse) {
+				logger.error("clone not support exception");
+				removeInstance(userId, searchKey);
 				
-			} catch (Exception e) {
+				new TadpoleSQLManagerException(cnse.getMessage());
+			} catch (SQLException e) {
 				logger.error("transaction connection", e);
 				removeInstance(userId, searchKey);
 				
