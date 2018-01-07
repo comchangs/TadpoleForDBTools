@@ -51,14 +51,14 @@ import com.hangum.tadpole.commons.util.download.DownloadUtils;
 import com.hangum.tadpole.engine.define.TDBResultCodeDefine;
 import com.hangum.tadpole.engine.query.sql.TadpoleSystem_ExecutedSQL;
 import com.hangum.tadpole.engine.sql.util.SQLConvertCharUtil;
-import com.hangum.tadpole.engine.sql.util.export.AllDataExporter;
 import com.hangum.tadpole.engine.sql.util.export.CSVExpoter;
-import com.hangum.tadpole.engine.sql.util.export.ExportResultDTO;
 import com.hangum.tadpole.engine.sql.util.export.HTMLExporter;
 import com.hangum.tadpole.engine.sql.util.export.JsonExpoter;
 import com.hangum.tadpole.engine.sql.util.export.SQLExporter;
 import com.hangum.tadpole.engine.sql.util.export.XMLExporter;
+import com.hangum.tadpole.engine.sql.util.export.all.AllDataExporter;
 import com.hangum.tadpole.engine.sql.util.export.all.QueryDataExportFactory;
+import com.hangum.tadpole.engine.sql.util.export.dto.ExportResultDTO;
 import com.hangum.tadpole.engine.sql.util.resultset.QueryExecuteResultDTO;
 import com.hangum.tadpole.engine.utils.RequestQuery;
 import com.hangum.tadpole.preference.define.GetAdminPreference;
@@ -419,7 +419,6 @@ public class ResultSetDownloadDialog extends Dialog {
 		}else if (userBtnClickStatus == USER_BTN_CLICK_STATUS.SENDEDITOR) {
 //			targetEditor("에디터로 데이터를 보낼수 없습니다.");
 		}else{
-//			exportDto = AllDataExporter.makeExcelAllResult(queryExecuteResultDTO.getUserDB(), strSQL, targetName, intMaxDownloadCnt);
 			exportDto = QueryDataExportFactory.createExcel(targetName, "xlsx", queryExecuteResultDTO.getUserDB(), strSQL, intMaxDownloadCnt);
 			downloadFile(targetName, exportDto.getFileFullName(), "UTF-8");
 		}
@@ -441,7 +440,6 @@ public class ResultSetDownloadDialog extends Dialog {
 		}else if (userBtnClickStatus == USER_BTN_CLICK_STATUS.SENDEDITOR) {
 			targetEditor(HTMLExporter.makeContent(targetName, queryExecuteResultDTO, strDefaultNullValue));
 		}else{
-//			exportDto = AllDataExporter.makeHTMLAllResult(queryExecuteResultDTO.getUserDB(), strSQL, targetName, encoding, strDefaultNullValue, intMaxDownloadCnt);
 			exportDto = QueryDataExportFactory.createHTML(encoding, targetName, "html", queryExecuteResultDTO.getUserDB(), strSQL, intMaxDownloadCnt);
 			downloadFile(targetName, exportDto.getFileFullName(), encoding);
 		}

@@ -23,7 +23,7 @@ import com.hangum.tadpole.engine.manager.TadpoleSQLManager;
 import com.hangum.tadpole.engine.query.dao.system.UserDBDAO;
 import com.hangum.tadpole.engine.sql.util.SQLConvertCharUtil;
 import com.hangum.tadpole.engine.sql.util.export.AbstractTDBExporter;
-import com.hangum.tadpole.engine.sql.util.export.ExportResultDTO;
+import com.hangum.tadpole.engine.sql.util.export.dto.ExportResultDTO;
 
 /**
  * query all data export 
