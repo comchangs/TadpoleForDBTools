@@ -25,7 +25,9 @@ public class ExportResultDTO {
 	/** end current time */
 	long endCurrentTime = startCurrentTime; 
 	
-	/** 파일 익스포트 후에 파일결로 + 파일 이름 */
+	String fileFullName = "";
+	
+	/** 파일 익스포트 후에 파일 이름 */
 	String fileName = "";
 	
 	/** export row count */
@@ -66,6 +68,20 @@ public class ExportResultDTO {
 	 */
 	public void setEndCurrentTime(long endCurrentTime) {
 		this.endCurrentTime = endCurrentTime;
+	}
+
+	/**
+	 * @return the fileFullName
+	 */
+	public String getFileFullName() {
+		return fileFullName;
+	}
+
+	/**
+	 * @param fileFullName the fileFullName to set
+	 */
+	public void setFileFullName(String fileFullName) {
+		this.fileFullName = fileFullName;
 	}
 
 	/**

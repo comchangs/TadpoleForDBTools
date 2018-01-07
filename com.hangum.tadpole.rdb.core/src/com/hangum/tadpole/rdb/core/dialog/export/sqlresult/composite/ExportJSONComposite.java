@@ -113,10 +113,11 @@ public class ExportJSONComposite extends AbstractExportComposite {
 		composite.setLayout(new GridLayout(2, false));
 		
 		btnFormat = new Button(composite, SWT.RADIO);
-		btnFormat.setSelection(true);
+		btnFormat.setSelection(false);
 		btnFormat.setText(Messages.get().format);
 		
 		btnCompact = new Button(composite, SWT.RADIO);
+		btnCompact.setSelection(true);
 		btnCompact.setText(Messages.get().Compact);
 		new Label(compositeText, SWT.NONE);
 		

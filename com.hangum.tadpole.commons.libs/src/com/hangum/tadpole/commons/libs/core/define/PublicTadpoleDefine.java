@@ -282,8 +282,16 @@ public class PublicTadpoleDefine {
 	/** executed sql type */
 	public static enum SQL_STATEMENT_TYPE {NONE, PREPARED_STATEMENT};
 	
-	/** executed sql history type - 이름을 정할때 10자가 넘지 않아야한다. */
-	public static enum EXECUTE_SQL_TYPE {EDITOR, EDIT_DOWN, SESSION, API};
+	/** 
+	 * executed sql history type - 이름을 정할때 10자가 넘지 않아야한다.
+	 * 
+	 *  EDITOR : 에디터에서 실행
+	 *  EDIT_DOWN : 쿼리 다운로드에서
+	 *  TDB : 테드폴에서 사용자 쿼리 수행
+	 *  API : API Hub에서 실행
+	 *  REQ_QUERY : 사용자 요청 쿼리(예를 들어 사용자 결제를 받아 실행한 쿼리) 
+	 */
+	public static enum EXECUTE_SQL_TYPE {EDITOR, EDIT_DOWN, TDB, API, REQ_QUERY};
 
 	/** 데이터 수정 상태를 가르킵니다 */
 	public static enum DATA_STATUS {NEW, MODIFY, DEL};
