@@ -155,7 +155,7 @@ public class AdminPreferenceDefine {
 	 * -1이면 전체 다운로드
 	 */
 	public static final String QUERY_RESULT_DOWNLOAD_LIMIT = _PREFIX + "QUERY_RESULT_DOWNLOAD_LIMIT";
-	public static final String QUERY_RESULT_DOWNLOAD_LIMIT_VALUE = "-1";
+	public static final String QUERY_RESULT_DOWNLOAD_LIMIT_VALUE = "100000";
 
 	/** 
 	 * 패스워드 관리 시스템을 사용할 경우 캐쉬 사용 여부를 기록한다.

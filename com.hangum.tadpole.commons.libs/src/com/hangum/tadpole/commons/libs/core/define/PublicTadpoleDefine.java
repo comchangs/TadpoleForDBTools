@@ -264,6 +264,9 @@ public class PublicTadpoleDefine {
 	/** 에디터 결과를 오픈하는 뷰 타입을 정의 */
 	public static enum RESULT_COMP_TYPE {Table, Text};
 	
+	/** 내보내기 종류 정의 (배포탭에서 변수로 사용 하여서 수정시 주의 요망) */
+	public static enum EXPORT_METHOD {TEXT, EXCEL, HTML, JSON, XML, SQL};
+	
 	/** CSV export 시 기본 값 */
 	public static String CSV_EXPORT_DEFAULT_VALUE = "	";
 	
@@ -279,12 +282,9 @@ public class PublicTadpoleDefine {
 	/** executed sql type */
 	public static enum SQL_STATEMENT_TYPE {NONE, PREPARED_STATEMENT};
 	
-	/** executed sql history type */
-	public static enum EXECUTE_SQL_TYPE {EDITOR, EDITOR_DOWNLOAD, SESSION, API};
+	/** executed sql history type - 이름을 정할때 10자가 넘지 않아야한다. */
+	public static enum EXECUTE_SQL_TYPE {EDITOR, EDIT_DOWN, SESSION, API};
 
-	/** 쿼리 실행 결과  */
-	public static enum QUERY_EXECUTE_STATUS {SUCCESS, USER_INTERRUPT, SQL_EXCEPTION, UNKNOW_EXCEPTION};
-	
 	/** 데이터 수정 상태를 가르킵니다 */
 	public static enum DATA_STATUS {NEW, MODIFY, DEL};
 	

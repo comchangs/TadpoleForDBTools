@@ -234,7 +234,7 @@ public class ResultSetComposite extends Composite {
 	 * @param listRSDao
 	 * @param longHistorySeq
 	 */
-	private void changeResultType(final RequestQuery reqQuery, final List<QueryExecuteResultDTO> listRSDao, List<Long> listLongHistorySeq) {
+	private void showResultView(final RequestQuery reqQuery, final List<QueryExecuteResultDTO> listRSDao, List<Long> listLongHistorySeq) {
 		
 		// 모든 쿼리를 수행 하면 기존 결과 화면을 핀 유무와 상관없이 닫는다.
 		if(reqQuery.getExecuteType() == EditorDefine.EXECUTE_TYPE.ALL) {
@@ -410,6 +410,8 @@ public class ResultSetComposite extends Composite {
 		final RequestResultDAO reqResultDAO = new RequestResultDAO();
 		reqResultDAO.setStartDateExecute(new Timestamp(System.currentTimeMillis()));
 		reqResultDAO.setIpAddress(reqQuery.getUserIp());
+//		not set default value is EXECUTE_SQL_TYPE.EDITOR		
+//		reqResultDAO.setEXECUSTE_SQL_TYPE(PublicTadpoleDefine.EXECUTE_SQL_TYPE.EDITOR);
 		
 		// prepared statement 일 경우는 인자도 넣어준다.
 		if(reqQuery.getSqlStatementType() == SQL_STATEMENT_TYPE.PREPARED_STATEMENT) {
@@ -1164,7 +1166,7 @@ public class ResultSetComposite extends Composite {
 					saveSchemaHistory(_rq);
 				}
 			}
-			if(!listRSDao.isEmpty()) changeResultType(reqQuery, listRSDao, listLongHistorySeq);
+			if(!listRSDao.isEmpty()) showResultView(reqQuery, listRSDao, listLongHistorySeq);
 			
 		// 하나의 쿼리만 수행
 		} else {
@@ -1182,7 +1184,7 @@ public class ResultSetComposite extends Composite {
 						getRdbResultComposite().resultFolderSel(EditorDefine.RESULT_TAB.TADPOLE_MESSAGE);
 						refreshExplorerView(getUserDB(), reqQuery);
 					}
-					if(!listRSDao.isEmpty()) changeResultType(reqQuery, listRSDao, listLongHistorySeq);
+					if(!listRSDao.isEmpty()) showResultView(reqQuery, listRSDao, listLongHistorySeq);
 				}
 			} else {
 				if(reqQuery.getSqlType() == SQL_TYPE.DDL) {

@@ -78,7 +78,7 @@ public class TadpoleSystem_ExecutedSQL {
 				longHistorySeq = TadpoleSystem_ExecutedSQL.saveExecuteSQUeryResource(
 								user_seq, 
 								userDB, 
-								PublicTadpoleDefine.EXECUTE_SQL_TYPE.EDITOR, 
+								reqResultDAO.getEXECUSTE_SQL_TYPE(), 
 								reqResultDAO,
 								strExecuteResultData
 								);

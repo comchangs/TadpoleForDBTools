@@ -53,7 +53,7 @@ public class RequestResultDAO {
 	Exception exception;
 	
 	/** execute_sql_type */
-	PublicTadpoleDefine.EXECUTE_SQL_TYPE EXECUSTE_SQL_TYPE = PublicTadpoleDefine.EXECUTE_SQL_TYPE.SESSION;
+	PublicTadpoleDefine.EXECUTE_SQL_TYPE EXECUSTE_SQL_TYPE = PublicTadpoleDefine.EXECUTE_SQL_TYPE.EDITOR;
 	
 	String result_save_yn = PublicTadpoleDefine.YES_NO.NO.name();
 
@@ -328,6 +328,4 @@ public class RequestResultDAO {
 	public void setResult_save_yn(String result_save_yn) {
 		this.result_save_yn = result_save_yn;
 	}
-	
-
 }

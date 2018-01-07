@@ -21,6 +21,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
 
+import com.hangum.tadpole.commons.libs.core.define.PublicTadpoleDefine.EXPORT_METHOD;
 import com.hangum.tadpole.rdb.core.Messages;
 import com.hangum.tadpole.rdb.core.dialog.export.sqlresult.dao.ExportHtmlDAO;
 
@@ -43,7 +44,7 @@ public class ExportHTMLComposite extends AbstractExportComposite {
 
 		CTabItem tbtmTable = new CTabItem((CTabFolder)tabFolderObject, SWT.NONE);
 		tbtmTable.setText("HTML");
-		tbtmTable.setData("HTML");//$NON-NLS-1$
+		tbtmTable.setData(EXPORT_METHOD.HTML);//$NON-NLS-1$
 
 		Composite compositeText = new Composite(tabFolderObject, SWT.NONE);
 		tbtmTable.setControl(compositeText);

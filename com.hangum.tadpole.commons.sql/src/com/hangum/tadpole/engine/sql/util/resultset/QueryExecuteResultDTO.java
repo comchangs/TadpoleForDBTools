@@ -13,8 +13,6 @@ package com.hangum.tadpole.engine.sql.util.resultset;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-import com.hangum.tadpole.commons.libs.core.define.PublicTadpoleDefine;
-import com.hangum.tadpole.commons.libs.core.define.PublicTadpoleDefine.QUERY_EXECUTE_STATUS;
 import com.hangum.tadpole.engine.query.dao.system.UserDBDAO;
 
 /**
@@ -24,7 +22,6 @@ import com.hangum.tadpole.engine.query.dao.system.UserDBDAO;
  *
  */
 public class QueryExecuteResultDTO extends ResultSetUtilDTO {
-	private PublicTadpoleDefine.QUERY_EXECUTE_STATUS execute_status = QUERY_EXECUTE_STATUS.SUCCESS;
 	private String queryMsg = "";
 	
 	public QueryExecuteResultDTO() {
@@ -44,21 +41,6 @@ public class QueryExecuteResultDTO extends ResultSetUtilDTO {
 	public QueryExecuteResultDTO(
 			UserDBDAO userDB, String reqQuery, boolean isShowRownum, ResultSet rs, int queryResultCount) throws SQLException {
 		super(userDB, reqQuery, isShowRownum, rs, queryResultCount, 0);
-	}
-	
-	/**
-	 * @return the execute_status
-	 */
-	public PublicTadpoleDefine.QUERY_EXECUTE_STATUS getExecute_status() {
-		return execute_status;
-	}
-
-	/**
-	 * @param execute_status the execute_status to set
-	 */
-	public void setExecute_status(
-			PublicTadpoleDefine.QUERY_EXECUTE_STATUS execute_status) {
-		this.execute_status = execute_status;
 	}
 
 	/**

@@ -43,36 +43,6 @@ public class AllDataExporter {
 	private static final int PER_DATA_SAVE_COUNT = 5000;
 	private static final int THREAD_SLEEP_MILLIS = 20;
 	
-//	/**
-//	 * excel export data
-//	 * 
-//	 * @param userDB
-//	 * @param strSQL
-//	 * @param fileName
-//	 * @param intMaxCount
-//	 * @return
-//	 * @throws Exception
-//	 */
-//	public static String makeExcelAllResult(UserDBDAO userDB, String strSQL, String fileName, int intMaxCount) throws Exception {
-//		String strFullPath = AbstractTDBExporter.makeDirName(fileName) + fileName + "." + "xlsx";
-//		/** 한번에 다운로드 받을 것인지 여부 */
-//		final boolean isOnetimeDownload = intMaxCount == -1?true:false;
-//		
-//		try {
-//			SQLQueryUtil sqlUtil = new SQLQueryUtil(userDB, strSQL, isOnetimeDownload, intMaxCount);
-//			while(sqlUtil.hasNext()) {
-//				QueryExecuteResultDTO rsDAO = sqlUtil.nextQuery();
-//
-//				ExcelExporter.makeContentFile(strFullPath, fileName, rsDAO);
-//			}
-//			
-//			return strFullPath;
-//		} catch(Exception e) {
-//			logger.error("make all CSV export data", e);
-//			throw e;
-//		}
-//	}
-	
 	/**
 	 * excel export data
 	 * 
@@ -83,9 +53,10 @@ public class AllDataExporter {
 	 * @return
 	 * @throws Exception
 	 */
-	public static String makeExcelAllResult(UserDBDAO userDB, String strSQL, String fileName, int intMaxCount) throws Exception {
-		long longSt = System.currentTimeMillis();
-		String strFullFileName = AbstractTDBExporter.makeDirName(fileName) + fileName + "." + "xlsx";
+	public static ExportResultDTO makeExcelAllResult(UserDBDAO userDB, String strSQL, String fileName, int intMaxCount) throws Exception {
+		ExportResultDTO exportDto = new ExportResultDTO();
+		exportDto.setStartCurrentTime(System.currentTimeMillis());
+		exportDto.setFileName(AbstractTDBExporter.makeDirName(fileName) + fileName + "." + "xlsx");
 
 		/** 한번에 다운로드 받을 것인지 여부 */
 		final boolean isOnetimeDownload = intMaxCount == -1?true:false;
@@ -94,6 +65,7 @@ public class AllDataExporter {
 		PreparedStatement stmt = null;
 		java.sql.Connection javaConn = null;
 		
+		int intRowCnt = 0;
 		try {
 			if(userDB.getDBGroup() == DBGroupDefine.DYNAMODB_GROUP) {
 				javaConn = TadpoleSQLExtManager.getInstance().getConnection(userDB);
@@ -106,7 +78,6 @@ public class AllDataExporter {
 			
 			List<String[]> listsvData = new ArrayList<String[]>();
 			String[] strArryData = new String[rs.getMetaData().getColumnCount()];
-			int intRowCnt = 0;
 			while(rs.next()) {
 				
 				strArryData = new String[rs.getMetaData().getColumnCount()];
@@ -141,10 +112,10 @@ public class AllDataExporter {
 				listsvData.add(strArryData);
 				
 				if(((intRowCnt+1) % 5000) == 0) {
-					Thread.sleep(20);
 					if(logger.isDebugEnabled()) logger.debug("===processes =============>" + intRowCnt);
-					ExcelExporter.makeFile(strFullFileName, fileName, listsvData);
+					ExcelExporter.makeFile(exportDto.getFileName(), fileName, listsvData);
 					listsvData.clear();
+					Thread.sleep(20);
 				}
 				intRowCnt++;
 				
@@ -159,7 +130,7 @@ public class AllDataExporter {
 				logger.info("========== total count is " + intRowCnt);
 			}
 			if(!listsvData.isEmpty()) {
-				ExcelExporter.makeFile(strFullFileName, fileName, listsvData);
+				ExcelExporter.makeFile(exportDto.getFileName(), fileName, listsvData);
 				listsvData.clear();
 			}
 			
@@ -168,10 +139,9 @@ public class AllDataExporter {
 			try { if(stmt != null) stmt.close();} catch(Exception e) {}
 			try { if(javaConn != null) javaConn.close(); } catch(Exception e) {}
 		}
-		long longEd = System.currentTimeMillis();
-		if(logger.isDebugEnabled()) logger.debug("== total resume is " + (longEd - longSt));
+		exportDto.setEndCurrentTime(System.currentTimeMillis());
 		
-		return strFullFileName;
+		return exportDto;
 	}
 	
 //	/**
@@ -233,22 +203,23 @@ public class AllDataExporter {
 	 * @return
 	 * @throws Exception
 	 */
-	public static String makeCSVAllResult(UserDBDAO userDB, String strSQL, boolean isAddHead, String fileName, char seprator, String encoding, String strDefaultNullValue, int intMaxCount) throws Exception {
-		long longSt = System.currentTimeMillis();
+	public static ExportResultDTO makeCSVAllResult(UserDBDAO userDB, String strSQL, boolean isAddHead, String fileName, char seprator, String encoding, String strDefaultNullValue, int intMaxCount) throws Exception {
+		ExportResultDTO exportDto = new ExportResultDTO();
+		exportDto.setStartCurrentTime(System.currentTimeMillis());
 		
 		boolean isFirst = true;
-		String strFullFileName = AbstractTDBExporter.makeDirName(fileName) + fileName + ".csv";
+		exportDto.setFileName(AbstractTDBExporter.makeDirName(fileName) + fileName + ".csv");
 		/** 한번에 다운로드 받을 것인지 여부 */
 		final boolean isOnetimeDownload = intMaxCount == -1?true:false;
 		
-//		if(isOnetimeDownload) {
 		ResultSet rs = null;
 		PreparedStatement stmt = null;
 		java.sql.Connection javaConn = null;
 		
 		FileOutputStream fos = null;
 		CSVWriter writer = null;
-		
+
+		int intRowCnt = 0;
 		try {
 			if(userDB.getDBGroup() == DBGroupDefine.DYNAMODB_GROUP) {
 				javaConn = TadpoleSQLExtManager.getInstance().getConnection(userDB);
@@ -257,11 +228,11 @@ public class AllDataExporter {
 			}
 			
 			stmt = javaConn.prepareStatement(strSQL); 
-			rs = stmt.executeQuery();//Query( selText );
+			rs = stmt.executeQuery();
 			
 			List<String[]> listsvData = new ArrayList<String[]>();
 			String[] strArryData = new String[rs.getMetaData().getColumnCount()];
-			int intRowCnt = 0;
+
 			while(rs.next()) {
 				// 초기 헤더 레이블 만든다.
 				if(isFirst) {
@@ -271,7 +242,7 @@ public class AllDataExporter {
 					}
 					listsvData.add(strArryData);
 					
-					fos = new FileOutputStream(strFullFileName);
+					fos = new FileOutputStream(exportDto.getFileName());
 					fos.write(0xef);
 					fos.write(0xbb);
 					fos.write(0xbf);
@@ -339,16 +310,17 @@ public class AllDataExporter {
 			}
 			
 		} finally {
-			try { if(rs != null) rs.close(); } catch(Exception e) {}
 			try { if(stmt != null) stmt.close();} catch(Exception e) {}
+			try { if(rs != null) rs.close(); } catch(Exception e) {}
 			try { if(javaConn != null) javaConn.close(); } catch(Exception e) {}
 			try { if(writer != null) writer.close(); } catch(Exception e) {}
 			try { if(fos != null) fos.close(); } catch(Exception e) {}
 		}
-		long longEd = System.currentTimeMillis();
-		if(logger.isDebugEnabled()) logger.debug("== total resume is " + (longEd - longSt));
 		
-		return strFullFileName;
+		exportDto.setEndCurrentTime(System.currentTimeMillis());
+		exportDto.setRowCount(intRowCnt);
+		
+		return exportDto;
 	}
 
 	/**
@@ -358,35 +330,41 @@ public class AllDataExporter {
 	 * @param sql
 	 * @param targetName
 	 * @param encoding
-	 * @param encoding2
+	 * @param strDefaultNullValue
+	 * @param intMaxCount
 	 * @return
 	 */
-	public static String makeHTMLAllResult(UserDBDAO userDB, String strSQL, String fileName, String encoding, String strDefaultNullValue, int intMaxCount) throws Exception {
+	public static ExportResultDTO makeHTMLAllResult(UserDBDAO userDB, String strSQL, String fileName, String encoding, String strDefaultNullValue, int intMaxCount) throws Exception {
+		ExportResultDTO exportDto = new ExportResultDTO();
+		exportDto.setStartCurrentTime(System.currentTimeMillis());
+		
 		boolean isFirst = true;
-		String strFullPath = AbstractTDBExporter.makeFileName(fileName, "html");
+		exportDto.setFileName(AbstractTDBExporter.makeFileName(fileName, "html"));
 		final boolean isOnetimeDownload = intMaxCount == -1?true:false;
 		
+		int intRowCnt = 0;
 		try {
 			SQLQueryUtil sqlUtil = new SQLQueryUtil(userDB, strSQL, isOnetimeDownload, intMaxCount);
 			while(sqlUtil.hasNext()) {
+				intRowCnt++;
 				QueryExecuteResultDTO rsDAO = sqlUtil.nextQuery();
 				if(isFirst) {
-					HTMLExporter.makeHeaderFile(strFullPath, rsDAO, encoding);
+					HTMLExporter.makeHeaderFile(exportDto.getFileName(), rsDAO, encoding);
 					isFirst = false;
 				}
 					
-				HTMLExporter.makeContentFile(strFullPath, rsDAO, encoding, strDefaultNullValue);
+				HTMLExporter.makeContentFile(exportDto.getFileName(), rsDAO, encoding, strDefaultNullValue);
 			}
 			
-			// 
-			HTMLExporter.makeTailFile(strFullPath, encoding);
-			
-			return strFullPath;
-
+			HTMLExporter.makeTailFile(exportDto.getFileName(), encoding);
 		} catch(Exception e) {
 			logger.error("make all HTML export data", e);
 			throw e;
 		}
+		exportDto.setEndCurrentTime(System.currentTimeMillis());
+		exportDto.setRowCount(intRowCnt);
+		
+		return exportDto;
 	}
 
 	/**
@@ -403,11 +381,15 @@ public class AllDataExporter {
 	 * @return
 	 * @throws Exception
 	 */
-	public static String makeJSONHeadAllResult(UserDBDAO userDB, String strSQL, String fileName, String schemeKey,
+	public static ExportResultDTO makeJSONHeadAllResult(UserDBDAO userDB, String strSQL, String fileName, String schemeKey,
 			String recordKey, boolean isFormat, String encoding, String strDefaultNullValue, int intMaxCount) throws Exception {
+		ExportResultDTO exportDto = new ExportResultDTO();
+		exportDto.setStartCurrentTime(System.currentTimeMillis());
 		
 		QueryExecuteResultDTO allResusltDto = makeAllResult(userDB, strSQL, intMaxCount);
-		return JsonExpoter.makeContentFile(fileName, allResusltDto, schemeKey, recordKey, isFormat, encoding);
+		exportDto.setFileName(JsonExpoter.makeContentFile(fileName, allResusltDto, schemeKey, recordKey, isFormat, encoding));
+		exportDto.setEndCurrentTime(System.currentTimeMillis());
+		return exportDto;
 	}
 
 	/**
@@ -421,10 +403,16 @@ public class AllDataExporter {
 	 * @return
 	 * @throws Exception
 	 */
-	public static String makeJSONAllResult(UserDBDAO userDB, String strSQL, String targetName, boolean isFormat,
+	public static ExportResultDTO makeJSONAllResult(UserDBDAO userDB, String strSQL, String targetName, boolean isFormat,
 			String encoding, String strDefaultNullValue, int intMaxCount)  throws Exception {
+		
+		ExportResultDTO exportDto = new ExportResultDTO();
+		exportDto.setStartCurrentTime(System.currentTimeMillis());
+		
 		QueryExecuteResultDTO allResusltDto = makeAllResult(userDB, strSQL, intMaxCount);
-		return JsonExpoter.makeContentFile(targetName, allResusltDto, isFormat, encoding);
+		exportDto.setFileName(JsonExpoter.makeContentFile(targetName, allResusltDto, isFormat, encoding));
+		exportDto.setEndCurrentTime(System.currentTimeMillis());
+		return exportDto;
 	}
 	
 	/**
@@ -454,95 +442,192 @@ public class AllDataExporter {
 		}
 	}
 
-	public static String makeXMLResult(UserDBDAO userDB, String strSQL, String targetName, String encoding,
+	/**
+	 * xml result
+	 * 
+	 * @param userDB
+	 * @param strSQL
+	 * @param targetName
+	 * @param encoding
+	 * @param strDefaultNullValue
+	 * @param intMaxCount
+	 * @return
+	 * @throws Exception
+	 */
+	public static ExportResultDTO makeXMLResult(UserDBDAO userDB, String strSQL, String targetName, String encoding,
 			String strDefaultNullValue, int intMaxCount) throws Exception {
+		ExportResultDTO exportDto = new ExportResultDTO();
+		exportDto.setStartCurrentTime(System.currentTimeMillis());
+		
 		QueryExecuteResultDTO allResusltDto = makeAllResult(userDB, strSQL, intMaxCount);
-		return XMLExporter.makeContentFile(targetName, allResusltDto, encoding);
+		exportDto.setFileName(XMLExporter.makeContentFile(targetName, allResusltDto, encoding));
+		
+		exportDto.setEndCurrentTime(System.currentTimeMillis());
+		return exportDto;
 	}
 
-	public static String makeFileBatchInsertStatment(UserDBDAO userDB, String strSQL, String targetName, int commit,
+	/**
+	 * sql download(batch insert)
+	 * 
+	 * @param userDB
+	 * @param strSQL
+	 * @param targetName
+	 * @param commit
+	 * @param encoding
+	 * @param strDefaultNullValue
+	 * @param intMaxCount
+	 * @return
+	 * @throws Exception
+	 */
+	public static ExportResultDTO makeFileBatchInsertStatment(UserDBDAO userDB, String strSQL, String targetName, int commit,
 			String encoding, String strDefaultNullValue, int intMaxCount) throws Exception {
-		String strFullPath = AbstractTDBExporter.makeFileName(targetName, "sql");
+		
+		ExportResultDTO exportDto = new ExportResultDTO();
+		exportDto.setStartCurrentTime(System.currentTimeMillis());
+		
+		exportDto.setFileName(AbstractTDBExporter.makeFileName(targetName, "sql"));
 		final boolean isOnetimeDownload = intMaxCount == -1?true:false;
+		int intRowCnt = 0;
+		try {
+			SQLQueryUtil sqlUtil = new SQLQueryUtil(userDB, strSQL, isOnetimeDownload, intMaxCount);
+			while(sqlUtil.hasNext()) {
+				QueryExecuteResultDTO rsDAO = sqlUtil.nextQuery();
+					
+				SQLExporter.makeFileBatchInsertStatment(exportDto.getFileName(), targetName, rsDAO, commit, encoding);
+				intRowCnt++;
+			}
+		} catch(Exception e) {
+			logger.error("make all HTML export data", e);
+			throw e;
+		}
+		
+		exportDto.setRowCount(intRowCnt);
+		exportDto.setEndCurrentTime(System.currentTimeMillis());
+		return exportDto;
+	}
+	
+	/**
+	 * SQL download(insert)
+	 * 
+	 * @param userDB
+	 * @param strSQL
+	 * @param targetName
+	 * @param commit
+	 * @param encoding
+	 * @param strDefaultNullValue
+	 * @param intMaxCount
+	 * @return
+	 * @throws Exception
+	 */
+	public static ExportResultDTO makeFileInsertStatment(UserDBDAO userDB, String strSQL, String targetName, int commit,
+			String encoding, String strDefaultNullValue, int intMaxCount) throws Exception {
+		ExportResultDTO exportDto = new ExportResultDTO();
+		exportDto.setStartCurrentTime(System.currentTimeMillis());
+		
+		exportDto.setFileName(AbstractTDBExporter.makeFileName(targetName, "sql"));
+		final boolean isOnetimeDownload = intMaxCount == -1?true:false;
+		int intRowCnt = 0;
+		try {
+			SQLQueryUtil sqlUtil = new SQLQueryUtil(userDB, strSQL, isOnetimeDownload, intMaxCount);
+			while(sqlUtil.hasNext()) {
+				QueryExecuteResultDTO rsDAO = sqlUtil.nextQuery();
+					
+				SQLExporter.makeFileInsertStatment(exportDto.getFileName(), targetName, rsDAO, commit, encoding);
+				intRowCnt++;
+			}
+
+		} catch(Exception e) {
+			logger.error("make all HTML export data", e);
+			throw e;
+		}
+		
+		exportDto.setRowCount(intRowCnt);
+		exportDto.setEndCurrentTime(System.currentTimeMillis());
+		return exportDto;
+	}
+	
+	/**
+	 * SQL download(update)
+	 * 
+	 * @param userDB
+	 * @param strSQL
+	 * @param targetName
+	 * @param listWhere
+	 * @param commit
+	 * @param encoding
+	 * @param strDefaultNullValue
+	 * @param intMaxCount
+	 * @return
+	 * @throws Exception
+	 */
+	public static ExportResultDTO makeFileUpdateStatment(UserDBDAO userDB, String strSQL, String targetName, List<String> listWhere, int commit,
+			String encoding, String strDefaultNullValue, int intMaxCount) throws Exception {
+		ExportResultDTO exportDto = new ExportResultDTO();
+		exportDto.setStartCurrentTime(System.currentTimeMillis());
+		
+		exportDto.setFileName(AbstractTDBExporter.makeFileName(targetName, "sql"));
+		final boolean isOnetimeDownload = intMaxCount == -1?true:false;
+		int intRowCnt = 0;
 		
 		try {
 			SQLQueryUtil sqlUtil = new SQLQueryUtil(userDB, strSQL, isOnetimeDownload, intMaxCount);
 			while(sqlUtil.hasNext()) {
 				QueryExecuteResultDTO rsDAO = sqlUtil.nextQuery();
 					
-				SQLExporter.makeFileBatchInsertStatment(strFullPath, targetName, rsDAO, commit, encoding);
+				SQLExporter.makeFileUpdateStatment(exportDto.getFileName(), targetName, rsDAO, listWhere, commit, encoding);
+				intRowCnt++;
 			}
-			
-			return strFullPath;
 
 		} catch(Exception e) {
 			logger.error("make all HTML export data", e);
 			throw e;
 		}
+		
+		exportDto.setRowCount(intRowCnt);
+		exportDto.setEndCurrentTime(System.currentTimeMillis());
+		return exportDto;
 	}
 	
-	public static String makeFileInsertStatment(UserDBDAO userDB, String strSQL, String targetName, int commit,
+	/**
+	 * SQL download(merge)
+	 * 
+	 * @param userDB
+	 * @param strSQL
+	 * @param targetName
+	 * @param listWhere
+	 * @param commit
+	 * @param encoding
+	 * @param strDefaultNullValue
+	 * @param intMaxCount
+	 * @return
+	 * @throws Exception
+	 */
+	public static ExportResultDTO makeFileMergeStatment(UserDBDAO userDB, String strSQL, String targetName, List<String> listWhere, int commit,
 			String encoding, String strDefaultNullValue, int intMaxCount) throws Exception {
-		String strFullPath = AbstractTDBExporter.makeFileName(targetName, "sql");
+		ExportResultDTO exportDto = new ExportResultDTO();
+		exportDto.setStartCurrentTime(System.currentTimeMillis());
+		
+		exportDto.setFileName(AbstractTDBExporter.makeFileName(targetName, "sql"));
 		final boolean isOnetimeDownload = intMaxCount == -1?true:false;
+		int intRowCnt = 0;
 		
 		try {
 			SQLQueryUtil sqlUtil = new SQLQueryUtil(userDB, strSQL, isOnetimeDownload, intMaxCount);
 			while(sqlUtil.hasNext()) {
 				QueryExecuteResultDTO rsDAO = sqlUtil.nextQuery();
 					
-				SQLExporter.makeFileInsertStatment(strFullPath, targetName, rsDAO, commit, encoding);
+				SQLExporter.makeFileMergeStatment(exportDto.getFileName(), targetName, rsDAO, listWhere, commit, encoding);
+				intRowCnt++;
 			}
-			
-			return strFullPath;
 
 		} catch(Exception e) {
 			logger.error("make all HTML export data", e);
 			throw e;
 		}
-	}
-	
-	public static String makeFileUpdateStatment(UserDBDAO userDB, String strSQL, String targetName, List<String> listWhere, int commit,
-			String encoding, String strDefaultNullValue, int intMaxCount) throws Exception {
-		String strFullPath = AbstractTDBExporter.makeFileName(targetName, "sql");
-		final boolean isOnetimeDownload = intMaxCount == -1?true:false;
 		
-		try {
-			SQLQueryUtil sqlUtil = new SQLQueryUtil(userDB, strSQL, isOnetimeDownload, intMaxCount);
-			while(sqlUtil.hasNext()) {
-				QueryExecuteResultDTO rsDAO = sqlUtil.nextQuery();
-					
-				SQLExporter.makeFileUpdateStatment(strFullPath, targetName, rsDAO, listWhere, commit, encoding);
-			}
-			
-			return strFullPath;
-
-		} catch(Exception e) {
-			logger.error("make all HTML export data", e);
-			throw e;
-		}
-	}
-	
-	
-	public static String makeFileMergeStatment(UserDBDAO userDB, String strSQL, String targetName, List<String> listWhere, int commit,
-			String encoding, String strDefaultNullValue, int intMaxCount) throws Exception {
-		String strFullPath = AbstractTDBExporter.makeFileName(targetName, "sql");
-		final boolean isOnetimeDownload = intMaxCount == -1?true:false;
-		
-		try {
-			SQLQueryUtil sqlUtil = new SQLQueryUtil(userDB, strSQL, isOnetimeDownload, intMaxCount);
-			while(sqlUtil.hasNext()) {
-				QueryExecuteResultDTO rsDAO = sqlUtil.nextQuery();
-					
-				SQLExporter.makeFileMergeStatment(strFullPath, targetName, rsDAO, listWhere, commit, encoding);
-			}
-			
-			return strFullPath;
-
-		} catch(Exception e) {
-			logger.error("make all HTML export data", e);
-			throw e;
-		}
+		exportDto.setRowCount(intRowCnt);
+		exportDto.setEndCurrentTime(System.currentTimeMillis());
+		return exportDto;
 	}
 
 }
