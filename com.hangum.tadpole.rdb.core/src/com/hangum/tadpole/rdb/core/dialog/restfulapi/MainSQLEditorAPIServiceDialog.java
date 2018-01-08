@@ -10,6 +10,7 @@
  ******************************************************************************/
 package com.hangum.tadpole.rdb.core.dialog.restfulapi;
 
+import java.sql.Timestamp;
 import java.util.List;
 import java.util.Map;
 
@@ -35,6 +36,7 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
 
 import com.google.gson.JsonArray;
+import com.hangum.tadpole.commons.dialogs.message.dao.RequestResultDAO;
 import com.hangum.tadpole.commons.google.analytics.AnalyticCaller;
 import com.hangum.tadpole.commons.libs.core.define.PublicTadpoleDefine;
 import com.hangum.tadpole.commons.libs.core.message.CommonMessages;
@@ -42,12 +44,14 @@ import com.hangum.tadpole.commons.libs.core.utils.VelocityUtils;
 import com.hangum.tadpole.commons.util.GlobalImageUtils;
 import com.hangum.tadpole.commons.util.JSONUtil;
 import com.hangum.tadpole.engine.query.dao.system.UserDBDAO;
+import com.hangum.tadpole.engine.query.sql.TadpoleSystem_ExecutedSQL;
 import com.hangum.tadpole.engine.restful.RESTfulAPIUtils;
 import com.hangum.tadpole.engine.sql.paremeter.NamedParameterDAO;
 import com.hangum.tadpole.engine.sql.paremeter.NamedParameterUtil;
 import com.hangum.tadpole.engine.sql.util.QueryUtils;
 import com.hangum.tadpole.engine.sql.util.SQLUtil;
 import com.hangum.tadpole.rdb.core.Messages;
+import com.hangum.tadpole.session.manager.SessionManager;
 
 /**
  * Test API service dialog
@@ -240,34 +244,62 @@ public class MainSQLEditorAPIServiceDialog extends Dialog {
 		} 
 	}
 	
+	/**
+	 * 검색
+	 * 
+	 * @param strSQL
+	 * @param strArgument
+	 */
 	private void executeQuery(String strSQL, String strArgument) {
+		String strExecuteResultData = ""; //$NON-NLS-1$
+		String strSQLs = "";
+		
+		RequestResultDAO reqResultDAO = new RequestResultDAO();
+		reqResultDAO.setDbSeq(userDB.getSeq());
+		reqResultDAO.setStartDateExecute(new Timestamp(System.currentTimeMillis()));
+		reqResultDAO.setIpAddress(SessionManager.getLoginIp());
+		
 		try {
-			String strReturnResult = ""; //$NON-NLS-1$
 			
 			// velocity 로 if else 가 있는지 검사합니다. 
-			String strSQLs = RESTfulAPIUtils.makeTemplateTOSQL("APIServiceDialog", strSQL, strArgument); //$NON-NLS-1$
+			strSQLs = RESTfulAPIUtils.makeTemplateTOSQL("APIServiceDialog", strSQL, strArgument); //$NON-NLS-1$
 			// 분리자 만큼 실행한다.
 			for (String strTmpSQL : strSQLs.split(PublicTadpoleDefine.SQL_DELIMITER)) {
 				if(StringUtils.trim(strTmpSQL).equals("")) continue;
 
 				NamedParameterDAO dao = NamedParameterUtil.parseParameterUtils(userDB, strTmpSQL, strArgument);
 				if(QueryUtils.RESULT_TYPE.JSON.name().equalsIgnoreCase(comboResultType.getText())) {
-					strReturnResult += getSelect(userDB, dao.getStrSQL(), dao.getListParam()) + ","; //$NON-NLS-1$
+					strExecuteResultData += getSelect(userDB, dao.getStrSQL(), dao.getListParam()) + ","; //$NON-NLS-1$
 				} else {
-					strReturnResult += getSelect(userDB, dao.getStrSQL(), dao.getListParam());
+					strExecuteResultData += getSelect(userDB, dao.getStrSQL(), dao.getListParam());
 				}
 			}
 			
 			if(QueryUtils.RESULT_TYPE.JSON.name().equalsIgnoreCase(comboResultType.getText())) {
-				strReturnResult = "[" + StringUtils.removeEnd(strReturnResult, ",") + "]";  //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+				strExecuteResultData = "[" + StringUtils.removeEnd(strExecuteResultData, ",") + "]";  //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 			}
 			
-			textResult.setText(strReturnResult);
+			textResult.setText(strExecuteResultData);
 			
+			reqResultDAO.setResult(PublicTadpoleDefine.SUCCESS_FAIL.S.toString());
 		} catch (Exception e) {
 			logger.error("api exception", e); //$NON-NLS-1$
 			
 			MessageDialog.openError(getShell(),CommonMessages.get().Error, e.getMessage()); //$NON-NLS-1$ //$NON-NLS-2$
+		} finally {
+			reqResultDAO.setEndDateExecute(new Timestamp(System.currentTimeMillis()));
+			reqResultDAO.setTdb_sql_head("/** api key : API Hub Manager */\r\n/**" + strArgument + "*/");
+			reqResultDAO.setSql_text(strSQLs);
+			
+			try {
+				TadpoleSystem_ExecutedSQL.saveExecuteSQUeryResource(SessionManager.getUserSeq(), 
+						userDB, 
+						PublicTadpoleDefine.EXECUTE_SQL_TYPE.API_USER, 
+						reqResultDAO,
+						strExecuteResultData);
+			} catch(Exception e) {
+				logger.error("save history", e);
+			}
 		}
 	}
 	
