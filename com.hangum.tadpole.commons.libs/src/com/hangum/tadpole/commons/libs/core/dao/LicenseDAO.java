@@ -21,6 +21,8 @@ public class LicenseDAO {
 	String mActivationDate = "";
 	String mExpirationDate = "";
 	
+	int personLimit = 0;
+	
 	public LicenseDAO() {
 	}
 	
@@ -124,6 +126,21 @@ public class LicenseDAO {
 		return mExpirationDate;
 	}
 	
+
+	/**
+	 * @return the personLimit
+	 */
+	public int getPersonLimit() {
+		return personLimit;
+	}
+
+	/**
+	 * @param personLimit the personLimit to set
+	 */
+	public void setPersonLimit(int personLimit) {
+		this.personLimit = personLimit;
+	}
+
 	public long getRemaining() {
 		long sRemaining = 0;
 		

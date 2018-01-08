@@ -192,6 +192,7 @@ public class CommonMessages {
 	public String ActivationDate;
 	public String ExpirationDate;
 	public String Remaining;
+	public String TadpoleHubLicenseOver;
 	
 	/* Company */
 	public String EmailCustomerSupport;
