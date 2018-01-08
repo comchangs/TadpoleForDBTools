@@ -16,7 +16,7 @@ import java.util.Date;
 import com.hangum.tadpole.commons.libs.core.define.PublicTadpoleDefine;
 
 /**
- * 실행쿼리 리소스 정보.
+ * 실행쿼리 상태 정보를 가지고 있는 DAO
  * 
  * @author hangum
  *
@@ -32,6 +32,11 @@ public class ExecutedSqlResourceDAO {
      int duration;
      int row;
      String result;
+
+     /** 테드폴허브의 에러코드 정의 
+      * {@code com.hangum.tadpole.engine.define#TadpoleCodeDefine} 
+      */
+     int tdb_result_code;
      String message;
      
      int accesscontrol_seq;
@@ -154,6 +159,20 @@ public class ExecutedSqlResourceDAO {
 	 */
 	public void setResult(String result) {
 		this.result = result;
+	}
+
+	/**
+	 * @return the tdb_result_code
+	 */
+	public int getTdb_result_code() {
+		return tdb_result_code;
+	}
+
+	/**
+	 * @param tdb_result_code the tdb_result_code to set
+	 */
+	public void setTdb_result_code(int tdb_result_code) {
+		this.tdb_result_code = tdb_result_code;
 	}
 
 	/**

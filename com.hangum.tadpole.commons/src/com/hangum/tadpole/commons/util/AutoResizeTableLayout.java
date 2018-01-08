@@ -32,9 +32,9 @@ import org.eclipse.swt.widgets.TableColumn;
  * 
  */
 public class AutoResizeTableLayout extends TableLayout implements ControlListener {
-
+	private static final long serialVersionUID = -5496184969984103717L;
 	private final Table table;
-	private List columns = new ArrayList();
+	private List<ColumnLayoutData> columns = new ArrayList<>();
 //	private boolean autosizing = false;
 
 	public AutoResizeTableLayout(Table table) {

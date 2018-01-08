@@ -16,16 +16,19 @@ import java.sql.Statement;
 
 import org.apache.log4j.Logger;
 
+import com.hangum.tadpole.commons.exception.TadpoleSQLManagerException;
 import com.hangum.tadpole.commons.libs.core.define.PublicTadpoleDefine;
 import com.hangum.tadpole.commons.libs.core.define.PublicTadpoleDefine.QUERY_DML_TYPE;
 import com.hangum.tadpole.commons.libs.core.define.PublicTadpoleDefine.SQL_STATEMENT_TYPE;
 import com.hangum.tadpole.commons.libs.core.define.PublicTadpoleDefine.SQL_TYPE;
 import com.hangum.tadpole.engine.define.DBGroupDefine;
+import com.hangum.tadpole.engine.define.TDBResultCodeDefine;
 import com.hangum.tadpole.engine.manager.TadpoleSQLExtManager;
 import com.hangum.tadpole.engine.manager.TadpoleSQLManager;
 import com.hangum.tadpole.engine.manager.TadpoleSQLTransactionManager;
 import com.hangum.tadpole.engine.permission.PermissionChecker;
 import com.hangum.tadpole.engine.query.dao.system.UserDBDAO;
+import com.hangum.tadpole.engine.restful.TadpoleException;
 import com.hangum.tadpole.engine.sql.util.SQLConvertCharUtil;
 import com.hangum.tadpole.engine.utils.RequestQuery;
 import com.hangum.tadpole.rdb.core.editors.main.execute.TransactionManger;
@@ -54,33 +57,29 @@ public class ExecuteOtherSQL {
 	public static int runPermissionSQLExecution(String errMsg, final RequestQuery reqQuery, 
 			final UserDBDAO userDB,
 			final String userType,
-			final String userEmail) throws SQLException, Exception
+			final String userEmail) throws TadpoleSQLManagerException, SQLException, TadpoleException 
 	{
-		try {
-			PermissionChecker.isExecute(userType, userDB, reqQuery.getSql());
-		} catch(Exception e) {
-			throw e;
-		}
+		PermissionChecker.isExecute(userType, userDB, reqQuery.getSql());
 		
 		if(reqQuery.getSqlType() == SQL_TYPE.DDL) {
 			if(PublicTadpoleDefine.YES_NO.YES.name().equals(userDB.getDbAccessCtl().getDdl_lock())) {
-				throw new Exception(errMsg);
+				throw new TadpoleException(TDBResultCodeDefine.FORBIDDEN, errMsg);
 			}
 		}
 		PublicTadpoleDefine.QUERY_DML_TYPE queryType = reqQuery.getSqlDMLType();
 		if(queryType == QUERY_DML_TYPE.INSERT) {
 			if(PublicTadpoleDefine.YES_NO.YES.name().equals(userDB.getDbAccessCtl().getInsert_lock())) {
-				throw new Exception(errMsg);
+				throw new TadpoleException(TDBResultCodeDefine.FORBIDDEN, errMsg);
 			}
 		}
 		if(queryType == QUERY_DML_TYPE.UPDATE) {
 			if(PublicTadpoleDefine.YES_NO.YES.name().equals(userDB.getDbAccessCtl().getUpdate_lock())) {
-				throw new Exception(errMsg);
+				throw new TadpoleException(TDBResultCodeDefine.FORBIDDEN, errMsg);
 			}
 		}
 		if(queryType == QUERY_DML_TYPE.DELETE) {
 			if(PublicTadpoleDefine.YES_NO.YES.name().equals(userDB.getDbAccessCtl().getDelete_locl())) {
-				throw new Exception(errMsg);
+				throw new TadpoleException(TDBResultCodeDefine.FORBIDDEN, errMsg);
 			}
 		}
 		
@@ -97,7 +96,7 @@ public class ExecuteOtherSQL {
 			final RequestQuery reqQuery, 
 			final UserDBDAO userDB,
 			final String userType,
-			final String userEmail) throws SQLException, Exception 
+			final String userEmail) throws TadpoleSQLManagerException, SQLException, TadpoleException 
 	{
 		// 데이터 변경 수를 지정.
 		int intEChangeCnt = -1;

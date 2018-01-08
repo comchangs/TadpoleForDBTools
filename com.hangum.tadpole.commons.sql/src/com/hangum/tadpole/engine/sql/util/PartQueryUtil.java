@@ -10,6 +10,7 @@
  ******************************************************************************/
 package com.hangum.tadpole.engine.sql.util;
 
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -59,7 +60,7 @@ public class PartQueryUtil {
 	 *  
 	 * @return
 	 */
-	public static String makeSelect(UserDBDAO userDB, String strQuery, int intStartPos, int intRowCnt) throws Exception {
+	public static String makeSelect(UserDBDAO userDB, String strQuery, int intStartPos, int intRowCnt) {
 		String requestQuery = strQuery;
 		
 //		if(logger.isDebugEnabled()) logger.debug("make select : " + intStartPos + ", " + intRowCnt);
@@ -161,7 +162,7 @@ public class PartQueryUtil {
 	 * @param query
 	 * @return
 	 */
-	public static String makeExplainQuery(UserDBDAO userDB, String query) throws Exception {
+	public static String makeExplainQuery(UserDBDAO userDB, String query) throws SQLException {
 		String resultQuery = "";
 		
 		if(DBGroupDefine.MYSQL_GROUP == userDB.getDBGroup()) {
@@ -189,7 +190,7 @@ public class PartQueryUtil {
 			}
 			
 		} else {
-			throw new Exception("Not Support DBMS Query Plan.");
+			throw new SQLException(String.format("%s Database not uupport DBMS Query Plan.", userDB.getDBDefine().getDBToString()));
 		}
 
 		if(logger.isDebugEnabled()) logger.debug("[plan query]" + resultQuery);

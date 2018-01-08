@@ -21,10 +21,12 @@ import org.apache.log4j.Logger;
 import com.hangum.tadpole.commons.libs.core.define.PublicTadpoleDefine;
 import com.hangum.tadpole.commons.libs.core.define.PublicTadpoleDefine.QUERY_DML_TYPE;
 import com.hangum.tadpole.commons.libs.core.define.PublicTadpoleDefine.SQL_TYPE;
+import com.hangum.tadpole.engine.define.TDBResultCodeDefine;
 import com.hangum.tadpole.engine.manager.TadpoleSQLManager;
 import com.hangum.tadpole.engine.manager.TadpoleSQLTransactionManager;
 import com.hangum.tadpole.engine.permission.PermissionChecker;
 import com.hangum.tadpole.engine.query.dao.system.UserDBDAO;
+import com.hangum.tadpole.engine.restful.TadpoleException;
 import com.hangum.tadpole.engine.sql.util.SQLConvertCharUtil;
 import com.hangum.tadpole.engine.sql.util.SQLUtil;
 import com.hangum.tadpole.engine.utils.RequestQuery;
@@ -57,35 +59,34 @@ public class ExecuteBatchSQL {
 			final String userType,
 			final int intCommitCount,
 			final String userEmail
-	) throws Exception {
-		if(!PermissionChecker.isExecute(userType, userDB, listQuery)) {
-			throw new Exception(errMsg);
-		}
+	) throws TadpoleException, SQLException {
+		PermissionChecker.isExecute(userType, userDB, listQuery);
+		
 		// Check the db access control 
 		for (String strQuery : listQuery) {
 			if(PublicTadpoleDefine.YES_NO.YES.name().equals(userDB.getDbAccessCtl().getDdl_lock())) {
-				throw new Exception(errMsg);
+				throw new TadpoleException(TDBResultCodeDefine.FORBIDDEN, errMsg);
 			}
 			
 			PublicTadpoleDefine.QUERY_DML_TYPE queryType = SQLUtil.sqlQueryType(strQuery);
 			if(reqQuery.getSqlType() == SQL_TYPE.DDL) {
 				if(PublicTadpoleDefine.YES_NO.YES.name().equals(userDB.getDbAccessCtl().getDdl_lock())) {
-					throw new Exception(errMsg);
+					throw new TadpoleException(TDBResultCodeDefine.FORBIDDEN, errMsg);
 				}
 			}
 			if(queryType == QUERY_DML_TYPE.INSERT) {
 				if(PublicTadpoleDefine.YES_NO.YES.name().equals(userDB.getDbAccessCtl().getInsert_lock())) {
-					throw new Exception(errMsg);
+					throw new TadpoleException(TDBResultCodeDefine.FORBIDDEN, errMsg);
 				}
 			}
 			if(queryType == QUERY_DML_TYPE.UPDATE) {
 				if(PublicTadpoleDefine.YES_NO.YES.name().equals(userDB.getDbAccessCtl().getUpdate_lock())) {
-					throw new Exception(errMsg);
+					throw new TadpoleException(TDBResultCodeDefine.FORBIDDEN, errMsg);
 				}
 			}
 			if(queryType == QUERY_DML_TYPE.DELETE) {
 				if(PublicTadpoleDefine.YES_NO.YES.name().equals(userDB.getDbAccessCtl().getDelete_locl())) {
-					throw new Exception(errMsg);
+					throw new TadpoleException(TDBResultCodeDefine.FORBIDDEN, errMsg);
 				}
 			}
 		}

@@ -16,7 +16,9 @@ import org.apache.log4j.Logger;
 
 import com.hangum.tadpole.commons.libs.core.define.PublicTadpoleDefine;
 import com.hangum.tadpole.commons.libs.core.message.CommonMessages;
+import com.hangum.tadpole.engine.define.TDBResultCodeDefine;
 import com.hangum.tadpole.engine.query.dao.system.UserDBDAO;
+import com.hangum.tadpole.engine.restful.TadpoleException;
 import com.hangum.tadpole.engine.security.DBAccessCtlManager;
 import com.hangum.tadpole.engine.sql.util.SQLUtil;
 
@@ -68,14 +70,14 @@ public class PermissionChecker {
 	 * @param listStrExecuteQuery
 	 * @return
 	 */
-	public static boolean isExecute(String strUserType, UserDBDAO userDB, List<String> listStrExecuteQuery) throws Exception {
-		boolean isReturn = true;
+	public static void isExecute(String strUserType, UserDBDAO userDB, List<String> listStrExecuteQuery) throws TadpoleException {
+//		boolean isReturn = true;
 		
 		for (String strQuery : listStrExecuteQuery) {
 			isExecute(strUserType, userDB, strQuery);	
 		}
 		
-		return isReturn;
+//		return isReturn;
 	}
 
 	/**
@@ -87,7 +89,7 @@ public class PermissionChecker {
 	 * @param strSQL
 	 * @return
 	 */
-	public static void isExecute(String strUserType, UserDBDAO userDB, String strSQL) throws Exception {
+	public static void isExecute(String strUserType, UserDBDAO userDB, String strSQL) throws TadpoleException {
 //		boolean boolReturn = false;
 		
 //		if(SQLUtil.isNotAllowed(strSQL)) {
@@ -96,7 +98,7 @@ public class PermissionChecker {
 		
 		// 디비권한이 read only connection 옵션이 선택되었으면 statement문만 권한을 허락합니다.
 		if(PublicTadpoleDefine.YES_NO.YES.name().equals(userDB.getIs_readOnlyConnect())) {
-			if(!SQLUtil.isStatement(strSQL)) throw new Exception(CommonMessages.get().ThisIsReadOnlyDatabase);
+			if(!SQLUtil.isStatement(strSQL)) throw new TadpoleException(TDBResultCodeDefine.UNAUTHENTICATED, CommonMessages.get().ThisIsReadOnlyDatabase);
 		}
 		
 //		//
@@ -115,12 +117,12 @@ public class PermissionChecker {
 //			if(SQLUtil.isStatement(strSQL)) boolReturn = true;
 //		}
 		
-		try {
+//		try {
 			DBAccessCtlManager.getInstance().tableFilterTest(userDB, strSQL);
-		} catch (Exception e) {
-			logger.error("table filter exception", e);
-			throw e;
-		}
+//		} catch (Exception e) {
+//			logger.error("table filter exception", e);
+//			throw e;
+//		}
 		
 //		return boolReturn;
 	}

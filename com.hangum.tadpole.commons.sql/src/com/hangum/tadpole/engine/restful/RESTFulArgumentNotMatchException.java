@@ -10,9 +10,11 @@
  ******************************************************************************/
 package com.hangum.tadpole.engine.restful;
 
+import com.hangum.tadpole.engine.define.TDBResultCodeDefine;
+
 public class RESTFulArgumentNotMatchException extends TadpoleException {
 
 	public RESTFulArgumentNotMatchException(String msg) {
-		super(msg);
+		super(TDBResultCodeDefine.PRECONDITION_FAILED, msg);
 	}
 }

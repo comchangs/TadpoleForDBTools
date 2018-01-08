@@ -17,7 +17,7 @@ Built-By: genie.rap
 Bundle-Localization: plugin
 Bundle-Name: %Bundle-Name
 Created-By: Apache Maven 3.2.1
-Bundle-RequiredExecutionEnvironment: JavaSE-1.7
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Require-Bundle: org.eclipse.rap.ui;bundle-version="[3.1.0,4.0.0)"
 Bundle-Vendor: %Bundle-Vendor
 Eclipse-SourceReferences: scm:git:git://git.eclipse.org/gitroot/rap/or

@@ -1,5 +1,7 @@
 package com.hangum.tadpole.engine.restful;
 
+import com.hangum.tadpole.engine.define.TDBResultCodeDefine;
+
 /**
  * Toadpole top exception class
  * 
@@ -7,20 +9,22 @@ package com.hangum.tadpole.engine.restful;
  *
  */
 public class TadpoleException extends Exception {
-	private String errorCode = "";
+	private int errorCode = TDBResultCodeDefine.NORMAL_SUCC;
 	
-	public TadpoleException(String msg) {
+	public TadpoleException(int code, String msg) {
 		super(msg);
+		
+		this.errorCode = code;
 	}
 	
-	public TadpoleException(String msg, Throwable t) {
+	public TadpoleException(int code, String msg, Throwable t) {
 		super(msg, t);
 	}
 	
-	public void setErrorCode(String errorCode) {
+	public void setErrorCode(int errorCode) {
 		this.errorCode = errorCode;
 	}
-	public String getErrorCode() {
+	public int getErrorCode() {
 		return errorCode;
 	}
 }

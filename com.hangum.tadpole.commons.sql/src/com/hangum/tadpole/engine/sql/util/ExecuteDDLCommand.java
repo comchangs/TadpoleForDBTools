@@ -56,7 +56,7 @@ public class ExecuteDDLCommand {
 		if(logger.isDebugEnabled()) logger.debug("\t ### "+ sql);
 		reqResultDAO.setStartDateExecute(new Timestamp(System.currentTimeMillis()));
 		reqResultDAO.setIpAddress(RWT.getRequest().getRemoteAddr());
-		reqResultDAO.setStrSQLText(sql);
+		reqResultDAO.setSql_text(sql);
 	
 		try {
 			QueryInfoDTO queryInfoDTO = new QueryInfoDTO();

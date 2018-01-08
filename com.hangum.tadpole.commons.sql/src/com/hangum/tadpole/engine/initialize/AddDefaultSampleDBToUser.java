@@ -90,7 +90,7 @@ public class AddDefaultSampleDBToUser {
 	 * @throws Exception
 	 */
 	private static void copyToSampleDB(String toLocation) throws Exception {
-		ClassLoader classLoader = TadpoleSystemInitializer.class.getClassLoader();
+		ClassLoader classLoader = ApplicationLicenseInitialize.class.getClassLoader();
 		InputStream is = classLoader.getResourceAsStream("com/hangum/tadpole/engine/initialize/Chinook_Sqlite.sqlite");
 		
 		byte[] dataByte = new byte[1024];

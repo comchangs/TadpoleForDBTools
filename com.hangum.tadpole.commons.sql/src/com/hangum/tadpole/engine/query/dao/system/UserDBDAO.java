@@ -154,6 +154,8 @@ public class UserDBDAO extends TDBDBDAO implements Cloneable {
 	/** -999 is temp id. */
 	protected int seq = -999;
 	protected int user_seq = -1;
+	/** 생성자 이메일 */
+	protected String user_seq_email = "";
 	
 	protected String group_name = "";
 	protected String operation_type = "";
@@ -283,6 +285,20 @@ public class UserDBDAO extends TDBDBDAO implements Cloneable {
 		this.user_seq = user_seq;
 	}
 	
+	/**
+	 * @return the user_seq_email
+	 */
+	public String getUser_seq_email() {
+		return user_seq_email;
+	}
+
+	/**
+	 * @param user_seq_email the user_seq_email to set
+	 */
+	public void setUser_seq_email(String user_seq_email) {
+		this.user_seq_email = user_seq_email;
+	}
+
 	public String getGroup_name() {
 		return group_name;
 	}

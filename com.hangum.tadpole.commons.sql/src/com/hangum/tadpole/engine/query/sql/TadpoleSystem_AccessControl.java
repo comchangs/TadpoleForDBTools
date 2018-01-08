@@ -18,7 +18,7 @@ import java.util.Map;
 
 import com.hangum.tadpole.commons.exception.TadpoleSQLManagerException;
 import com.hangum.tadpole.commons.libs.core.define.PublicTadpoleDefine;
-import com.hangum.tadpole.engine.initialize.TadpoleSystemInitializer;
+import com.hangum.tadpole.engine.initialize.TadpoleEngineUserDB;
 import com.hangum.tadpole.engine.manager.TadpoleSQLManager;
 import com.hangum.tadpole.engine.query.dao.system.TadpoleUserDbRoleDAO;
 import com.hangum.tadpole.engine.query.dao.system.accesscontrol.AccessCtlObjectDAO;
@@ -43,7 +43,7 @@ public class TadpoleSystem_AccessControl {
 		DBAccessControlDAO dao = new DBAccessControlDAO();
 		dao.setDb_role_seq(roleDao.getSeq());
 		
-		SqlMapClient sqlClient = TadpoleSQLManager.getInstance(TadpoleSystemInitializer.getUserDB());
+		SqlMapClient sqlClient = TadpoleSQLManager.getInstance(TadpoleEngineUserDB.getUserDB());
 		dao = (DBAccessControlDAO)sqlClient.insert("saveAccessControl", dao);
 		
 		return dao;
@@ -56,7 +56,7 @@ public class TadpoleSystem_AccessControl {
 	 * @throws TadpoleSQLManagerException, SQLException
 	 */
 	public static DBAccessControlDAO getDBAccessControl(TadpoleUserDbRoleDAO roleDao) throws TadpoleSQLManagerException, SQLException {
-		SqlMapClient sqlClient = TadpoleSQLManager.getInstance(TadpoleSystemInitializer.getUserDB());
+		SqlMapClient sqlClient = TadpoleSQLManager.getInstance(TadpoleEngineUserDB.getUserDB());
 		DBAccessControlDAO _accessCtlDao = (DBAccessControlDAO)sqlClient.queryForObject("getAccessControl", roleDao);
 		
 		if(_accessCtlDao.getIntDetailCnt() == 0) {
@@ -106,7 +106,7 @@ public class TadpoleSystem_AccessControl {
 	 * @throws TadpoleSQLManagerException, SQLException
 	 */
 	public static void updateDBAccessControl(DBAccessControlDAO dao) throws TadpoleSQLManagerException, SQLException {
-		SqlMapClient sqlClient = TadpoleSQLManager.getInstance(TadpoleSystemInitializer.getUserDB());
+		SqlMapClient sqlClient = TadpoleSQLManager.getInstance(TadpoleEngineUserDB.getUserDB());
 		sqlClient.update("updateAccessControl", dao);
 		
 		// already data remove and add data

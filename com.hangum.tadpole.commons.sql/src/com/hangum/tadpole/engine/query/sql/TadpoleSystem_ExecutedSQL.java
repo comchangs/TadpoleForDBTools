@@ -20,6 +20,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 
 import com.hangum.tadpole.commons.dialogs.message.dao.RequestResultDAO;
@@ -27,12 +28,15 @@ import com.hangum.tadpole.commons.exception.TadpoleSQLManagerException;
 import com.hangum.tadpole.commons.libs.core.define.PublicTadpoleDefine;
 import com.hangum.tadpole.commons.libs.core.utils.LicenseValidator;
 import com.hangum.tadpole.commons.util.ApplicationArgumentUtils;
-import com.hangum.tadpole.engine.initialize.TadpoleSystemInitializer;
+import com.hangum.tadpole.engine.initialize.TadpoleEngineUserDB;
 import com.hangum.tadpole.engine.manager.TadpoleSQLManager;
 import com.hangum.tadpole.engine.query.dao.system.ExecutedSQLResultDataDAO;
 import com.hangum.tadpole.engine.query.dao.system.ExecutedSqlResourceDAO;
 import com.hangum.tadpole.engine.query.dao.system.ExecutedSqlResourceDataDAO;
 import com.hangum.tadpole.engine.query.dao.system.UserDBDAO;
+import com.hangum.tadpole.engine.restful.TadpoleException;
+import com.hangum.tadpole.engine.sql.util.export.CSVExpoter;
+import com.hangum.tadpole.engine.sql.util.resultset.QueryExecuteResultDTO;
 import com.hangum.tadpole.engine.utils.TimeZoneUtil;
 import com.ibatis.sqlmap.client.SqlMapClient;
 
@@ -50,27 +54,99 @@ public class TadpoleSystem_ExecutedSQL {
 	private static final Logger logger = Logger.getLogger(TadpoleSystem_ExecutedSQL.class);
 	
 	/**
-	 * 모든 sql 히스토리 조회
+	 * save execute history
 	 * 
-	 * @param strEmail
-	 * @param strType
-	 * @param startTime
-	 * @param endTime
-	 * @param duringExecute
-	 * @param strSearch
+	 * @param user_seq
+	 * @param userDB
+	 * @param reqResultDAO
+	 * @param rsDAO
 	 * @return
-	 * @throws TadpoleSQLManagerException
-	 * @throws SQLException
 	 */
-	public static List<RequestResultDAO> getAllExecuteQueryHistoryDetail(String strEmail, String strType, long startTime, long endTime, int duringExecute, String strSearch, int _indexStart, int _indexEnd) throws TadpoleSQLManagerException, SQLException {
-		return getExecuteQueryHistoryDetail(strEmail, strType, "", startTime, endTime, duringExecute, strSearch, _indexStart, _indexEnd);
+	public static long insertExecuteHistory(final int user_seq, final UserDBDAO userDB, final RequestResultDAO reqResultDAO, final QueryExecuteResultDTO rsDAO) {
+		long longHistorySeq = -1;
+		
+		if(LicenseValidator.getLicense().isValidate()) {
+			try {
+				
+				String strExecuteResultData = "";
+				if(rsDAO != null) {
+					if(PublicTadpoleDefine.YES_NO.YES.name().equals(rsDAO.getUserDB().getIs_result_save())) {
+						strExecuteResultData = CSVExpoter.makeContent(true, rsDAO, ',', "UTF-8");
+					}
+				}
+				
+				longHistorySeq = TadpoleSystem_ExecutedSQL.saveExecuteSQUeryResource(
+								user_seq, 
+								userDB, 
+								reqResultDAO.getEXECUSTE_SQL_TYPE(), 
+								reqResultDAO,
+								strExecuteResultData
+								);
+			
+				
+			} catch(Exception e) {
+				logger.error("save the user query", e); //$NON-NLS-1$
+			}
+		}
+		
+		return longHistorySeq;
 	}
+	
+	/**
+	 * save execute history
+	 * 
+	 * @param user_seq
+	 * @param userDB
+	 * @param reqResultDAO
+	 * @param te
+	 * @return
+	 */
+	public static long insertExecuteHistory(final int user_seq, final UserDBDAO userDB, final RequestResultDAO reqResultDAO) {
+		long longHistorySeq = -1;
+		
+		if(LicenseValidator.getLicense().isValidate()) {
+			try {
+				
+				longHistorySeq = TadpoleSystem_ExecutedSQL.saveExecuteSQUeryResource(
+								user_seq, 
+								userDB, 
+								PublicTadpoleDefine.EXECUTE_SQL_TYPE.EDITOR, 
+								reqResultDAO,
+								""
+								);
+			
+				
+			} catch(Exception e) {
+				logger.error("save the user query", e); //$NON-NLS-1$
+			}
+		}
+		
+		return longHistorySeq;
+	}
+	
+//	/**
+//	 * 모든 sql 히스토리 조회
+//	 * 
+//	 * @param strEmail
+//	 * @param strType
+//	 * @param startTime
+//	 * @param endTime
+//	 * @param duringExecute
+//	 * @param strSearch
+//	 * @return
+//	 * @throws TadpoleSQLManagerException
+//	 * @throws SQLException
+//	 */
+//	public static List<RequestResultDAO> getAllExecuteQueryHistoryDetail(String strEmail, String strType, long startTime, long endTime, int duringExecute, String strSearch, int _indexStart, int _indexEnd) throws TadpoleSQLManagerException, SQLException {
+//		return getExecuteQueryHistoryDetail(strEmail, strType, "", startTime, endTime, duringExecute, strSearch, _indexStart, _indexEnd);
+//	}
 
 	/**
 	 * 쿼리 실행 히스토리 디테일 창을 얻습니다.
 	 * 
 	 * @param strEmail
 	 * @param strType
+	 * @param strResultType
 	 * @param dbSeq
 	 * @param startTime
 	 * @param endTime
@@ -82,7 +158,7 @@ public class TadpoleSystem_ExecutedSQL {
 	 * @throws TadpoleSQLManagerException
 	 * @throws SQLException
 	 */
-	public static List<RequestResultDAO> getExecuteQueryHistoryDetail(String strEmail, String strType, String dbSeq, long startTime, long endTime, int duringExecute, String strSearch, int _indexStart, int _indexEnd) throws TadpoleSQLManagerException, SQLException {
+	public static List<RequestResultDAO> getExecuteQueryHistoryDetail(String strEmail, String strType, String strResultType, String dbSeq, long startTime, long endTime, int duringExecute, String strSearch, int _indexStart, int _indexEnd) throws TadpoleSQLManagerException, SQLException {
 		if(!LicenseValidator.getLicense().isValidate()) {
 			return new ArrayList<RequestResultDAO>();
 		}
@@ -93,6 +169,9 @@ public class TadpoleSystem_ExecutedSQL {
 		queryMap.put("email", 	strEmail);
 		if(!"".equals(dbSeq)) queryMap.put("db_seq", 	dbSeq);
 		if(!"All".equals(strType)) queryMap.put("type", strType);
+		if(!"All".equals(strResultType)) {
+			queryMap.put("tdb_result_code", strResultType);
+		}
 		
 		if(ApplicationArgumentUtils.isDBServer()) {
 			Date date = new Date(TimeZoneUtil.chageTimeZone(startTime));
@@ -111,18 +190,14 @@ public class TadpoleSystem_ExecutedSQL {
 		queryMap.put("_indexStart", _indexStart);
 		queryMap.put("_indexEnd", _indexEnd);
 		
-		SqlMapClient sqlClient = TadpoleSQLManager.getInstance(TadpoleSystemInitializer.getUserDB());
-		List<java.util.Map> listResourceData =  new ArrayList<Map>();
-		if(PublicTadpoleDefine.EXECUTE_SQL_TYPE.API.name().endsWith(strType)) {
-			listResourceData = sqlClient.queryForList("getExecuteQueryHistoryAPIDetail", queryMap);			
-		} else {
-			listResourceData = sqlClient.queryForList("getExecuteQueryHistoryDetail", queryMap);
-		}
+		SqlMapClient sqlClient = TadpoleSQLManager.getInstance(TadpoleEngineUserDB.getUserDB());
+		List<java.util.Map> listResourceData = sqlClient.queryForList("getExecuteQueryHistoryDetail", queryMap);
 		
 		for (Map resultMap : listResourceData) {
 			long seq = (Long)resultMap.get("executed_sql_resource_seq");
-
+			
 			Long startdateexecute = 0l;
+			String strHeadSQLText = StringUtils.trimToEmpty((String)resultMap.get("tdb_sql_head"));
 			String strSQLText = (String)resultMap.get("sql_data");
 			Long enddateexecute = 0l;
 			
@@ -146,20 +221,21 @@ public class TadpoleSystem_ExecutedSQL {
 			String ipAddress = (String) resultMap.get("ipaddress");
 			int dbSeq2 = (Integer) resultMap.get("dbseq");
 			
+			int tdb_result_code = 0;
 			String strMessage = (String)resultMap.get("message");
 			int duration = (Integer) resultMap.get("duration");
 			String strDescription = (String)resultMap.get("description");
 			
 			String strResultSaveYn = (String)resultMap.get("result_save_yn");
 
-			RequestResultDAO dao = new RequestResultDAO(duration,strFullName, dbName, new Timestamp(startdateexecute), strSQLText, new Timestamp(enddateexecute), row, result, strMessage,
+			RequestResultDAO dao = new RequestResultDAO(
+					duration,strFullName, dbName, new Timestamp(startdateexecute), 
+					strHeadSQLText, strSQLText, new Timestamp(enddateexecute), row, result, tdb_result_code, strMessage,
 					ipAddress, dbSeq2, strDescription);
 			dao.setSeq(seq);
-			if(PublicTadpoleDefine.EXECUTE_SQL_TYPE.API.name().endsWith(strType)) {
-				dao.setEXECUSTE_SQL_TYPE(PublicTadpoleDefine.EXECUTE_SQL_TYPE.API);
-			} else {
-				dao.setEXECUSTE_SQL_TYPE(PublicTadpoleDefine.EXECUTE_SQL_TYPE.EDITOR);
-			}
+
+			String strExecuteType = (String)resultMap.get("types");
+			dao.setEXECUSTE_SQL_TYPE(PublicTadpoleDefine.EXECUTE_SQL_TYPE.valueOf(strExecuteType));
 			dao.setResult_save_yn(strResultSaveYn);
 			
 			returnSQLHistory.add(dao);
@@ -177,7 +253,7 @@ public class TadpoleSystem_ExecutedSQL {
 	 * @throws SQLException
 	 */
 	public static List<ExecutedSQLResultDataDAO> getExecuteResultData(long seq) throws TadpoleSQLManagerException, SQLException {
-		SqlMapClient sqlClient = TadpoleSQLManager.getInstance(TadpoleSystemInitializer.getUserDB());
+		SqlMapClient sqlClient = TadpoleSQLManager.getInstance(TadpoleEngineUserDB.getUserDB());
 		
 		return sqlClient.queryForList("getExecuteResultData", seq);
 	}
@@ -199,7 +275,7 @@ public class TadpoleSystem_ExecutedSQL {
 		queryMap.put("filter", "%" + filter + "%");
 		queryMap.put("count", 	20);
 		
-		SqlMapClient sqlClient = TadpoleSQLManager.getInstance(TadpoleSystemInitializer.getUserDB());
+		SqlMapClient sqlClient = TadpoleSQLManager.getInstance(TadpoleEngineUserDB.getUserDB());
 		List<java.util.Map> listResourceData =  sqlClient.queryForList("getExecuteQueryHistory", queryMap);
 		
 		for (Map resultMap : listResourceData) {
@@ -213,6 +289,8 @@ public class TadpoleSystem_ExecutedSQL {
 			} else {
 				startdateexecute = ((Timestamp)resultMap.get("startdateexecute")).getTime();
 			}
+			
+			String strHeadSQLText = StringUtils.trimToEmpty((String)resultMap.get("tdb_sql_head"));
 			String strSQLText 		= (String)resultMap.get("sql_data");
 			Long enddateexecute 	= 0l;
 			// This case sqlite
@@ -223,6 +301,7 @@ public class TadpoleSystem_ExecutedSQL {
 				enddateexecute = ((Timestamp)resultMap.get("enddateexecute")).getTime();
 			}
 			
+			int tdb_result_code = 0;
 			String strMessage 		= (String)resultMap.get("message");
 			
 			int row 			= (Integer)resultMap.get("row");
@@ -230,7 +309,8 @@ public class TadpoleSystem_ExecutedSQL {
 			
 			int duration 		= (Integer)resultMap.get("duration");
 			
-			RequestResultDAO dao = new RequestResultDAO(duration, new Timestamp(startdateexecute), strSQLText, new Timestamp(enddateexecute), row, result, strMessage);
+			RequestResultDAO dao 
+				= new RequestResultDAO(duration, new Timestamp(startdateexecute), strHeadSQLText, strSQLText, new Timestamp(enddateexecute), row, result, tdb_result_code, strMessage);
 			dao.setSeq(seq);
 			returnSQLHistory.add(dao);
 		}
@@ -244,10 +324,10 @@ public class TadpoleSystem_ExecutedSQL {
 	 * @param user_seq
 	 * @param userDB
 	 * @param sqlType
-	 * @param strExecuteResultData
 	 * @param requestResultDAO
+	 * @param strExecuteResultData
 	 */
-	public static long saveExecuteSQUeryResource(final int user_seq, final UserDBDAO userDB, final PublicTadpoleDefine.EXECUTE_SQL_TYPE sqlType, final String strExecuteResultData, final RequestResultDAO requestResultDAO) throws TadpoleSQLManagerException, SQLException {
+	public static long saveExecuteSQUeryResource(final int user_seq, final UserDBDAO userDB, final PublicTadpoleDefine.EXECUTE_SQL_TYPE sqlType, final RequestResultDAO requestResultDAO, final String strExecuteResultData) throws TadpoleSQLManagerException, SQLException {
 		if(PublicTadpoleDefine.YES_NO.YES.name().equals(userDB.getIs_profile())) {
 			ExecutedSqlResourceDAO executeSQLResourceDao = new ExecutedSqlResourceDAO();
 			executeSQLResourceDao.setDb_seq(userDB.getSeq());
@@ -264,6 +344,13 @@ public class TadpoleSystem_ExecutedSQL {
 			
 			executeSQLResourceDao.setRow(requestResultDAO.getRows());
 			executeSQLResourceDao.setResult(requestResultDAO.getResult());
+			
+			if(requestResultDAO.getException() instanceof TadpoleException) {
+				TadpoleException te = (TadpoleException)requestResultDAO.getException();
+				executeSQLResourceDao.setTdb_result_code(te.getErrorCode());
+			}
+			
+			executeSQLResourceDao.setTdb_result_code(requestResultDAO.getTdb_result_code());
 			executeSQLResourceDao.setMessage(requestResultDAO.getMesssage());
 			executeSQLResourceDao.setIpAddress(requestResultDAO.getIpAddress());
 			if(!"".equals(strExecuteResultData)) {
@@ -271,10 +358,10 @@ public class TadpoleSystem_ExecutedSQL {
 			}
 			
 			// 기존에 등록 되어 있는지 검사한다
-			SqlMapClient sqlClient = TadpoleSQLManager.getInstance(TadpoleSystemInitializer.getUserDB());
+			SqlMapClient sqlClient = TadpoleSQLManager.getInstance(TadpoleEngineUserDB.getUserDB());
 			ExecutedSqlResourceDAO executeSQL =  (ExecutedSqlResourceDAO)sqlClient.insert("userExecuteSQLResourceInsert", executeSQLResourceDao); //$NON-NLS-1$
 			
-			insertResourceSQLData(executeSQL.getSeq(), requestResultDAO.getStartDateExecute(), requestResultDAO.getStrSQLText());
+			insertResourceSQLData(executeSQL.getSeq(), requestResultDAO.getStartDateExecute(), requestResultDAO.getTdb_sql_head(), requestResultDAO.getSql_text());
 			
 			if(!"".equals(strExecuteResultData)) {
 				insertResourceResultData(executeSQL.getSeq(), requestResultDAO.getStartDateExecute(), strExecuteResultData);
@@ -291,17 +378,19 @@ public class TadpoleSystem_ExecutedSQL {
 	 * 
 	 * @param seq
 	 * @param startDateExecute
-	 * @param contents
+	 * @param tdb_sql_head
+	 * @param sql_text 
 	 * @throws TadpoleSQLManagerException, SQLException
 	 */
-	private static void insertResourceSQLData(final long seq, final Timestamp startDateExecute, final String contents) throws TadpoleSQLManagerException, SQLException {
-		SqlMapClient sqlClient = TadpoleSQLManager.getInstance(TadpoleSystemInitializer.getUserDB());
+	private static void insertResourceSQLData(final long seq, final Timestamp startDateExecute, final String tdb_sql_head, String sql_text) throws TadpoleSQLManagerException, SQLException {
+		SqlMapClient sqlClient = TadpoleSQLManager.getInstance(TadpoleEngineUserDB.getUserDB());
 		
 		// content data를 저장합니다.
 		ExecutedSqlResourceDataDAO dataDao = new ExecutedSqlResourceDataDAO();
 		dataDao.setExecuted_sql_resource_seq(seq);
 		dataDao.setStartDateExecute(startDateExecute);
-		dataDao.setSql_data(contents);
+		dataDao.setTdb_sql_head(tdb_sql_head);
+		dataDao.setSql_data(sql_text);
 		
 		sqlClient.insert("userExecuteSQLResourceDataInsert", dataDao); //$NON-NLS-1$				
 	}
@@ -315,7 +404,7 @@ public class TadpoleSystem_ExecutedSQL {
 	 * @throws TadpoleSQLManagerException, SQLException
 	 */
 	public static void insertResourceResultData(final long seq, final Timestamp startDateExecute, final String contents) throws TadpoleSQLManagerException, SQLException {
-		SqlMapClient sqlClient = TadpoleSQLManager.getInstance(TadpoleSystemInitializer.getUserDB());
+		SqlMapClient sqlClient = TadpoleSQLManager.getInstance(TadpoleEngineUserDB.getUserDB());
 		
 		// content data를 저장합니다.
 		ExecutedSQLResultDataDAO dataDao = new ExecutedSQLResultDataDAO();

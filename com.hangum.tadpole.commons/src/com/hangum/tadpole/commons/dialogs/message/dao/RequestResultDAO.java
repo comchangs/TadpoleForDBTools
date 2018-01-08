@@ -26,14 +26,20 @@ public class RequestResultDAO {
 	
 	/** Execute start time */
 	Timestamp startDateExecute;
+	
+	/** 테드폴 코멘트 */
+	String tdb_sql_head;
 
 	/** execute sql text */
-	String strSQLText;
+	String sql_text;
 
 	Timestamp endDateExecute;
 	int rows;
 	boolean dataChanged = false;
 	String result = PublicTadpoleDefine.SUCCESS_FAIL.S.toString();
+	
+	/** {@code com.hangum.tadpole.engine.define.TDBResultCodeDefine#NORMAL_SUCC} */
+	int tdb_result_code = 200;
 	String messsage = "";
 	int duration;
 
@@ -47,24 +53,27 @@ public class RequestResultDAO {
 	Exception exception;
 	
 	/** execute_sql_type */
-	PublicTadpoleDefine.EXECUTE_SQL_TYPE EXECUSTE_SQL_TYPE = PublicTadpoleDefine.EXECUTE_SQL_TYPE.SESSION;
+	PublicTadpoleDefine.EXECUTE_SQL_TYPE EXECUSTE_SQL_TYPE = PublicTadpoleDefine.EXECUTE_SQL_TYPE.EDITOR;
 	
 	String result_save_yn = PublicTadpoleDefine.YES_NO.NO.name();
 
-	public RequestResultDAO(int duration, Timestamp dateExecute, String strSQLText, Timestamp endDateExecute, int rows, String result, String message) {
+	public RequestResultDAO(int duration, Timestamp dateExecute, String tdb_sql_head, String sql_text, Timestamp endDateExecute, int rows, String result, int tdb_result_code, String message) {
 		this.duration = duration;
 		this.userName = "";
 		this.dbName = "";
 		this.startDateExecute = dateExecute;
-		this.strSQLText = strSQLText;
+		this.tdb_sql_head = tdb_sql_head;
+		this.sql_text = sql_text;
 		this.endDateExecute = endDateExecute;
 		this.rows = rows;
 		this.result = result;
+		this.tdb_result_code = tdb_result_code;
 		this.messsage = message;
 	}
 
 	// Sql history for executedSqlEditor
-	public RequestResultDAO(int duration, String userName, String dbName, Timestamp dateExecute, String strSQLText, Timestamp endDateExecute, int rows, String result, String message,
+	public RequestResultDAO(int duration, String userName, String dbName, Timestamp dateExecute, String tdb_sql_head, String sql_text, Timestamp endDateExecute, int rows, String result, 
+			int tdb_result_code, String message,
 			String ipAddress, int dbSeq, String strDescription) {
 		this.duration = duration;
 		this.userName = userName;
@@ -72,10 +81,12 @@ public class RequestResultDAO {
 		this.ipAddress = ipAddress;
 		this.dbSeq = dbSeq;
 		this.startDateExecute = dateExecute;
-		this.strSQLText = strSQLText;
+		this.tdb_sql_head = tdb_sql_head;
+		this.sql_text = sql_text;
 		this.endDateExecute = endDateExecute;
 		this.rows = rows;
 		this.result = result;
+		this.tdb_result_code = tdb_result_code;
 		this.messsage = message;
 		this.description = strDescription;
 	}
@@ -123,12 +134,32 @@ public class RequestResultDAO {
 		this.seq = seq;
 	}
 
-	public String getStrSQLText() {
-		return strSQLText;
+	/**
+	 * @return the tdb_sql_head
+	 */
+	public String getTdb_sql_head() {
+		return tdb_sql_head;
 	}
 
-	public void setStrSQLText(String strSQLText) {
-		this.strSQLText = strSQLText;
+	/**
+	 * @param tdb_sql_head the tdb_sql_head to set
+	 */
+	public void setTdb_sql_head(String tdb_sql_head) {
+		this.tdb_sql_head = tdb_sql_head;
+	}
+
+	/**
+	 * @return the sql_text
+	 */
+	public String getSql_text() {
+		return sql_text;
+	}
+
+	/**
+	 * @param sql_text the sql_text to set
+	 */
+	public void setSql_text(String sql_text) {
+		this.sql_text = sql_text;
 	}
 
 	/**
@@ -189,6 +220,20 @@ public class RequestResultDAO {
 	 */
 	public void setResult(String result) {
 		this.result = result;
+	}
+
+	/**
+	 * @return the tdb_result_code
+	 */
+	public int getTdb_result_code() {
+		return tdb_result_code;
+	}
+
+	/**
+	 * @param tdb_result_code the tdb_result_code to set
+	 */
+	public void setTdb_result_code(int tdb_result_code) {
+		this.tdb_result_code = tdb_result_code;
 	}
 
 	/**
@@ -283,6 +328,4 @@ public class RequestResultDAO {
 	public void setResult_save_yn(String result_save_yn) {
 		this.result_save_yn = result_save_yn;
 	}
-	
-
 }

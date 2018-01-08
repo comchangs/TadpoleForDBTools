@@ -94,7 +94,8 @@ public class RESTfulAPIUtils {
 				params.put(key, value);
 			}
 		} catch (UnsupportedEncodingException e1) {
-			throw new RESTFULUnsupportedEncodingException(e1);
+			logger.error(e1);
+			throw new RESTFULUnsupportedEncodingException(e1.getMessage());
 		}
 		
 		return params;

@@ -10,6 +10,8 @@
  ******************************************************************************/
 package com.hangum.tadpole.engine.restful;
 
+import com.hangum.tadpole.engine.define.TDBResultCodeDefine;
+
 /**
  * URL Not found exception
  * 
@@ -19,7 +21,7 @@ package com.hangum.tadpole.engine.restful;
 public class RESTFulNotFoundURLException extends TadpoleException {
 
 	public RESTFulNotFoundURLException(String string) {
-		super(string);
+		super(TDBResultCodeDefine.NOT_FOUND, string);
 	}
 
 }

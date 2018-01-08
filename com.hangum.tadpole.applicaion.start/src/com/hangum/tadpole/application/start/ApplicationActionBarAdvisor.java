@@ -28,18 +28,14 @@ import org.eclipse.ui.application.ActionBarAdvisor;
 import org.eclipse.ui.application.IActionBarConfigurer;
 
 import com.hangum.tadpole.application.start.action.AboutAction;
-import com.hangum.tadpole.application.start.action.BillAction;
 import com.hangum.tadpole.application.start.action.BugIssueAction;
 import com.hangum.tadpole.application.start.action.NewVersionCheckAction;
 import com.hangum.tadpole.application.start.action.UserManuelAction;
-//import com.hangum.tadpole.bill.core.actions.BillAction;
-import com.hangum.tadpole.commons.admin.core.actions.AdminSQLAuditAction;
 import com.hangum.tadpole.commons.admin.core.actions.AdminSystemSettingAction;
 import com.hangum.tadpole.commons.admin.core.actions.AdminUserAction;
 import com.hangum.tadpole.commons.admin.core.actions.JDBCDriverManagerAction;
 import com.hangum.tadpole.commons.admin.core.actions.SendMessageAction;
 import com.hangum.tadpole.commons.libs.core.define.PublicTadpoleDefine;
-import com.hangum.tadpole.commons.util.ApplicationArgumentUtils;
 import com.hangum.tadpole.engine.permission.PermissionChecker;
 import com.hangum.tadpole.manager.core.actions.global.AdminTransactionConnectionManagerAction;
 import com.hangum.tadpole.manager.core.actions.global.DBManagerAction;
@@ -81,7 +77,7 @@ public class ApplicationActionBarAdvisor extends ActionBarAdvisor {
     /** send message */
     private IAction adminSendMessageAction;
     private IAction adminUserAction;
-    private IAction adminSQLAuditAction;
+//    private IAction adminSQLAuditAction;
     private IAction adminSystemSettingAction;
     
     /** User permission action */
@@ -109,7 +105,7 @@ public class ApplicationActionBarAdvisor extends ActionBarAdvisor {
     private IAction userManuelAction;
     private IAction newVersionCheckAction;
     
-    private IAction billAction;
+//    private IAction billAction;
 
     public ApplicationActionBarAdvisor(IActionBarConfigurer configurer) {
         super(configurer);
@@ -165,8 +161,8 @@ public class ApplicationActionBarAdvisor extends ActionBarAdvisor {
     	jDBCDriverManagerAction = new JDBCDriverManagerAction(window);
     	register(jDBCDriverManagerAction);
     	
-    	adminSQLAuditAction = new AdminSQLAuditAction(window);
-    	register(adminSQLAuditAction);
+//    	adminSQLAuditAction = new AdminSQLAuditAction(window);
+//    	register(adminSQLAuditAction);
     	
     	adminSystemSettingAction = new AdminSystemSettingAction(window);
     	register(adminSystemSettingAction);
@@ -201,8 +197,8 @@ public class ApplicationActionBarAdvisor extends ActionBarAdvisor {
         newVersionCheckAction = new NewVersionCheckAction(window);
         register(newVersionCheckAction);
         
-        billAction = new BillAction(window);
-        register(billAction);
+//        billAction = new BillAction(window);
+//        register(billAction);
     }
     
     /**
@@ -213,7 +209,7 @@ public class ApplicationActionBarAdvisor extends ActionBarAdvisor {
     	MenuManager manageMenu = new MenuManager(Messages.get().ApplicationActionBarAdvisor_1, IWorkbenchActionConstants.M_PROJECT);
     	MenuManager adminMenu = null;
     	MenuManager observerMenu = null;
-    	MenuManager serviceMenu = null;
+//    	MenuManager serviceMenu = null;
     	
     	boolean isAdmin = PermissionChecker.isUserAdmin(SessionManager.getRepresentRole());
     	boolean isObserver = PermissionChecker.isUserObserver(SessionManager.getRepresentRole());
@@ -238,11 +234,11 @@ public class ApplicationActionBarAdvisor extends ActionBarAdvisor {
 			menuBar.add(new GroupMarker(IWorkbenchActionConstants.MB_ADDITIONS));
 		}
 		
-		if(ApplicationArgumentUtils.isOnlineServer()) {
-			serviceMenu = new MenuManager(Messages.get().ServiceBill, IWorkbenchActionConstants.M_PROJECT_CONFIGURE);
-			menuBar.add(serviceMenu);
-			serviceMenu.add(billAction);
-		}
+//		if(ApplicationArgumentUtils.isOnlineServer()) {
+//			serviceMenu = new MenuManager(Messages.get().ServiceBill, IWorkbenchActionConstants.M_PROJECT_CONFIGURE);
+//			menuBar.add(serviceMenu);
+//			serviceMenu.add(billAction);
+//		}
 		menuBar.add(preferenceMenu);
 		menuBar.add(helpMenu);
 		
@@ -277,7 +273,7 @@ public class ApplicationActionBarAdvisor extends ActionBarAdvisor {
 			adminMenu.add(adminSystemSettingAction);
 			adminMenu.add(new Separator());
 			adminMenu.add(adminUserAction);
-			adminMenu.add(adminSQLAuditAction);
+//			adminMenu.add(adminSQLAuditAction);
 			adminMenu.add(adminTransactionConnectionManagerAction);
 			adminMenu.add(new Separator());
 			adminMenu.add(jDBCDriverManagerAction);

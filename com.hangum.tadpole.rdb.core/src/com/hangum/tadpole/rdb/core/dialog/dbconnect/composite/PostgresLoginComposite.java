@@ -192,7 +192,11 @@ public class PostgresLoginComposite extends MySQLLoginComposite {
 			textPassword.setText("tadpole"); //$NON-NLS-1$
 			
 			comboSSL.setText("NO"); //$NON-NLS-1$
-			textJDBCOptions.setText("&loginTimeout=10"); //$NON-NLS-1$
+			if(DBDefine.NETEZZA_DEFAULT == getSelectDB()) {
+				textJDBCOptions.setText("&loginTimeout=10"); //$NON-NLS-1$
+			} else {
+				textJDBCOptions.setText(""); //$NON-NLS-1$
+			}
 			
 		} else {
 			if(DBDefine.AMAZON_REDSHIFT_DEFAULT == getSelectDB()) {

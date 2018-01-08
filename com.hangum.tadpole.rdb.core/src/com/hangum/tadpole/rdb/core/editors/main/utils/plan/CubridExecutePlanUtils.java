@@ -13,6 +13,7 @@ package com.hangum.tadpole.rdb.core.editors.main.utils.plan;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -21,6 +22,7 @@ import java.util.Map;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 
+import com.hangum.tadpole.commons.exception.TadpoleSQLManagerException;
 import com.hangum.tadpole.commons.libs.core.define.PublicTadpoleDefine.SQL_STATEMENT_TYPE;
 import com.hangum.tadpole.engine.manager.TadpoleSQLManager;
 import com.hangum.tadpole.engine.query.dao.system.UserDBDAO;
@@ -59,11 +61,11 @@ public class CubridExecutePlanUtils {
 	 * @return
 	 * @throws Exception
 	 */
-	public static String plan(UserDBDAO userDB, final RequestQuery reqQuery) throws Exception {
+	public static String plan(UserDBDAO userDB, final RequestQuery reqQuery) throws TadpoleSQLManagerException, SQLException {
 		String sql = reqQuery.getSql();
 		if(!sql.toLowerCase().startsWith("select")) {
 			logger.error("[cubrid execute plan ]" + sql);
-			throw new Exception ("This statment not select. please check.");
+			throw new SQLException ("This statment not select. please check.");
 		}
 		Connection conn = null;
 		ResultSet rs = null;

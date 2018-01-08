@@ -12,7 +12,7 @@ package com.hangum.tadpole.commons.sql.map;
 
 import java.sql.Statement;
 
-import com.hangum.tadpole.engine.initialize.TadpoleSystemInitializer;
+import com.hangum.tadpole.engine.initialize.TadpoleEngineUserDB;
 import com.hangum.tadpole.engine.manager.TadpoleSQLManager;
 import com.hangum.tadpole.engine.query.dao.system.UserDBDAO;
 
@@ -33,7 +33,7 @@ public class SQLMapTest extends TestCase {
 		java.sql.Connection javaConn = null;
 		
 		try {
-			final UserDBDAO userDB = TadpoleSystemInitializer.getUserDB();
+			final UserDBDAO userDB = TadpoleEngineUserDB.getUserDB();
 			System.out.println(userDB);
 			javaConn = TadpoleSQLManager.getConnection(userDB);
 			

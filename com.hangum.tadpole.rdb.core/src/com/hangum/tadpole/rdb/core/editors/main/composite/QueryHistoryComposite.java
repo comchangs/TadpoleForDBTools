@@ -36,10 +36,8 @@ import org.eclipse.swt.widgets.Text;
 import com.hangum.tadpole.commons.dialogs.message.dao.RequestResultDAO;
 import com.hangum.tadpole.commons.libs.core.define.PublicTadpoleDefine;
 import com.hangum.tadpole.commons.libs.core.message.CommonMessages;
-import com.hangum.tadpole.commons.libs.core.utils.LicenseValidator;
 import com.hangum.tadpole.commons.util.Utils;
 import com.hangum.tadpole.engine.query.sql.TadpoleSystem_ExecutedSQL;
-import com.hangum.tadpole.engine.sql.util.export.CSVExpoter;
 import com.hangum.tadpole.engine.sql.util.resultset.QueryExecuteResultDTO;
 import com.hangum.tadpole.engine.utils.TimeZoneUtil;
 import com.hangum.tadpole.mongodb.core.dialogs.msg.TadpoleSQLDialog;
@@ -190,31 +188,16 @@ public class QueryHistoryComposite extends Composite {
 	 * @return
 	 */
 	public long saveExecutedSQLData(RequestResultDAO reqResultDAO, QueryExecuteResultDTO rsDAO) {
-		long longHistorySeq = -1;
-		
-		if(LicenseValidator.getLicense().isValidate()) {
-			try {
-				
-				String strExecuteResultData = "";
-				if(rsDAO != null) {
-					if(PublicTadpoleDefine.YES_NO.YES.name().equals(rsDAO.getUserDB().getIs_result_save())) {
-						strExecuteResultData = CSVExpoter.makeContent(true, rsDAO, ',', "UTF-8");
-					}
-				}
-				
-				longHistorySeq = TadpoleSystem_ExecutedSQL.saveExecuteSQUeryResource(getRdbResultComposite().getUserSeq(), 
-								getRdbResultComposite().getUserDB(), 
-								PublicTadpoleDefine.EXECUTE_SQL_TYPE.EDITOR, 
-								strExecuteResultData,
-								reqResultDAO);
-			
-				
-			} catch(Exception e) {
-				logger.error("save the user query", e); //$NON-NLS-1$
-			}
-		}
-		
+		// 히스토리 화면에 한줄 추가
 		addRowData(reqResultDAO);
+		
+		// 히스토리 정보 메타디비에 저장
+		long longHistorySeq = TadpoleSystem_ExecutedSQL.insertExecuteHistory(
+					getRdbResultComposite().getUserSeq(), 
+					getRdbResultComposite().getUserDB(), 
+					reqResultDAO,
+					rsDAO
+					);
 		
 		return longHistorySeq;
 	}
@@ -246,7 +229,11 @@ public class QueryHistoryComposite extends Composite {
 	private void addRowData(RequestResultDAO reqResultDAO) {
 		GridItem item = new GridItem(gridSQLHistory, SWT.V_SCROLL | SWT.H_SCROLL);
 		
-		String strSQL = StringUtils.strip(reqResultDAO.getStrSQLText());
+		String strHead = StringUtils.trim(reqResultDAO.getTdb_sql_head());
+		String strSQL = StringUtils.strip(reqResultDAO.getSql_text());
+		if(strHead != null & !"".equals(strHead)) {
+			strSQL = strHead + PublicTadpoleDefine.LINE_SEPARATOR + strSQL;
+		}
 		int intLine = StringUtils.countMatches(strSQL, "\n"); //$NON-NLS-1$
 		if(intLine >= 1) {
 			int height = (intLine+1) * 24;

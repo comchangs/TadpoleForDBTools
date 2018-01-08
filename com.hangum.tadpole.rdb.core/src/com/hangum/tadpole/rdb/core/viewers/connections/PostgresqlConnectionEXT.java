@@ -38,11 +38,11 @@ public class PostgresqlConnectionEXT {
 	public static void connectionext(UserDBDAO userDB) {
 		try {
 			ResourcesDAO resourcesDAO = new ResourcesDAO(userDB);
-			List listOtherObj = new ArrayList();
+			List<DBOtherDAO> listOtherObj = new ArrayList<DBOtherDAO>();
 			
 			for (Object object : PGSQLSystem.getExtension(userDB)) {
 				DBOtherDAO dao = new DBOtherDAO();
-				Map map = (Map)object;
+				Map<String, String> map = (Map<String, String>)object;
 	
 				dao.setName(""+map.get("extname"));
 				dao.setComment(""+map.get("comment"));

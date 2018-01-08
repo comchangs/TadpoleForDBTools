@@ -10,9 +10,11 @@
  ******************************************************************************/
 package com.hangum.tadpole.engine.restful;
 
+import com.hangum.tadpole.engine.define.TDBResultCodeDefine;
+
 public class RESTFulSQLExecuteException extends TadpoleException {
 
 	public RESTFulSQLExecuteException(String message, Exception e) {
-		super(message, e);
+		super(TDBResultCodeDefine.INTERNAL_SERVER_ERROR, message, e);
 	}
 }

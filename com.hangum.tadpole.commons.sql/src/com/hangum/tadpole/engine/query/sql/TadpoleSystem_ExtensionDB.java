@@ -17,7 +17,7 @@ import java.util.List;
 import org.apache.log4j.Logger;
 
 import com.hangum.tadpole.commons.exception.TadpoleSQLManagerException;
-import com.hangum.tadpole.engine.initialize.TadpoleSystemInitializer;
+import com.hangum.tadpole.engine.initialize.TadpoleEngineUserDB;
 import com.hangum.tadpole.engine.manager.TadpoleSQLManager;
 import com.hangum.tadpole.engine.query.dao.gateway.ExtensionDBDAO;
 import com.hangum.tadpole.session.manager.SessionManager;
@@ -44,7 +44,7 @@ public class TadpoleSystem_ExtensionDB {
 	 * @throws Exception
 	 */
 	public static List<ExtensionDBDAO> getExtensionInfo(String searchKey) throws Exception {
-		SqlMapClient sqlClient = TadpoleSQLManager.getInstance(TadpoleSystemInitializer.getUserDB());
+		SqlMapClient sqlClient = TadpoleSQLManager.getInstance(TadpoleEngineUserDB.getUserDB());
 		return sqlClient.queryForList("findExtensionDB", searchKey); //$NON-NLS-1$
 	}
 	
@@ -56,7 +56,7 @@ public class TadpoleSystem_ExtensionDB {
 	 * @throws Exception
 	 */
 	public static List<ExtensionDBDAO> getUserDBs(String userId) throws Exception {
-		SqlMapClient sqlClient = TadpoleSQLManager.getInstance(TadpoleSystemInitializer.getUserDB());
+		SqlMapClient sqlClient = TadpoleSQLManager.getInstance(TadpoleEngineUserDB.getUserDB());
 		return sqlClient.queryForList("findUserExtensionDB", userId); //$NON-NLS-1$
 	}
 	
@@ -68,7 +68,7 @@ public class TadpoleSystem_ExtensionDB {
 	 * @throws Exception
 	 */
 	public static List<ExtensionDBDAO> getUserDBTerm(String userId) throws Exception {
-		SqlMapClient sqlClient = TadpoleSQLManager.getInstance(TadpoleSystemInitializer.getUserDB());
+		SqlMapClient sqlClient = TadpoleSQLManager.getInstance(TadpoleEngineUserDB.getUserDB());
 		return sqlClient.queryForList("findUserExtensionDBTerm", userId); //$NON-NLS-1$
 	}
 	
@@ -79,7 +79,7 @@ public class TadpoleSystem_ExtensionDB {
 	 * @throws SQLException
 	 */
 	public static void deleteExtensionDB() throws TadpoleSQLManagerException, SQLException {
-		SqlMapClient sqlClient = TadpoleSQLManager.getInstance(TadpoleSystemInitializer.getUserDB());
+		SqlMapClient sqlClient = TadpoleSQLManager.getInstance(TadpoleEngineUserDB.getUserDB());
 		sqlClient.delete("deleteExtensionDB"); //$NON-NLS-1$	
 	}
 	
@@ -90,7 +90,7 @@ public class TadpoleSystem_ExtensionDB {
 	 * @throws TadpoleSQLManagerException, SQLException
 	 */
 	public static void insertExtensionDB(List<ExtensionDBDAO> listExtensionDB) throws TadpoleSQLManagerException, SQLException {
-		SqlMapClient sqlClient = TadpoleSQLManager.getInstance(TadpoleSystemInitializer.getUserDB());
+		SqlMapClient sqlClient = TadpoleSQLManager.getInstance(TadpoleEngineUserDB.getUserDB());
 		Connection connection = sqlClient.getDataSource().getConnection();
 		connection.setAutoCommit(false);
 		SqlMapSession session = sqlClient.openSession(connection);

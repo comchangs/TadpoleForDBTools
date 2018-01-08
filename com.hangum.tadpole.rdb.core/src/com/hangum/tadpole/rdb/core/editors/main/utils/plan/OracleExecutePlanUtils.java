@@ -11,6 +11,7 @@
 package com.hangum.tadpole.rdb.core.editors.main.utils.plan;
 
 import java.sql.PreparedStatement;
+import java.sql.SQLException;
 
 import org.apache.commons.lang.StringUtils;
 
@@ -36,7 +37,8 @@ public class OracleExecutePlanUtils {
 	 * @param planTableName
 	 * @throws Exception
 	 */
-	public static void plan(UserDBDAO userDB, RequestQuery reqQuery, String planTableName, java.sql.Connection javaConn, String statement_id  ) throws Exception {
+	public static void plan(UserDBDAO userDB, RequestQuery reqQuery, String planTableName, java.sql.Connection javaConn, String statement_id  ) 
+			throws SQLException {
 		
 		PreparedStatement pstmt = null;
 		try {

@@ -1,6 +1,6 @@
 package com.hangum.tadpole.engine.restful;
 
-import java.io.UnsupportedEncodingException;
+import com.hangum.tadpole.engine.define.TDBResultCodeDefine;
 
 @SuppressWarnings("serial")
 /**
@@ -8,18 +8,10 @@ import java.io.UnsupportedEncodingException;
  * @author hangum
  *
  */
-public class RESTFULUnsupportedEncodingException extends UnsupportedEncodingException {
-	private String errorCode = "5000";
+public class RESTFULUnsupportedEncodingException extends TadpoleException {
 	
 	public RESTFULUnsupportedEncodingException(String message) {
-		super(message);
+		super(TDBResultCodeDefine.INTERNAL_SERVER_ERROR, message);
 	}
 	
-	public RESTFULUnsupportedEncodingException(UnsupportedEncodingException e) {
-		super(e.getMessage());
-	}
-
-	public String getErrorCode() {
-		return errorCode;
-	}
 }

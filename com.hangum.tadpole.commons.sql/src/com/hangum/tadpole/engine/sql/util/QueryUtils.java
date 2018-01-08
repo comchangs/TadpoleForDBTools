@@ -38,6 +38,7 @@ import org.w3c.dom.Element;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
+import com.hangum.tadpole.commons.exception.TadpoleSQLManagerException;
 import com.hangum.tadpole.commons.util.JSONUtil;
 import com.hangum.tadpole.commons.util.ResultSetToHTMLUtil;
 import com.hangum.tadpole.engine.define.DBGroupDefine;
@@ -175,7 +176,7 @@ public class QueryUtils {
 	 * @return
 	 * @throws Exception
 	 */
-	public static QueryExecuteResultDTO executeQuery(final UserDBDAO userDB, String strSQL, final int intStartCnt, final int intSelectLimitCnt) throws Exception {
+	public static QueryExecuteResultDTO executeQuery(final UserDBDAO userDB, String strSQL, final int intStartCnt, final int intSelectLimitCnt) throws TadpoleSQLManagerException, SQLException {
 		ResultSet resultSet = null;
 		java.sql.Connection javaConn = null;
 		Statement statement = null;
@@ -197,9 +198,6 @@ public class QueryUtils {
 			}
 			return new QueryExecuteResultDTO(userDB, strSQL, false, resultSet, intSelectLimitCnt, intStartCnt);
 			
-		} catch(Exception e) {
-			logger.error(String.format("execute query %s", e.getMessage()));
-			throw e;
 		} finally {
 			if(statement != null) statement.close();
 			if(resultSet != null) resultSet.close();
@@ -284,7 +282,7 @@ public class QueryUtils {
 	 * @throws Exception
 	 */
 	public static String selectToCSV(final UserDBDAO userDB, final String strQuery, final boolean isAddHead, final String strDelimiter) throws Exception {
-		return selectToCSV(userDB, strQuery, new ArrayList(), isAddHead, strDelimiter);
+		return selectToCSV(userDB, strQuery, new ArrayList<Object>(), isAddHead, strDelimiter);
 	}
 	
 	/**
@@ -350,7 +348,7 @@ public class QueryUtils {
 	 * @throws Exception
 	 */
 	public static JsonArray selectToJson(final UserDBDAO userDB, final String strQuery) throws Exception {
-		return selectToJson(userDB, strQuery, new ArrayList());
+		return selectToJson(userDB, strQuery, new ArrayList<Object>());
 	}
 	
 	/**
@@ -399,7 +397,7 @@ public class QueryUtils {
 	 * @throws Exception
 	 */
 	public static String selectToXML(final UserDBDAO userDB, final String strQuery) throws Exception {
-		return selectToXML(userDB, strQuery, new ArrayList());
+		return selectToXML(userDB, strQuery, new ArrayList<Object>());
 	}
 	
 	/**

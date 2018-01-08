@@ -19,7 +19,7 @@ import com.hangum.tadpole.cipher.core.manager.CipherManager;
 import com.hangum.tadpole.commons.exception.TadpoleSQLManagerException;
 import com.hangum.tadpole.commons.libs.core.define.PublicTadpoleDefine;
 import com.hangum.tadpole.commons.util.Utils;
-import com.hangum.tadpole.engine.initialize.TadpoleSystemInitializer;
+import com.hangum.tadpole.engine.initialize.TadpoleEngineUserDB;
 import com.hangum.tadpole.engine.manager.TadpoleSQLManager;
 import com.hangum.tadpole.engine.query.dao.system.UserDAO;
 import com.hangum.tadpole.engine.query.dao.system.UserInfoDataDAO;
@@ -51,7 +51,7 @@ public class TadpoleSystem_UserInfoData {
 		mapParam.put("SECURITY_CREDENTIAL_ACCESS_KEY", strAccessKey);
 		mapParam.put("SECURITY_CREDENTIAL_SECRET_KEY", strSecretKey);
 		
-		SqlMapClient sqlClient = TadpoleSQLManager.getInstance(TadpoleSystemInitializer.getUserDB());
+		SqlMapClient sqlClient = TadpoleSQLManager.getInstance(TadpoleEngineUserDB.getUserDB());
 		return sqlClient.queryForList("getUserInfoDataCredential", mapParam); //$NON-NLS-1$
 	}
 
@@ -72,7 +72,7 @@ public class TadpoleSystem_UserInfoData {
 	 * @throws TadpoleSQLManagerException, SQLException
 	 */
 	public static List<UserInfoDataDAO> getUserInfoData(int userSeq) throws TadpoleSQLManagerException, SQLException {
-		SqlMapClient sqlClient = TadpoleSQLManager.getInstance(TadpoleSystemInitializer.getUserDB());
+		SqlMapClient sqlClient = TadpoleSQLManager.getInstance(TadpoleEngineUserDB.getUserDB());
 		return sqlClient.queryForList("getUserInfoData", userSeq); //$NON-NLS-1$
 	}
 	
@@ -83,7 +83,7 @@ public class TadpoleSystem_UserInfoData {
 	 * @throws TadpoleSQLManagerException, SQLException
 	 */
 	public static void insertUserInfoData(List<UserInfoDataDAO> listUserData) throws TadpoleSQLManagerException, SQLException {
-		SqlMapClient sqlClient = TadpoleSQLManager.getInstance(TadpoleSystemInitializer.getUserDB());
+		SqlMapClient sqlClient = TadpoleSQLManager.getInstance(TadpoleEngineUserDB.getUserDB());
 		sqlClient.insert("userInfoDataInsert", listUserData); //$NON-NLS-1$
 	}
 	
@@ -94,7 +94,7 @@ public class TadpoleSystem_UserInfoData {
 	 * @throws TadpoleSQLManagerException, SQLException
 	 */
 	public static void insertUserInfoData(UserInfoDataDAO listUserData) throws TadpoleSQLManagerException, SQLException {
-		SqlMapClient sqlClient = TadpoleSQLManager.getInstance(TadpoleSystemInitializer.getUserDB());
+		SqlMapClient sqlClient = TadpoleSQLManager.getInstance(TadpoleEngineUserDB.getUserDB());
 		sqlClient.insert("userInfoDataInsert", listUserData); //$NON-NLS-1$
 	}
 
@@ -106,7 +106,7 @@ public class TadpoleSystem_UserInfoData {
 	 * @throws TadpoleSQLManagerException, SQLException
 	 */
 	public static void updateEncriptValue(String key, String value) throws TadpoleSQLManagerException, SQLException {
-		SqlMapClient sqlClient = TadpoleSQLManager.getInstance(TadpoleSystemInitializer.getUserDB());
+		SqlMapClient sqlClient = TadpoleSQLManager.getInstance(TadpoleEngineUserDB.getUserDB());
 		sqlClient.update("userInfoDataUpdate", new UserInfoDataDAO(SessionManager.getUserSeq(), key, CipherManager.getInstance().encryption(value))); //$NON-NLS-1$
 		
 		// session 에도 암호화 되게 저장합니다. 
@@ -120,8 +120,8 @@ public class TadpoleSystem_UserInfoData {
 	 * @throws TadpoleSQLManagerException
 	 * @throws SQLException
 	 */
-	public static UserInfoDataDAO updateAdminValue(String key, String value)  throws TadpoleSQLManagerException, SQLException {
-		SqlMapClient sqlClient = TadpoleSQLManager.getInstance(TadpoleSystemInitializer.getUserDB());
+	public static UserInfoDataDAO updateAdminValue(String key, String value) throws TadpoleSQLManagerException, SQLException {
+		SqlMapClient sqlClient = TadpoleSQLManager.getInstance(TadpoleEngineUserDB.getUserDB());
 		UserInfoDataDAO userInfoData = new UserInfoDataDAO(PublicTadpoleDefine.systemAdminId, key, value);
 		int updateCnt = sqlClient.update("userInfoDataUpdate", userInfoData); //$NON-NLS-1$
 		
@@ -136,7 +136,7 @@ public class TadpoleSystem_UserInfoData {
 	 * @throws TadpoleSQLManagerException, SQLException
 	 */
 	public static void updateValue(String key, String value) throws TadpoleSQLManagerException, SQLException {
-		SqlMapClient sqlClient = TadpoleSQLManager.getInstance(TadpoleSystemInitializer.getUserDB());
+		SqlMapClient sqlClient = TadpoleSQLManager.getInstance(TadpoleEngineUserDB.getUserDB());
 		sqlClient.update("userInfoDataUpdate", new UserInfoDataDAO(SessionManager.getUserSeq(), key, value)); //$NON-NLS-1$
 		
 		SessionManager.setUserInfo(key, value);
@@ -219,7 +219,7 @@ public class TadpoleSystem_UserInfoData {
 	 * @throws TadpoleSQLManagerException, SQLException
 	 */
 	public static void updateUserInfoData(String key, String value0) throws TadpoleSQLManagerException, SQLException {
-		SqlMapClient sqlClient = TadpoleSQLManager.getInstance(TadpoleSystemInitializer.getUserDB());
+		SqlMapClient sqlClient = TadpoleSQLManager.getInstance(TadpoleEngineUserDB.getUserDB());
 		sqlClient.update("userInfoDataUpdate", new UserInfoDataDAO(SessionManager.getUserSeq(), key, value0));
 	}
 	
@@ -228,7 +228,7 @@ public class TadpoleSystem_UserInfoData {
 	 * 
 	 */
 	public static void initializeUserPreferenceData(UserDAO userdb) throws TadpoleSQLManagerException, SQLException {
-		SqlMapClient sqlClient = TadpoleSQLManager.getInstance(TadpoleSystemInitializer.getUserDB());
+		SqlMapClient sqlClient = TadpoleSQLManager.getInstance(TadpoleEngineUserDB.getUserDB());
 		sqlClient.startTransaction();
 		sqlClient.startBatch();
 		
@@ -283,7 +283,7 @@ public class TadpoleSystem_UserInfoData {
 	 * @throws SQLException
 	 */
 	public static void insertUserInfoData(UserDAO userdb, String key, String value) throws TadpoleSQLManagerException, SQLException {
-		SqlMapClient sqlClient = TadpoleSQLManager.getInstance(TadpoleSystemInitializer.getUserDB());
+		SqlMapClient sqlClient = TadpoleSQLManager.getInstance(TadpoleEngineUserDB.getUserDB());
 		sqlClient.insert("userInfoDataInsert", new UserInfoDataDAO(userdb.getSeq(), key, value)); //$NON-NLS-1$
 	}
 
