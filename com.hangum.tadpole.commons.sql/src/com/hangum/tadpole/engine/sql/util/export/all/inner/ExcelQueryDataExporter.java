@@ -22,6 +22,8 @@ import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
+import com.hangum.tadpole.commons.libs.core.define.PublicTadpoleDefine.EXPORT_METHOD;
+
 /**
  * excel query data exporter
  * 
@@ -41,7 +43,7 @@ public class ExcelQueryDataExporter extends AQueryDataExporter {
 	@Override
 	public void init(String fileName, String fileExtension) throws Exception {
 		super.init(fileName, fileExtension);
-		
+		exportDto.setExportMethod(EXPORT_METHOD.EXCEL);		
 		workbookExcel = new XSSFWorkbook();
 		sheetExcel = workbookExcel.createSheet(fileName);
 	}

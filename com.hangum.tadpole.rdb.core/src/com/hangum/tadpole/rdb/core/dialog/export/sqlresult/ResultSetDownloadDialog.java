@@ -44,6 +44,8 @@ import com.hangum.tadpole.commons.dialogs.message.dao.RequestResultDAO;
 import com.hangum.tadpole.commons.libs.core.define.PublicTadpoleDefine;
 import com.hangum.tadpole.commons.libs.core.define.PublicTadpoleDefine.EXPORT_METHOD;
 import com.hangum.tadpole.commons.libs.core.message.CommonMessages;
+import com.hangum.tadpole.commons.util.ApplicationArgumentUtils;
+import com.hangum.tadpole.commons.util.DateUtil;
 import com.hangum.tadpole.commons.util.GlobalImageUtils;
 import com.hangum.tadpole.commons.util.TadpoleWidgetUtils;
 import com.hangum.tadpole.commons.util.download.DownloadServiceHandler;
@@ -101,6 +103,9 @@ public class ResultSetDownloadDialog extends Dialog {
 	/** button status */
 	public enum USER_BTN_CLICK_STATUS {PREVIEW, SENDEDITOR, DOWNLOAD};
 	public USER_BTN_CLICK_STATUS userBtnClickStatus = USER_BTN_CLICK_STATUS.PREVIEW;
+	
+	/** user seq */
+	private int userSeq = SessionManager.getUserSeq();
 	
 	/** 배열이 0부터 시작하므로 실제로는 5건. */ 
 	private final int SHOW_PREVIEW_DATA_COUNT = 4;
@@ -364,7 +369,7 @@ public class ResultSetDownloadDialog extends Dialog {
 										SessionManager.getUserSeq(), 
 										queryExecuteResultDTO.getUserDB(), 
 										reqResultDAO
-										);
+									);
 							}
 						} else {
 							MessageDialog.openWarning(getShell(), CommonMessages.get().Warning, jobEvent.getResult().getMessage());
@@ -603,23 +608,28 @@ public class ResultSetDownloadDialog extends Dialog {
 			logger.info("\tfile size : " + file.length());
 			logger.info("#####[end]#####################[resource download]");
 		}
-		final byte[] bytesZip = FileUtils.readFileToByteArray(file);
-		exportDto.setResultData(new String(bytesZip));
+		final byte[] bytesDatas = FileUtils.readFileToByteArray(file);
+		
+		// excel 파일의 경우 바이너리가 저장 되므로... 파일의 위치를 %user_home%/res/파일명 으로 남기도록 합니다.
+		if(exportDto.getExportMethod() == EXPORT_METHOD.EXCEL) {
+			
+			String strNewFile = ApplicationArgumentUtils.USER_RESOURCE_DIR + userSeq + PublicTadpoleDefine.DIR_SEPARATOR + System.currentTimeMillis() + file.getName();
+			if(logger.isDebugEnabled()) logger.debug("==> new file location: " + strNewFile);
+			FileUtils.moveFile(file, new File(strNewFile));
+			
+			exportDto.setResultData("file location: " + strNewFile);
+		} else {
+			exportDto.setResultData(new String(bytesDatas));
+		}
 		
 		getShell().getDisplay().asyncExec(new Runnable() {
 			@Override
 			public void run() {
 				try {
-//					String strZipFile = ZipUtils.pack(strFileLocation);
-//					byte[] bytesZip = FileUtils.readFileToByteArray(new File(strZipFile));
-//					if(logger.isDebugEnabled()) logger.debug("zipFile is " + strZipFile + ", file name is " + fileName +".zip");
-					
-					
-					_downloadExtFile(fileName + "." + strExt, bytesZip); //$NON-NLS-1$
+					_downloadExtFile(fileName + "." + strExt, bytesDatas); //$NON-NLS-1$
 					
 					// 사용후 파일을 삭제한다.
 					FileUtils.deleteDirectory(new File(file.getParent()));
-//					FileUtils.forceDelete(new File(strZipFile));
 				} catch(Exception e) {
 					logger.error("download file", e);
 				}

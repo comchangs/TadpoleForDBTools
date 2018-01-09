@@ -18,6 +18,7 @@ import java.util.List;
 
 import org.apache.log4j.Logger;
 
+import com.hangum.tadpole.commons.libs.core.define.PublicTadpoleDefine.EXPORT_METHOD;
 import com.opencsv.CSVWriter;
 
 /**
@@ -55,6 +56,8 @@ public class CSVQueryDataExporter extends AQueryDataExporter {
 	@Override
 	public void init(String fileName, String fileExtension) throws Exception {
 		super.init(fileName, fileExtension);
+		
+		exportDto.setExportMethod(EXPORT_METHOD.TEXT);
 		
 		// EXCEL UTF-8 엔코딩을 설정한다.
 		fos = new FileOutputStream(exportDto.getFileFullName());

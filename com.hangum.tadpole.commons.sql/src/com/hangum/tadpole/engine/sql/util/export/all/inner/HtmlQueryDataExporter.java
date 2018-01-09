@@ -20,6 +20,7 @@ import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.log4j.Logger;
 
 import com.hangum.tadpole.commons.libs.core.define.HTMLDefine;
+import com.hangum.tadpole.commons.libs.core.define.PublicTadpoleDefine.EXPORT_METHOD;
 
 /**
  * html query data exporter
@@ -38,6 +39,13 @@ public class HtmlQueryDataExporter extends AQueryDataExporter {
 	
 	public HtmlQueryDataExporter(String encoding) {
 		this.encoding = encoding;
+	}
+	
+	@Override
+	public void init(String fileName, String fileExtension) throws Exception {
+		super.init(fileName, fileExtension);
+		
+		exportDto.setExportMethod(EXPORT_METHOD.HTML);
 	}
 
 	@Override

@@ -14,6 +14,7 @@ import java.util.List;
 
 import org.apache.log4j.Logger;
 
+import com.hangum.tadpole.commons.libs.core.define.PublicTadpoleDefine.EXPORT_METHOD;
 import com.hangum.tadpole.engine.query.dao.system.UserDBDAO;
 import com.hangum.tadpole.engine.sql.util.SQLQueryUtil;
 import com.hangum.tadpole.engine.sql.util.export.AbstractTDBExporter;
@@ -51,6 +52,7 @@ public class AllDataExporter {
 	public static ExportResultDTO makeJSONHeadAllResult(UserDBDAO userDB, String strSQL, String fileName, String schemeKey,
 			String recordKey, boolean isFormat, String encoding, String strDefaultNullValue, int intMaxCount) throws Exception {
 		ExportResultDTO exportDto = new ExportResultDTO();
+		exportDto.setExportMethod(EXPORT_METHOD.JSON);
 		exportDto.setStartCurrentTime(System.currentTimeMillis());
 		
 		QueryExecuteResultDTO allResusltDto = makeAllResult(userDB, strSQL, intMaxCount);
@@ -75,6 +77,7 @@ public class AllDataExporter {
 			String encoding, String strDefaultNullValue, int intMaxCount)  throws Exception {
 		
 		ExportResultDTO exportDto = new ExportResultDTO();
+		exportDto.setExportMethod(EXPORT_METHOD.JSON);
 		exportDto.setStartCurrentTime(System.currentTimeMillis());
 		
 		QueryExecuteResultDTO allResusltDto = makeAllResult(userDB, strSQL, intMaxCount);
@@ -126,6 +129,7 @@ public class AllDataExporter {
 	public static ExportResultDTO makeXMLResult(UserDBDAO userDB, String strSQL, String targetName, String encoding,
 			String strDefaultNullValue, int intMaxCount) throws Exception {
 		ExportResultDTO exportDto = new ExportResultDTO();
+		exportDto.setExportMethod(EXPORT_METHOD.XML);
 		exportDto.setStartCurrentTime(System.currentTimeMillis());
 		
 		QueryExecuteResultDTO allResusltDto = makeAllResult(userDB, strSQL, intMaxCount);
@@ -153,6 +157,7 @@ public class AllDataExporter {
 			String encoding, String strDefaultNullValue, int intMaxCount) throws Exception {
 		
 		ExportResultDTO exportDto = new ExportResultDTO();
+		exportDto.setExportMethod(EXPORT_METHOD.SQL);
 		exportDto.setStartCurrentTime(System.currentTimeMillis());
 		exportDto.setFileName(targetName);
 		exportDto.setFileFullName(AbstractTDBExporter.makeFileName(targetName, "sql"));
@@ -192,6 +197,7 @@ public class AllDataExporter {
 	public static ExportResultDTO makeFileInsertStatment(UserDBDAO userDB, String strSQL, String targetName, int commit,
 			String encoding, String strDefaultNullValue, int intMaxCount) throws Exception {
 		ExportResultDTO exportDto = new ExportResultDTO();
+		exportDto.setExportMethod(EXPORT_METHOD.SQL);
 		exportDto.setStartCurrentTime(System.currentTimeMillis());
 		
 		exportDto.setFileName(targetName);
@@ -234,6 +240,7 @@ public class AllDataExporter {
 	public static ExportResultDTO makeFileUpdateStatment(UserDBDAO userDB, String strSQL, String targetName, List<String> listWhere, int commit,
 			String encoding, String strDefaultNullValue, int intMaxCount) throws Exception {
 		ExportResultDTO exportDto = new ExportResultDTO();
+		exportDto.setExportMethod(EXPORT_METHOD.SQL);
 		exportDto.setStartCurrentTime(System.currentTimeMillis());
 		
 		exportDto.setFileName(targetName);
@@ -277,6 +284,7 @@ public class AllDataExporter {
 	public static ExportResultDTO makeFileMergeStatment(UserDBDAO userDB, String strSQL, String targetName, List<String> listWhere, int commit,
 			String encoding, String strDefaultNullValue, int intMaxCount) throws Exception {
 		ExportResultDTO exportDto = new ExportResultDTO();
+		exportDto.setExportMethod(EXPORT_METHOD.SQL);
 		exportDto.setStartCurrentTime(System.currentTimeMillis());
 		
 		exportDto.setFileName(targetName);
