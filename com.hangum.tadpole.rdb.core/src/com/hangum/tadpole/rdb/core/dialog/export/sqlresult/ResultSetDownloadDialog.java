@@ -325,7 +325,7 @@ public class ResultSetDownloadDialog extends Dialog {
 						ExportSqlDAO dao = (ExportSqlDAO)_dao;
 						exportResult = exportResultSqlType(dao.getTargetName(), dao.getComboEncoding(), dao.getListWhere(),  dao.getStatementType(), dao.getCommit());
 					}
-					
+					reqResultDAO.setResultData(exportResult.getResultData());
 					reqResultDAO.setRows(exportResult.getRowCount());
 					reqResultDAO.setResult(PublicTadpoleDefine.SUCCESS_FAIL.S.name()); //$NON-NLS-1$
 				} catch(Exception e) {
@@ -358,13 +358,12 @@ public class ResultSetDownloadDialog extends Dialog {
 				display.asyncExec(new Runnable() {
 					public void run() {
 						if(jobEvent.getResult().isOK()) {
-//							MessageDialog.openInformation(getShell(), CommonMessages.get().OK, CommonMessages.get().DownloadIsComplete);
+//							
 							if (userBtnClickStatus == USER_BTN_CLICK_STATUS.DOWNLOAD) {
 								TadpoleSystem_ExecutedSQL.insertExecuteHistory(
 										SessionManager.getUserSeq(), 
 										queryExecuteResultDTO.getUserDB(), 
-										reqResultDAO,
-										null
+										reqResultDAO
 										);
 							}
 						} else {
@@ -398,7 +397,7 @@ public class ResultSetDownloadDialog extends Dialog {
 			targetEditor(CSVExpoter.makeContent(isAddHead, queryExecuteResultDTO, separator, strDefaultNullValue));
 		} else {
 			exportDto = QueryDataExportFactory.createCSV(separator, isAddHead, targetName, "csv", queryExecuteResultDTO.getUserDB(), strSQL, intMaxDownloadCnt);
-			downloadFile(targetName, exportDto.getFileFullName(), encoding);
+			exportDto = downloadFile(targetName, exportDto, encoding);
 		}
 		
 		return exportDto;
@@ -420,7 +419,7 @@ public class ResultSetDownloadDialog extends Dialog {
 //			targetEditor("에디터로 데이터를 보낼수 없습니다.");
 		}else{
 			exportDto = QueryDataExportFactory.createExcel(targetName, "xlsx", queryExecuteResultDTO.getUserDB(), strSQL, intMaxDownloadCnt);
-			downloadFile(targetName, exportDto.getFileFullName(), "UTF-8");
+			exportDto = downloadFile(targetName, exportDto, "UTF-8");
 		}
 		
 		return exportDto;
@@ -441,7 +440,7 @@ public class ResultSetDownloadDialog extends Dialog {
 			targetEditor(HTMLExporter.makeContent(targetName, queryExecuteResultDTO, strDefaultNullValue));
 		}else{
 			exportDto = QueryDataExportFactory.createHTML(encoding, targetName, "html", queryExecuteResultDTO.getUserDB(), strSQL, intMaxDownloadCnt);
-			downloadFile(targetName, exportDto.getFileFullName(), encoding);
+			exportDto = downloadFile(targetName, exportDto, encoding);
 		}
 		
 		return exportDto;
@@ -467,7 +466,7 @@ public class ResultSetDownloadDialog extends Dialog {
 				targetEditor(JsonExpoter.makeHeadContent(targetName, queryExecuteResultDTO, schemeKey, recordKey, isFormat, -1));
 			}else{
 				exportDto = AllDataExporter.makeJSONHeadAllResult(queryExecuteResultDTO.getUserDB(), strSQL, targetName, schemeKey, recordKey, isFormat, encoding, strDefaultNullValue, intMaxDownloadCnt);
-				downloadFile(targetName, exportDto.getFileFullName(), encoding);
+				exportDto = downloadFile(targetName, exportDto, encoding);
 			}
 		}else{
 			if (userBtnClickStatus == USER_BTN_CLICK_STATUS.PREVIEW) {
@@ -476,7 +475,7 @@ public class ResultSetDownloadDialog extends Dialog {
 				targetEditor(JsonExpoter.makeContent(targetName, queryExecuteResultDTO, isFormat, -1));
 			}else{
 				exportDto = AllDataExporter.makeJSONAllResult(queryExecuteResultDTO.getUserDB(), strSQL, targetName, isFormat, encoding, strDefaultNullValue, intMaxDownloadCnt);
-				downloadFile(targetName, exportDto.getFileFullName(), encoding);
+				exportDto = downloadFile(targetName, exportDto, encoding);
 			}
 		}
 		
@@ -498,7 +497,7 @@ public class ResultSetDownloadDialog extends Dialog {
 			targetEditor(XMLExporter.makeContent(targetName, queryExecuteResultDTO));
 		}else{
 			exportDto = AllDataExporter.makeXMLResult(queryExecuteResultDTO.getUserDB(), strSQL, targetName, encoding, strDefaultNullValue, intMaxDownloadCnt);
-			downloadFile(targetName, exportDto.getFileFullName(), encoding);
+			exportDto = downloadFile(targetName, exportDto, encoding);
 		}
 		
 		return exportDto;
@@ -522,7 +521,7 @@ public class ResultSetDownloadDialog extends Dialog {
 				targetEditor(SQLExporter.makeBatchInsertStatment(targetName, queryExecuteResultDTO, -1, commit));
 			}else{
 				exportDto = AllDataExporter.makeFileBatchInsertStatment(queryExecuteResultDTO.getUserDB(), strSQL, targetName, commit, encoding, strDefaultNullValue, intMaxDownloadCnt);
-				downloadFile(targetName, exportDto.getFileFullName(), encoding);
+				exportDto = downloadFile(targetName, exportDto, encoding);
 			}
 		}else if ("insert".equalsIgnoreCase(stmtType)) {
 			if (userBtnClickStatus == USER_BTN_CLICK_STATUS.PREVIEW) {
@@ -531,7 +530,7 @@ public class ResultSetDownloadDialog extends Dialog {
 				targetEditor(SQLExporter.makeInsertStatment(targetName, queryExecuteResultDTO, -1, commit));
 			}else{
 				exportDto = AllDataExporter.makeFileInsertStatment(queryExecuteResultDTO.getUserDB(), strSQL, targetName, commit, encoding, strDefaultNullValue, intMaxDownloadCnt);
-				downloadFile(targetName, exportDto.getFileFullName(), encoding);
+				exportDto = downloadFile(targetName, exportDto, encoding);
 			}
 		}else if ("update".equalsIgnoreCase(stmtType)) {
 			if (userBtnClickStatus == USER_BTN_CLICK_STATUS.PREVIEW) {
@@ -540,7 +539,7 @@ public class ResultSetDownloadDialog extends Dialog {
 				targetEditor(SQLExporter.makeUpdateStatment(targetName, queryExecuteResultDTO, listWhere, -1, commit));
 			}else{
 				exportDto = AllDataExporter.makeFileUpdateStatment(queryExecuteResultDTO.getUserDB(), strSQL, targetName, listWhere, commit, encoding, strDefaultNullValue, intMaxDownloadCnt);
-				downloadFile(targetName, exportDto.getFileFullName(), encoding);
+				exportDto = downloadFile(targetName, exportDto, encoding);
 			}
 		}else if ("merge".equalsIgnoreCase(stmtType)) {
 			if (userBtnClickStatus == USER_BTN_CLICK_STATUS.PREVIEW) {
@@ -549,7 +548,7 @@ public class ResultSetDownloadDialog extends Dialog {
 				targetEditor(SQLExporter.makeMergeStatment(targetName, queryExecuteResultDTO, listWhere, -1, commit));
 			}else{
 				exportDto = AllDataExporter.makeFileMergeStatment(queryExecuteResultDTO.getUserDB(), strSQL, targetName, listWhere, commit, encoding, strDefaultNullValue, intMaxDownloadCnt);
-				downloadFile(targetName, exportDto.getFileFullName(), encoding);
+				exportDto = downloadFile(targetName, exportDto, encoding);
 			}
 		}
 		
@@ -590,12 +589,23 @@ public class ResultSetDownloadDialog extends Dialog {
 	 * download file
 	 * 
 	 * @param fileName
-	 * @param strFileLocation
+	 * @param exportDto
 	 * @param encoding 
 	 * 
 	 * @throws Exception
 	 */
-	protected void downloadFile(final String fileName, final String strFileLocation, final String encoding) throws Exception {
+	protected ExportResultDTO downloadFile(final String fileName, final ExportResultDTO exportDto, final String encoding) throws Exception {
+		final File file = new File(exportDto.getFileFullName());
+		String strExt = StringUtils.substringAfterLast(exportDto.getFileFullName(), ".");
+		if(logger.isInfoEnabled()) {
+			logger.info("#####[start]#####################[resource download]");
+			logger.info("\tfile ext : " + strExt);
+			logger.info("\tfile size : " + file.length());
+			logger.info("#####[end]#####################[resource download]");
+		}
+		final byte[] bytesZip = FileUtils.readFileToByteArray(file);
+		exportDto.setResultData(new String(bytesZip));
+		
 		getShell().getDisplay().asyncExec(new Runnable() {
 			@Override
 			public void run() {
@@ -604,16 +614,7 @@ public class ResultSetDownloadDialog extends Dialog {
 //					byte[] bytesZip = FileUtils.readFileToByteArray(new File(strZipFile));
 //					if(logger.isDebugEnabled()) logger.debug("zipFile is " + strZipFile + ", file name is " + fileName +".zip");
 					
-					File file = new File(strFileLocation);
-					String strExt = StringUtils.substringAfter(strFileLocation, ".");
-					if(logger.isInfoEnabled()) {
-						logger.info("#####[start]#####################[resource download]");
-						logger.info("\tfile ext : " + strExt);
-						logger.info("\tfile size : " + file.length());
-						logger.info("#####[end]#####################[resource download]");
-					}
 					
-					byte[] bytesZip = FileUtils.readFileToByteArray(file);
 					_downloadExtFile(fileName + "." + strExt, bytesZip); //$NON-NLS-1$
 					
 					// 사용후 파일을 삭제한다.
@@ -624,6 +625,8 @@ public class ResultSetDownloadDialog extends Dialog {
 				}
 			}
 		});
+		
+		return exportDto;
 	}
 	
 	/** registery service handler */

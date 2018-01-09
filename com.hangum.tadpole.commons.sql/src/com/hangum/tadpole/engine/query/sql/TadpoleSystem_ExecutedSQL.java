@@ -68,19 +68,16 @@ public class TadpoleSystem_ExecutedSQL {
 		if(LicenseValidator.getLicense().isValidate()) {
 			try {
 				
-				String strExecuteResultData = "";
 				if(rsDAO != null) {
 					if(PublicTadpoleDefine.YES_NO.YES.name().equals(rsDAO.getUserDB().getIs_result_save())) {
-						strExecuteResultData = CSVExpoter.makeContent(true, rsDAO, ',', "UTF-8");
+						reqResultDAO.setResultData(CSVExpoter.makeContent(true, rsDAO, ',', "UTF-8"));
 					}
 				}
 				
 				longHistorySeq = TadpoleSystem_ExecutedSQL.saveExecuteSQUeryResource(
 								user_seq, 
 								userDB, 
-								reqResultDAO.getEXECUSTE_SQL_TYPE(), 
-								reqResultDAO,
-								strExecuteResultData
+								reqResultDAO
 								);
 			
 				
@@ -110,9 +107,7 @@ public class TadpoleSystem_ExecutedSQL {
 				longHistorySeq = TadpoleSystem_ExecutedSQL.saveExecuteSQUeryResource(
 								user_seq, 
 								userDB, 
-								PublicTadpoleDefine.EXECUTE_SQL_TYPE.EDITOR, 
-								reqResultDAO,
-								""
+								reqResultDAO
 								);
 			
 				
@@ -323,16 +318,15 @@ public class TadpoleSystem_ExecutedSQL {
 	 * 
 	 * @param user_seq
 	 * @param userDB
-	 * @param sqlType
 	 * @param requestResultDAO
 	 * @param strExecuteResultData
 	 */
-	public static long saveExecuteSQUeryResource(final int user_seq, final UserDBDAO userDB, final PublicTadpoleDefine.EXECUTE_SQL_TYPE sqlType, final RequestResultDAO requestResultDAO, final String strExecuteResultData) throws TadpoleSQLManagerException, SQLException {
+	public static long saveExecuteSQUeryResource(final int user_seq, final UserDBDAO userDB, final RequestResultDAO requestResultDAO) throws TadpoleSQLManagerException, SQLException {
 		if(PublicTadpoleDefine.YES_NO.YES.name().equals(userDB.getIs_profile())) {
 			ExecutedSqlResourceDAO executeSQLResourceDao = new ExecutedSqlResourceDAO();
 			executeSQLResourceDao.setDb_seq(userDB.getSeq());
 			executeSQLResourceDao.setUser_seq(user_seq);
-			executeSQLResourceDao.setTypes(sqlType.toString());
+			executeSQLResourceDao.setTypes(requestResultDAO.getEXECUSTE_SQL_TYPE().name());
 			
 			executeSQLResourceDao.setStartDateExecute(requestResultDAO.getStartDateExecute());
 			executeSQLResourceDao.setEndDateExecute(requestResultDAO.getEndDateExecute());
@@ -353,7 +347,8 @@ public class TadpoleSystem_ExecutedSQL {
 			executeSQLResourceDao.setTdb_result_code(requestResultDAO.getTdb_result_code());
 			executeSQLResourceDao.setMessage(requestResultDAO.getMesssage());
 			executeSQLResourceDao.setIpAddress(requestResultDAO.getIpAddress());
-			if(!"".equals(strExecuteResultData)) {
+
+			if(PublicTadpoleDefine.YES_NO.YES.name().equals(userDB.getIs_result_save())) {
 				executeSQLResourceDao.setResult_save_yn(PublicTadpoleDefine.YES_NO.YES.name());
 			}
 			
@@ -363,8 +358,8 @@ public class TadpoleSystem_ExecutedSQL {
 			
 			insertResourceSQLData(executeSQL.getSeq(), requestResultDAO.getStartDateExecute(), requestResultDAO.getTdb_sql_head(), requestResultDAO.getSql_text());
 			
-			if(!"".equals(strExecuteResultData)) {
-				insertResourceResultData(executeSQL.getSeq(), requestResultDAO.getStartDateExecute(), strExecuteResultData);
+			if(PublicTadpoleDefine.YES_NO.YES.name().equals(userDB.getIs_result_save())) {
+				insertResourceResultData(executeSQL.getSeq(), requestResultDAO.getStartDateExecute(), requestResultDAO.getResultData());
 			}
 			
 			return executeSQL.getSeq();

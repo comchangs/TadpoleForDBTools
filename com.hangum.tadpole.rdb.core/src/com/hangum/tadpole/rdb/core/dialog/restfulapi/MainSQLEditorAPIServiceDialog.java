@@ -255,6 +255,7 @@ public class MainSQLEditorAPIServiceDialog extends Dialog {
 		String strSQLs = "";
 		
 		RequestResultDAO reqResultDAO = new RequestResultDAO();
+		reqResultDAO.setEXECUSTE_SQL_TYPE(PublicTadpoleDefine.EXECUTE_SQL_TYPE.API_USER);
 		reqResultDAO.setDbSeq(userDB.getSeq());
 		reqResultDAO.setStartDateExecute(new Timestamp(System.currentTimeMillis()));
 		reqResultDAO.setIpAddress(SessionManager.getLoginIp());
@@ -290,13 +291,13 @@ public class MainSQLEditorAPIServiceDialog extends Dialog {
 			reqResultDAO.setEndDateExecute(new Timestamp(System.currentTimeMillis()));
 			reqResultDAO.setTdb_sql_head("/** api key : API Hub Manager */\r\n/**" + strArgument + "*/");
 			reqResultDAO.setSql_text(strSQLs);
+			reqResultDAO.setResultData(strExecuteResultData);
 			
 			try {
 				TadpoleSystem_ExecutedSQL.saveExecuteSQUeryResource(SessionManager.getUserSeq(), 
 						userDB, 
-						PublicTadpoleDefine.EXECUTE_SQL_TYPE.API_USER, 
-						reqResultDAO,
-						strExecuteResultData);
+						reqResultDAO
+					);
 			} catch(Exception e) {
 				logger.error("save history", e);
 			}

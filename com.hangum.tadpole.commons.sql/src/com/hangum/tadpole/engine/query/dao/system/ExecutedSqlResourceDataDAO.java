@@ -23,8 +23,8 @@ public class ExecutedSqlResourceDataDAO {
 	Timestamp startDateExecute;
 	long executed_sql_resource_seq;
 	/** 테드폴허브에서 추가하는 헤더 */
-	String tdb_sql_head;
-    String sql_data;
+	String tdb_sql_head = "";
+    String sql_data = "";
     Timestamp ctreate_time;
     
 	public ExecutedSqlResourceDataDAO() {

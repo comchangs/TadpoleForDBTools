@@ -41,6 +41,9 @@ public class ExportResultDTO {
 	
 	/** exception */
 	Exception exception;
+	
+	/** result data save */
+	String resultData = "";
 
 	/**
 	 * @return the startCurrentTime
@@ -152,6 +155,20 @@ public class ExportResultDTO {
 	 */
 	public void setException(Exception exception) {
 		this.exception = exception;
+	}
+
+	/**
+	 * @return the resultData
+	 */
+	public String getResultData() {
+		return resultData;
+	}
+
+	/**
+	 * @param resultData the resultData to set
+	 */
+	public void setResultData(String resultData) {
+		this.resultData = resultData;
 	}
 
 }
