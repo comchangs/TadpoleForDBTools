@@ -207,7 +207,7 @@ public class RDBPreferencePage extends TadpoleDefaulPreferencePage implements IW
 		btnCreatePlanTable.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
-				TadpoleSimpleMessageDialog planDialog = new TadpoleSimpleMessageDialog(getShell(), textOraclePlan.getText(), ORACLE_PLAN_TABLE);
+				TadpoleSimpleMessageDialog planDialog = new TadpoleSimpleMessageDialog(getShell(), Messages.get().PleaseCreateOraclePlanTable, String.format(ORACLE_PLAN_TABLE, textOraclePlan.getText()));
 				planDialog.open();
 			}
 		});
@@ -436,7 +436,7 @@ public class RDBPreferencePage extends TadpoleDefaulPreferencePage implements IW
 	
 	/** ORACLE PLAN TABLE */
 	private static final String ORACLE_PLAN_TABLE = 
-			" CREATE TABLE plan_table (							  \r\n" + 
+			" CREATE TABLE %s (							  \r\n" + 
 					"         STATEMENT_ID       VARCHAR2(30),    \r\n" + 
 					"         plan_id            NUMBER,          \r\n" + 
 					"         TIMESTAMP          DATE,            \r\n" + 

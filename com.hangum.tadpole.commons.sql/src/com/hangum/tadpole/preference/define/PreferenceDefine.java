@@ -110,8 +110,8 @@ public class PreferenceDefine extends AdminPreferenceDefine {
 	
 	/** ORACLE PLAN TABLE */
 	public static final String ORACLE_PLAN_TABLE = "ORACLE_PLAN_TABLE";
-	/** ORACLE PLAN TABLE VALUE */
-	public static final String ORACLE_PLAN_TABLE_VALUE = "PLAN_TABLE";
+	/** ORACLE PLAN TABLE VALUE (오라클 플랜 테이블 설정) - 10g 이상에서는 기본 생성된 테이블 */
+	public static final String ORACLE_PLAN_TABLE_VALUE = "SYS.PLAN_TABLE$";
 	
 	/** login history */
 	public static final String LOGIN_HISTORY_PREFERENCE = "LOGIN_HISTORY_PREFERENCE";
