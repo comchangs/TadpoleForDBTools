@@ -87,6 +87,7 @@ public class RESTfulAPIUtils {
 					try {
 						value = convertExistObject(key, pair[1]);
 					} catch(Exception e) {
+						logger.error("conver type casting exception" + e.getMessage());
 						value = pair[1];
 					}
 				}
