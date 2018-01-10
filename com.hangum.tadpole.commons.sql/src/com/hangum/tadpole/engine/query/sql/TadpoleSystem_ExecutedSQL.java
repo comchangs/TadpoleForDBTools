@@ -186,7 +186,20 @@ public class TadpoleSystem_ExecutedSQL {
 		queryMap.put("_indexEnd", _indexEnd);
 		
 		SqlMapClient sqlClient = TadpoleSQLManager.getInstance(TadpoleEngineUserDB.getUserDB());
-		List<java.util.Map> listResourceData = sqlClient.queryForList("getExecuteQueryHistoryDetail", queryMap);
+		List<java.util.Map> listResourceData =  new ArrayList<Map>();
+		
+		if("All".equals(strType)) {
+			listResourceData = sqlClient.queryForList("getExecuteQueryHistoryDetail", queryMap);
+			
+			queryMap.put("type", PublicTadpoleDefine.EXECUTE_SQL_TYPE.API.name());
+			listResourceData.addAll(sqlClient.queryForList("getExecuteQueryHistoryAPIDetail", queryMap));
+		} else {
+			if(PublicTadpoleDefine.EXECUTE_SQL_TYPE.API.name().endsWith(strType)) {
+				listResourceData = sqlClient.queryForList("getExecuteQueryHistoryAPIDetail", queryMap);			
+			} else {
+				listResourceData = sqlClient.queryForList("getExecuteQueryHistoryDetail", queryMap);
+			}
+		}
 		
 		for (Map resultMap : listResourceData) {
 			long seq = (Long)resultMap.get("executed_sql_resource_seq");
