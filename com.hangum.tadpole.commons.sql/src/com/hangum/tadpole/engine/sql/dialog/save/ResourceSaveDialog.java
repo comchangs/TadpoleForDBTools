@@ -170,7 +170,7 @@ public class ResourceSaveDialog extends Dialog {
 	 * initialize ui
 	 */
 	private void initUI() {
-		if(resourceType == RESOURCE_TYPE.ERD) {
+		if(resourceType == RESOURCE_TYPE.ERD || PublicTadpoleDefine.YES_NO.NO.name().equals(SessionManager.getIsMakeAPI())) {
 			comboUseAPI.setEnabled(false);
 			textAPIURI.setEnabled(false);
 		}
