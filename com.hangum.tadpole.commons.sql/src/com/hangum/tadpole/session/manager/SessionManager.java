@@ -79,6 +79,7 @@ public class SessionManager {
 														IS_SHARED_DB,
 														LIMIT_ADD_DB_CNT,
 														IS_MODIFY_PERFERENCE,
+														IS_MAKE_API,
 														SERVICE_END,
 														LANGUAGE,
 														TIMEZONE,
@@ -177,6 +178,8 @@ public class SessionManager {
 		
 		sStore.setAttribute(NAME.IS_SHARED_DB.name(), userDao.getIs_shared_db());
 		sStore.setAttribute(NAME.IS_MODIFY_PERFERENCE.name(), userDao.getIs_modify_perference());
+		sStore.setAttribute(NAME.IS_MAKE_API.name(), userDao.getIs_make_api());
+		
 		sStore.setAttribute(NAME.LIMIT_ADD_DB_CNT.name(), userDao.getLimit_add_db_cnt());
 		sStore.setAttribute(NAME.SERVICE_END.name(), userDao.getService_end());
 		
@@ -262,6 +265,11 @@ public class SessionManager {
 	public static String getIsModifyPerference() {
 		HttpSession sStore = RWT.getRequest().getSession();
 		return (String)sStore.getAttribute(NAME.IS_MODIFY_PERFERENCE.name());
+	}
+	
+	public static String getIsMakeAPI() {
+		HttpSession sStore = RWT.getRequest().getSession();
+		return (String)sStore.getAttribute(NAME.IS_MAKE_API.name());
 	}
 	
 	public static Timestamp getServiceEnd() {

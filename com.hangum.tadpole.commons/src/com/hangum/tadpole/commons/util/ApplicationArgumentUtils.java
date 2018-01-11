@@ -32,6 +32,9 @@ public class ApplicationArgumentUtils {
 	/** jdbc dir */
 	public static String JDBC_RESOURCE_DIR = ApplicationArgumentUtils.getResourcesDir() + "driver" + PublicTadpoleDefine.DIR_SEPARATOR;
 	
+	/** user dir */
+	public static String USER_RESOURCE_DIR = ApplicationArgumentUtils.getResourcesDir() + "res" + PublicTadpoleDefine.DIR_SEPARATOR;
+	
 	/**
 	 * Logger for this class
 	 */

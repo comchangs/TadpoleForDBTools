@@ -70,6 +70,9 @@
 	
 	<sqlMap resource="com/hangum/tadpole/engine/query/internal/system/Tadpole-System-Common.xml" />
 	
+	<!-- 사용자 -->
+	<sqlMap resource="com/hangum/tadpole/engine/query/internal/system/Tadpole-System-User.xml" />
+	
 	<!-- sqlMap resource="com/hangum/tadpole/engine/query/internal/system/Tadpole-System-Schedule.xml" /-->
 	<sqlMap resource="com/hangum/tadpole/engine/query/internal/system/Tadpole-System-Monitoring.xml"/>
 	<sqlMap resource="com/hangum/tadpole/engine/query/internal/system/Tadpole-System-Monitoring-Template.xml"/>

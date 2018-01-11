@@ -55,6 +55,8 @@ public class UserDAO {
 	int limit_add_db_cnt = 5;
 	/** 쿼리와 관련된 부분의 프리퍼런스 수정할 수 있는지? */
 	String is_modify_perference = PublicTadpoleDefine.YES_NO.YES.name();
+	/** 사용자가 api 를 작성할수 있는지 여부 */
+	String is_make_api  = PublicTadpoleDefine.YES_NO.NO.name();
 	
 	Timestamp service_start = new Timestamp(System.currentTimeMillis());
 	Timestamp service_end = new Timestamp(DateUtil.afterMonthToMillis(12));
@@ -331,6 +333,20 @@ public class UserDAO {
 	 */
 	public void setIs_modify_perference(String is_modify_perference) {
 		this.is_modify_perference = is_modify_perference;
+	}
+	
+	/**
+	 * @return the is_make_api
+	 */
+	public String getIs_make_api() {
+		return is_make_api;
+	}
+
+	/**
+	 * @param is_make_api the is_make_api to set
+	 */
+	public void setIs_make_api(String is_make_api) {
+		this.is_make_api = is_make_api;
 	}
 
 	/**

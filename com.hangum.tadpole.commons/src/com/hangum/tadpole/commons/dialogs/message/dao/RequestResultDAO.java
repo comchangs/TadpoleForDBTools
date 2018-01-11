@@ -56,6 +56,9 @@ public class RequestResultDAO {
 	PublicTadpoleDefine.EXECUTE_SQL_TYPE EXECUSTE_SQL_TYPE = PublicTadpoleDefine.EXECUTE_SQL_TYPE.EDITOR;
 	
 	String result_save_yn = PublicTadpoleDefine.YES_NO.NO.name();
+	
+	/** 쿼리 결과 데이터 저장 */
+	String resultData = "";
 
 	public RequestResultDAO(int duration, Timestamp dateExecute, String tdb_sql_head, String sql_text, Timestamp endDateExecute, int rows, String result, int tdb_result_code, String message) {
 		this.duration = duration;
@@ -328,4 +331,19 @@ public class RequestResultDAO {
 	public void setResult_save_yn(String result_save_yn) {
 		this.result_save_yn = result_save_yn;
 	}
+
+	/**
+	 * @return the resultData
+	 */
+	public String getResultData() {
+		return resultData;
+	}
+
+	/**
+	 * @param resultData the resultData to set
+	 */
+	public void setResultData(String resultData) {
+		this.resultData = resultData;
+	}
+	
 }

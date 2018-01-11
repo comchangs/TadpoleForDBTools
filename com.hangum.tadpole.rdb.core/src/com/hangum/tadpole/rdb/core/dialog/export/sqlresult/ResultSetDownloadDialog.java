@@ -44,6 +44,7 @@ import com.hangum.tadpole.commons.dialogs.message.dao.RequestResultDAO;
 import com.hangum.tadpole.commons.libs.core.define.PublicTadpoleDefine;
 import com.hangum.tadpole.commons.libs.core.define.PublicTadpoleDefine.EXPORT_METHOD;
 import com.hangum.tadpole.commons.libs.core.message.CommonMessages;
+import com.hangum.tadpole.commons.util.ApplicationArgumentUtils;
 import com.hangum.tadpole.commons.util.GlobalImageUtils;
 import com.hangum.tadpole.commons.util.TadpoleWidgetUtils;
 import com.hangum.tadpole.commons.util.download.DownloadServiceHandler;
@@ -101,6 +102,9 @@ public class ResultSetDownloadDialog extends Dialog {
 	/** button status */
 	public enum USER_BTN_CLICK_STATUS {PREVIEW, SENDEDITOR, DOWNLOAD};
 	public USER_BTN_CLICK_STATUS userBtnClickStatus = USER_BTN_CLICK_STATUS.PREVIEW;
+	
+	/** user seq */
+	private int userSeq = SessionManager.getUserSeq();
 	
 	/** 배열이 0부터 시작하므로 실제로는 5건. */ 
 	private final int SHOW_PREVIEW_DATA_COUNT = 4;
@@ -325,7 +329,7 @@ public class ResultSetDownloadDialog extends Dialog {
 						ExportSqlDAO dao = (ExportSqlDAO)_dao;
 						exportResult = exportResultSqlType(dao.getTargetName(), dao.getComboEncoding(), dao.getListWhere(),  dao.getStatementType(), dao.getCommit());
 					}
-					
+					reqResultDAO.setResultData(exportResult.getResultData());
 					reqResultDAO.setRows(exportResult.getRowCount());
 					reqResultDAO.setResult(PublicTadpoleDefine.SUCCESS_FAIL.S.name()); //$NON-NLS-1$
 				} catch(Exception e) {
@@ -358,14 +362,13 @@ public class ResultSetDownloadDialog extends Dialog {
 				display.asyncExec(new Runnable() {
 					public void run() {
 						if(jobEvent.getResult().isOK()) {
-//							MessageDialog.openInformation(getShell(), CommonMessages.get().OK, CommonMessages.get().DownloadIsComplete);
+//							
 							if (userBtnClickStatus == USER_BTN_CLICK_STATUS.DOWNLOAD) {
 								TadpoleSystem_ExecutedSQL.insertExecuteHistory(
 										SessionManager.getUserSeq(), 
 										queryExecuteResultDTO.getUserDB(), 
-										reqResultDAO,
-										null
-										);
+										reqResultDAO
+									);
 							}
 						} else {
 							MessageDialog.openWarning(getShell(), CommonMessages.get().Warning, jobEvent.getResult().getMessage());
@@ -398,7 +401,7 @@ public class ResultSetDownloadDialog extends Dialog {
 			targetEditor(CSVExpoter.makeContent(isAddHead, queryExecuteResultDTO, separator, strDefaultNullValue));
 		} else {
 			exportDto = QueryDataExportFactory.createCSV(separator, isAddHead, targetName, "csv", queryExecuteResultDTO.getUserDB(), strSQL, intMaxDownloadCnt);
-			downloadFile(targetName, exportDto.getFileFullName(), encoding);
+			exportDto = downloadFile(targetName, exportDto, encoding);
 		}
 		
 		return exportDto;
@@ -420,7 +423,7 @@ public class ResultSetDownloadDialog extends Dialog {
 //			targetEditor("에디터로 데이터를 보낼수 없습니다.");
 		}else{
 			exportDto = QueryDataExportFactory.createExcel(targetName, "xlsx", queryExecuteResultDTO.getUserDB(), strSQL, intMaxDownloadCnt);
-			downloadFile(targetName, exportDto.getFileFullName(), "UTF-8");
+			exportDto = downloadFile(targetName, exportDto, "UTF-8");
 		}
 		
 		return exportDto;
@@ -441,7 +444,7 @@ public class ResultSetDownloadDialog extends Dialog {
 			targetEditor(HTMLExporter.makeContent(targetName, queryExecuteResultDTO, strDefaultNullValue));
 		}else{
 			exportDto = QueryDataExportFactory.createHTML(encoding, targetName, "html", queryExecuteResultDTO.getUserDB(), strSQL, intMaxDownloadCnt);
-			downloadFile(targetName, exportDto.getFileFullName(), encoding);
+			exportDto = downloadFile(targetName, exportDto, encoding);
 		}
 		
 		return exportDto;
@@ -467,7 +470,7 @@ public class ResultSetDownloadDialog extends Dialog {
 				targetEditor(JsonExpoter.makeHeadContent(targetName, queryExecuteResultDTO, schemeKey, recordKey, isFormat, -1));
 			}else{
 				exportDto = AllDataExporter.makeJSONHeadAllResult(queryExecuteResultDTO.getUserDB(), strSQL, targetName, schemeKey, recordKey, isFormat, encoding, strDefaultNullValue, intMaxDownloadCnt);
-				downloadFile(targetName, exportDto.getFileFullName(), encoding);
+				exportDto = downloadFile(targetName, exportDto, encoding);
 			}
 		}else{
 			if (userBtnClickStatus == USER_BTN_CLICK_STATUS.PREVIEW) {
@@ -476,7 +479,7 @@ public class ResultSetDownloadDialog extends Dialog {
 				targetEditor(JsonExpoter.makeContent(targetName, queryExecuteResultDTO, isFormat, -1));
 			}else{
 				exportDto = AllDataExporter.makeJSONAllResult(queryExecuteResultDTO.getUserDB(), strSQL, targetName, isFormat, encoding, strDefaultNullValue, intMaxDownloadCnt);
-				downloadFile(targetName, exportDto.getFileFullName(), encoding);
+				exportDto = downloadFile(targetName, exportDto, encoding);
 			}
 		}
 		
@@ -498,7 +501,7 @@ public class ResultSetDownloadDialog extends Dialog {
 			targetEditor(XMLExporter.makeContent(targetName, queryExecuteResultDTO));
 		}else{
 			exportDto = AllDataExporter.makeXMLResult(queryExecuteResultDTO.getUserDB(), strSQL, targetName, encoding, strDefaultNullValue, intMaxDownloadCnt);
-			downloadFile(targetName, exportDto.getFileFullName(), encoding);
+			exportDto = downloadFile(targetName, exportDto, encoding);
 		}
 		
 		return exportDto;
@@ -522,7 +525,7 @@ public class ResultSetDownloadDialog extends Dialog {
 				targetEditor(SQLExporter.makeBatchInsertStatment(targetName, queryExecuteResultDTO, -1, commit));
 			}else{
 				exportDto = AllDataExporter.makeFileBatchInsertStatment(queryExecuteResultDTO.getUserDB(), strSQL, targetName, commit, encoding, strDefaultNullValue, intMaxDownloadCnt);
-				downloadFile(targetName, exportDto.getFileFullName(), encoding);
+				exportDto = downloadFile(targetName, exportDto, encoding);
 			}
 		}else if ("insert".equalsIgnoreCase(stmtType)) {
 			if (userBtnClickStatus == USER_BTN_CLICK_STATUS.PREVIEW) {
@@ -531,7 +534,7 @@ public class ResultSetDownloadDialog extends Dialog {
 				targetEditor(SQLExporter.makeInsertStatment(targetName, queryExecuteResultDTO, -1, commit));
 			}else{
 				exportDto = AllDataExporter.makeFileInsertStatment(queryExecuteResultDTO.getUserDB(), strSQL, targetName, commit, encoding, strDefaultNullValue, intMaxDownloadCnt);
-				downloadFile(targetName, exportDto.getFileFullName(), encoding);
+				exportDto = downloadFile(targetName, exportDto, encoding);
 			}
 		}else if ("update".equalsIgnoreCase(stmtType)) {
 			if (userBtnClickStatus == USER_BTN_CLICK_STATUS.PREVIEW) {
@@ -540,7 +543,7 @@ public class ResultSetDownloadDialog extends Dialog {
 				targetEditor(SQLExporter.makeUpdateStatment(targetName, queryExecuteResultDTO, listWhere, -1, commit));
 			}else{
 				exportDto = AllDataExporter.makeFileUpdateStatment(queryExecuteResultDTO.getUserDB(), strSQL, targetName, listWhere, commit, encoding, strDefaultNullValue, intMaxDownloadCnt);
-				downloadFile(targetName, exportDto.getFileFullName(), encoding);
+				exportDto = downloadFile(targetName, exportDto, encoding);
 			}
 		}else if ("merge".equalsIgnoreCase(stmtType)) {
 			if (userBtnClickStatus == USER_BTN_CLICK_STATUS.PREVIEW) {
@@ -549,7 +552,7 @@ public class ResultSetDownloadDialog extends Dialog {
 				targetEditor(SQLExporter.makeMergeStatment(targetName, queryExecuteResultDTO, listWhere, -1, commit));
 			}else{
 				exportDto = AllDataExporter.makeFileMergeStatment(queryExecuteResultDTO.getUserDB(), strSQL, targetName, listWhere, commit, encoding, strDefaultNullValue, intMaxDownloadCnt);
-				downloadFile(targetName, exportDto.getFileFullName(), encoding);
+				exportDto = downloadFile(targetName, exportDto, encoding);
 			}
 		}
 		
@@ -590,40 +593,49 @@ public class ResultSetDownloadDialog extends Dialog {
 	 * download file
 	 * 
 	 * @param fileName
-	 * @param strFileLocation
+	 * @param exportDto
 	 * @param encoding 
 	 * 
 	 * @throws Exception
 	 */
-	protected void downloadFile(final String fileName, final String strFileLocation, final String encoding) throws Exception {
+	protected ExportResultDTO downloadFile(final String fileName, final ExportResultDTO exportDto, final String encoding) throws Exception {
+		final File file = new File(exportDto.getFileFullName());
+		String strExt = StringUtils.substringAfterLast(exportDto.getFileFullName(), ".");
+		if(logger.isInfoEnabled()) {
+			logger.info("#####[start]#####################[resource download]");
+			logger.info("\tfile ext : " + strExt);
+			logger.info("\tfile size : " + file.length());
+			logger.info("#####[end]#####################[resource download]");
+		}
+		final byte[] bytesDatas = FileUtils.readFileToByteArray(file);
+		
+		// excel 파일의 경우 바이너리가 저장 되므로... 파일의 위치를 %user_home%/res/파일명 으로 남기도록 합니다.
+		if(exportDto.getExportMethod() == EXPORT_METHOD.EXCEL) {
+			
+			String strNewFile = ApplicationArgumentUtils.USER_RESOURCE_DIR + userSeq + PublicTadpoleDefine.DIR_SEPARATOR + System.currentTimeMillis() + file.getName();
+			if(logger.isDebugEnabled()) logger.debug("==> new file location: " + strNewFile);
+			FileUtils.moveFile(file, new File(strNewFile));
+			
+			exportDto.setResultData("file location: " + strNewFile);
+		} else {
+			exportDto.setResultData(new String(bytesDatas));
+		}
+		
 		getShell().getDisplay().asyncExec(new Runnable() {
 			@Override
 			public void run() {
 				try {
-//					String strZipFile = ZipUtils.pack(strFileLocation);
-//					byte[] bytesZip = FileUtils.readFileToByteArray(new File(strZipFile));
-//					if(logger.isDebugEnabled()) logger.debug("zipFile is " + strZipFile + ", file name is " + fileName +".zip");
-					
-					File file = new File(strFileLocation);
-					String strExt = StringUtils.substringAfter(strFileLocation, ".");
-					if(logger.isInfoEnabled()) {
-						logger.info("#####[start]#####################[resource download]");
-						logger.info("\tfile ext : " + strExt);
-						logger.info("\tfile size : " + file.length());
-						logger.info("#####[end]#####################[resource download]");
-					}
-					
-					byte[] bytesZip = FileUtils.readFileToByteArray(file);
-					_downloadExtFile(fileName + "." + strExt, bytesZip); //$NON-NLS-1$
+					_downloadExtFile(fileName + "." + strExt, bytesDatas); //$NON-NLS-1$
 					
 					// 사용후 파일을 삭제한다.
 					FileUtils.deleteDirectory(new File(file.getParent()));
-//					FileUtils.forceDelete(new File(strZipFile));
 				} catch(Exception e) {
 					logger.error("download file", e);
 				}
 			}
 		});
+		
+		return exportDto;
 	}
 	
 	/** registery service handler */

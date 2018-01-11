@@ -128,8 +128,6 @@ public class CommonMessages {
 
 	public String UserRequestQuery;
 	
-	public String FileNotFound;
-	
 	public String TermExpired;
 	
 	public String TermExpiredMsg;
@@ -192,6 +190,7 @@ public class CommonMessages {
 	public String ActivationDate;
 	public String ExpirationDate;
 	public String Remaining;
+	public String TadpoleHubLicenseOver;
 	
 	/* Company */
 	public String EmailCustomerSupport;
@@ -205,6 +204,8 @@ public class CommonMessages {
 	public String StartTime; 
 
 	public String All;
+	
+	public String ResultNotFound;
 	
 	public static CommonMessages get() {
 		return RWT.NLS.getISO8859_1Encoded(BUNDLE_NAME, CommonMessages.class);

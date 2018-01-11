@@ -42,19 +42,19 @@ public class TadpoleSimpleMessageDialog extends TitleAreaDialog {
 	private Text textMessage;
 	
 	private String title;
-	private String message;
+	private String bodyData;
 	private Label lblMessage;
 	
 	/**
 	 * Create the dialog.
 	 * @param parentShell
 	 */
-	public TadpoleSimpleMessageDialog(Shell parentShell, String title, String message) {
+	public TadpoleSimpleMessageDialog(Shell parentShell, String title, String bodyData) {
 		super(parentShell);
 		setShellStyle(SWT.MAX | SWT.RESIZE | SWT.TITLE | SWT.APPLICATION_MODAL);
 		
 		this.title = title;
-		this.message = message;
+		this.bodyData = bodyData;
 	}
 	
 	@Override
@@ -93,7 +93,7 @@ public class TadpoleSimpleMessageDialog extends TitleAreaDialog {
 		});
 		textMessage.setData( RWT.CANCEL_KEYS, new String[] { "TAB" } );
 		textMessage.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 2, 1));
-		textMessage.setText(message);
+		textMessage.setText(bodyData);
 		
 		// google analytic
 		AnalyticCaller.track(this.getClass().getName());

@@ -92,6 +92,19 @@ public class TadpoleSystem_UserQuery {
 	}
 	
 	/**
+	 * 모든 유효한 유저 수를 가져온다.
+	 * 
+	 * @return
+	 * @throws TadpoleSQLManagerException, SQLException
+	 */
+	public static int getAllUserCount() throws TadpoleSQLManagerException, SQLException {
+		SqlMapClient sqlClient = TadpoleSQLManager.getInstance(TadpoleEngineUserDB.getUserDB());
+		Integer intUserCnt = (Integer)sqlClient.queryForObject("getAllUserCount"); //$NON-NLS-1$
+		
+		return intUserCnt;
+	}
+	
+	/**
 	 * 모든 유효한 유저 목록을 가져옵니다.
 	 * 
 	 * @param delyn

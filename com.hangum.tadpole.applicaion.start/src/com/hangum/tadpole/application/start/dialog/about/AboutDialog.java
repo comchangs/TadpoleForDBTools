@@ -101,7 +101,7 @@ public class AboutDialog extends Dialog {
 		
 		/* License Type */
 
-		if(LicenseValidator.isEnterprise() == true) {
+		if(LicenseValidator.isEnterprise()) {
 			Text txtLicenseType = new Text(composite_1, SWT.NONE);
 			txtLicenseType.setText(CommonMessages.get().LicenseType + ": " + CommonMessages.get().EnterpriseLicense);
 					

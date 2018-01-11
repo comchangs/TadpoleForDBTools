@@ -62,6 +62,74 @@
 	쿼리의 실행 히스토리를 얻습니다.
 	이것은 현재 메인에디터의 실행 한 쿼리에서 사용합니다.
  -->
+<select id="getExecuteQueryHistoryAPIDetail" resultClass="java.util.HashMap" parameterClass="java.util.Map">
+ 	SELECT 
+ 			b.executed_sql_resource_seq, 
+ 			a.types,
+ 			a.duration,
+ 			a.startdateexecute, 
+ 			a.enddateexecute,
+ 			a.message, 
+ 			b.tdb_sql_head,
+ 			b.sql_data, 
+ 			a.row, 
+ 			a.result,
+ 			a.result_save_yn,
+ 		   	db.display_name, 
+ 		   	a.ipaddress, 
+ 		   	db.seq as dbseq,
+ 		   	role.description
+	 FROM 
+		 executed_sql_resource a,
+		 executed_sql_resource_data b,
+		 tadpole_db db,
+		 tadpole_user_db_role role
+	where 1=1 AND
+	 <isNotNull property="db_seq">
+	  a.db_seq in ($db_seq$) AND 
+	 </isNotNull>
+ <![CDATA[
+	  	  a.delyn = 'NO'
+      AND role.delyn = 'NO'
+      AND a.db_seq    = role.db_seq 
+	  AND a.seq = b.executed_sql_resource_seq 
+	  AND a.startdateexecute >= #startTime# 
+      AND a.enddateexecute <= #endTime# 
+      AND a.duration >= #duration# 
+      AND b.sql_data like #strSearch#  
+      AND a.db_seq = db.seq
+ ]]>	       
+      <isNotNull property="type">
+      	AND a.types = #type#
+	</isNotNull>
+	<isNotNull property="tdb_result_code">
+		<isEqual property="tdb_result_code" compareValue="200"> AND a.tdb_result_code = 200 </isEqual>
+		<isEqual property="tdb_result_code" compareValue="403"> AND a.tdb_result_code = 403 </isEqual>
+		<isEqual property="tdb_result_code" compareValue="FAIL"> AND a.tdb_result_code != 200 </isEqual>
+	</isNotNull>
+      group by b.executed_sql_resource_seq, 
+ 			a.types,
+ 			a.duration,
+ 			a.startdateexecute, 
+ 			a.enddateexecute,
+ 			a.message, 
+ 			b.tdb_sql_head,
+ 			b.sql_data, 
+ 			a.row, 
+ 			a.result,
+ 			a.result_save_yn,
+ 		   	db.display_name, 
+ 		   	a.ipaddress, 
+ 		   	dbseq,
+ 		   	role.description
+	order by a.create_time 
+	limit #_indexStart#, #_indexEnd#
+</select>
+
+<!-- 
+	쿼리의 실행 히스토리를 얻습니다.
+	이것은 현재 메인에디터의 실행 한 쿼리에서 사용합니다.
+ -->
 <select id="getExecuteQueryHistoryDetail" resultClass="java.util.HashMap" parameterClass="java.util.Map">
  	SELECT 
  			b.executed_sql_resource_seq, 
@@ -92,10 +160,10 @@
 	  AND  a.db_seq in ($db_seq$) 
 	 </isNotNull>
  <![CDATA[
- 		AND a.user_seq  = role.user_seq  
-        and role.delyn = 'NO'
-        and a.db_seq    = role.db_seq 
-        and u.seq = role.user_seq
+ 	  AND a.user_seq  = role.user_seq  
+      AND role.delyn = 'NO'
+      AND a.db_seq    = role.db_seq 
+      AND u.seq = role.user_seq
 	  AND a.delyn = 'NO' 
 	  AND u.email like #email#
 	  AND a.seq = b.executed_sql_resource_seq 
