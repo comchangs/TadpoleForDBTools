@@ -33,15 +33,12 @@ import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Table;
-import org.eclipse.swt.widgets.TableColumn;
-import org.eclipse.swt.widgets.TableItem;
 import org.eclipse.swt.widgets.Text;
 
 import com.hangum.tadpole.commons.exception.dialog.ExceptionDetailsErrorDialog;
 import com.hangum.tadpole.commons.google.analytics.AnalyticCaller;
 import com.hangum.tadpole.commons.libs.core.message.CommonMessages;
 import com.hangum.tadpole.commons.util.CSVUtils;
-import com.hangum.tadpole.commons.util.Utils;
 import com.hangum.tadpole.commons.util.download.DownloadServiceHandler;
 import com.hangum.tadpole.commons.util.download.DownloadUtils;
 import com.hangum.tadpole.engine.define.DBDefine;
@@ -160,31 +157,9 @@ public class ColumnsComposite extends DBInfosComposite {
 	private void download() {
 		if(tvColumnInform.getTable().getItemCount() == 0) return;
 		if(!MessageDialog.openConfirm(null, CommonMessages.get().Confirm, Messages.get().TablesComposite_3)) return;
-			
-		List<String[]> listCsvData = new ArrayList<String[]>();
-		
-		// add header
-		Table tbl = tvColumnInform.getTable();
-		TableColumn[] tcs = tbl.getColumns();
-		String[] strArryHeader = new String[tcs.length];
-		for (int i=0; i<strArryHeader.length; i++) {
-			strArryHeader[i] = tcs[i].getText();
-		}
-		listCsvData.add(strArryHeader);
-	
-		String[] strArryData = new String[tcs.length];
-		for (int i=0; i<tbl.getItemCount(); i++ ) {
-			strArryData = new String[tbl.getColumnCount()];
-			
-			TableItem gi = tbl.getItem(i);
-			for(int intCnt = 0; intCnt<tcs.length; intCnt++) {
-				strArryData[intCnt] = Utils.convHtmlToLine(gi.getText(intCnt));
-			}
-			listCsvData.add(strArryData);
-		}
 		
 		try {
-			String strCVSContent = CSVUtils.makeData(listCsvData);
+			byte[] strCVSContent = CSVUtils.tableToCSV(tvColumnInform.getTable());//CSVUtils.makeData(listCsvData);
 			downloadExtFile(userDB.getDisplay_name() + "_ColumnInformation.csv", strCVSContent); //$NON-NLS-1$
 			
 			MessageDialog.openInformation(null, CommonMessages.get().Information, Messages.get().TablesComposite_5);
@@ -199,9 +174,9 @@ public class ColumnsComposite extends DBInfosComposite {
 	 * @param fileName
 	 * @param newContents
 	 */
-	public void downloadExtFile(String fileName, String newContents) {
+	public void downloadExtFile(String fileName, byte[] newContents) {
 		downloadServiceHandler.setName(fileName);
-		downloadServiceHandler.setByteContent(newContents.getBytes());
+		downloadServiceHandler.setByteContent(newContents);
 		
 		DownloadUtils.provideDownload(compositeTail, downloadServiceHandler.getId());
 	}

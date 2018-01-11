@@ -47,13 +47,8 @@ public class CSVExpoter extends AbstractTDBExporter {
 	 * @throws Exception
 	 */
 	public static void makeListFile(String strFullPath, boolean isAddHead, List<String[]> listCsvData, char seprator, String encoding) throws Exception {
-		// make language tag
-		FileUtils.writeByteArrayToFile(new File(strFullPath), 
-						(new byte[] {(byte) 0xEF,
-									  (byte) 0xBB, (byte) 0xBF}), true);
-		
 		// make header
-		FileUtils.writeStringToFile(new File(strFullPath), CSVUtils.makeData(listCsvData, seprator), encoding, true);
+		FileUtils.writeByteArrayToFile(new File(strFullPath), CSVUtils.makeData(listCsvData, seprator), true);
 	}
 	
 	
@@ -67,7 +62,7 @@ public class CSVExpoter extends AbstractTDBExporter {
 	 * @param encoding
 	 * @throws Exception
 	 */
-	public static String makeListFileStream( List<String[]> listCsvData, char seprator, String encoding) throws Exception {
+	public static byte[] makeListFileStream( List<String[]> listCsvData, char seprator, String encoding) throws Exception {
 		return CSVUtils.makeData(listCsvData, seprator);
 	}
 	
@@ -82,13 +77,7 @@ public class CSVExpoter extends AbstractTDBExporter {
 	 * @throws Exception
 	 */
 	public static void makeHeaderFile(String strFullPath, boolean isAddHead, QueryExecuteResultDTO rsDAO, char seprator, String encoding) throws Exception {
-		// make language tag
-		FileUtils.writeByteArrayToFile(new File(strFullPath), 
-						(new byte[] {(byte) 0xEF,
-									  (byte) 0xBB, (byte) 0xBF}), true);
-		
-		// make header
-		FileUtils.writeStringToFile(new File(strFullPath), makeHeader(isAddHead, rsDAO, seprator), encoding, true);
+		FileUtils.writeByteArrayToFile(new File(strFullPath), makeHeader(isAddHead, rsDAO, seprator), true);
 	}
 	
 	/**
@@ -100,7 +89,7 @@ public class CSVExpoter extends AbstractTDBExporter {
 	 * @return
 	 * @throws Exception
 	 */
-	public static String makeHeader(boolean isAddHead, QueryExecuteResultDTO rsDAO, char seprator) throws Exception {
+	public static byte[] makeHeader(boolean isAddHead, QueryExecuteResultDTO rsDAO, char seprator) throws Exception {
 		List<String[]> listCsvData = new ArrayList<String[]>();
 		
 		if(isAddHead) {
@@ -197,7 +186,7 @@ public class CSVExpoter extends AbstractTDBExporter {
 			listCsvData.add(listValues.toArray(new String[listValues.size()]));
 		}
 		
-		FileUtils.writeStringToFile(new File(strFullPath), CSVUtils.makeData(listCsvData, seprator), encoding, true);
+		FileUtils.writeByteArrayToFile(new File(strFullPath), CSVUtils.makeData(listCsvData, seprator), true);
 	}
 	
 }

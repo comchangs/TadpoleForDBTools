@@ -11,15 +11,22 @@
 package com.hangum.tadpole.commons.util;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
 import java.io.StringReader;
-import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.commons.io.FileUtils;
 import org.apache.log4j.Logger;
+import org.eclipse.swt.widgets.Table;
+import org.eclipse.swt.widgets.TableColumn;
+import org.eclipse.swt.widgets.TableItem;
 
+import com.hangum.tadpole.commons.libs.core.define.PublicTadpoleDefine;
 import com.opencsv.CSVReader;
 import com.opencsv.CSVWriter;
 
@@ -36,7 +43,37 @@ import com.opencsv.CSVWriter;
 public class CSVUtils {
 	private static final Logger logger = Logger.getLogger(CSVUtils.class);
 	
-	public static String makeData(List<String[]> listContent) throws Exception {
+	/**
+	 * SWT table to csv data
+	 * 
+	 * @param tbl
+	 * @return
+	 * @throws Exception
+	 */
+	public static byte[] tableToCSV(Table tbl) throws Exception {
+		List<String[]> listCsvData = new ArrayList<String[]>();
+		TableColumn[] tcs = tbl.getColumns();
+		String[] strArryHeader = new String[tcs.length];
+		for (int i=0; i<strArryHeader.length; i++) {
+			strArryHeader[i] = tcs[i].getText();
+		}
+		listCsvData.add(strArryHeader);
+	
+		String[] strArryData = new String[tcs.length];
+		for (int i=0; i<tbl.getItemCount(); i++ ) {
+			strArryData = new String[tbl.getColumnCount()];
+			
+			TableItem gi = tbl.getItem(i);
+			for(int intCnt = 0; intCnt<tcs.length; intCnt++) {
+				strArryData[intCnt] = Utils.convHtmlToLine(gi.getText(intCnt));
+			}
+			listCsvData.add(strArryData);
+		}
+		
+		return CSVUtils.makeData(listCsvData);
+	}
+	
+	public static byte[] makeData(List<String[]> listContent) throws Exception {
 		return makeData(listContent, CSVWriter.DEFAULT_SEPARATOR);
 	}
 			
@@ -46,29 +83,29 @@ public class CSVUtils {
 	 * 
 	 * @param 
 	 */
-	public static String makeData(List<String[]> listContent, char seprator) throws Exception {
-		String strReust = "";
-		
-		StringWriter sw = new StringWriter();
+	public static byte[] makeData(List<String[]> listContent, char seprator) throws Exception {
 		CSVWriter writer = null;
-//		// Excel does not recongize the UTF-8, add additional header (BOM) for excel
-//		OutputStream outputStream = new ByteArrayOutputStream();
-//		outputStream.write(0xEF);   
-//		outputStream.write(0xBB);
-//		outputStream.write(0xBF);   
-//		BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(outputStream, "UTF-8"));
 		
+		File strTemp = new File(PublicTadpoleDefine.TEMP_DIR + System.currentTimeMillis() + "_TDBTemp.csv");
+		FileOutputStream fos = new FileOutputStream(strTemp);
+		fos.write(0xef);
+		fos.write(0xbb);
+		fos.write(0xbf);
+		
+		byte[] bytesDatas = null;
 		try {
-			writer = new CSVWriter(sw, seprator);
+			writer = new CSVWriter(new OutputStreamWriter(fos), seprator);
 			writer.writeAll(listContent);
 			
-			strReust = sw.getBuffer().toString();
+			bytesDatas = FileUtils.readFileToByteArray(strTemp);
 		} finally {
 			if(writer != null) try { writer.close(); } catch(Exception e) {}
-			sw.close();
+			if(fos != null) try {fos.close(); } catch(Exception e) {}
+			
+			FileUtils.forceDelete(strTemp);
 		}
 		
-		return strReust;
+		return bytesDatas;
 	}
 	
 	/**
