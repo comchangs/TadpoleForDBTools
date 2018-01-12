@@ -17,8 +17,27 @@ import com.hangum.tadpole.engine.sql.util.export.all.inner.ExcelQueryDataExporte
 import com.hangum.tadpole.engine.sql.util.export.all.inner.HtmlQueryDataExporter;
 import com.hangum.tadpole.engine.sql.util.export.dto.ExportResultDTO;
 
+/**
+ * 쿼리의 감사로그가 남는다.
+ * 
+ * @author hangum
+ *
+ */
 public class QueryDataExportFactory {
 
+	/**
+	 * 
+	 * 
+	 * @param separator
+	 * @param isAddHead
+	 * @param fileName
+	 * @param fileExtension
+	 * @param userDB
+	 * @param strSQL
+	 * @param intMaxCount
+	 * @return
+	 * @throws Exception
+	 */
 	public static ExportResultDTO createCSV(char separator, boolean isAddHead, String fileName, String fileExtension, UserDBDAO userDB, String strSQL, int intMaxCount) 
 			throws Exception {
 	
