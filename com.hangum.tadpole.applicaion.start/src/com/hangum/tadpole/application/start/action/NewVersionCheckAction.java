@@ -32,7 +32,7 @@ public class NewVersionCheckAction extends Action {
 	public NewVersionCheckAction(IWorkbenchWindow window) {
 		super(Messages.get().NewVersionCheckAction_0);
 		setId(this.getClass().getName());
-		setImageDescriptor( ResourceManager.getPluginImageDescriptor(BrowserActivator.APPLICTION_ID, "resources/icons/refresh.png"));
+		setImageDescriptor( ResourceManager.getPluginImageDescriptor(BrowserActivator.ID, "resources/icons/refresh.png"));
 		setToolTipText(Messages.get().NewVersionCheckAction_0);
 		
 		this.window = window;

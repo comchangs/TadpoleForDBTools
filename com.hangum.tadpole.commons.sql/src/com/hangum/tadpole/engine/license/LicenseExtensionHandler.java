@@ -31,7 +31,7 @@ public class LicenseExtensionHandler {
 	private static final String LICENSE_EXTENSION_ID = "com.hangum.tadpole.engine.license.extension";
 
 	/**
-	 * extension widget creation
+	 * initialize license
 	 * 
 	 * @return
 	 */
@@ -67,7 +67,7 @@ public class LicenseExtensionHandler {
 	}
 	
 	/**
-	 * extension widget creation
+	 * initialize license
 	 * 
 	 * @return
 	 */
@@ -97,6 +97,42 @@ public class LicenseExtensionHandler {
 			}
 		} catch (CoreException ex) {
 			logger.error("Create License extension exception", ex);
+		}
+		
+		return (ILicenseExtension[]) listReturn.toArray(new ILicenseExtension[listReturn.size()]);
+	}
+	
+	/**
+	 * initialize license
+	 * 
+	 * @return
+	 */
+	public ILicenseExtension[] liveChange(final String strLicense) {
+		final LinkedList listReturn = new LinkedList();
+		
+		IConfigurationElement[] config = Platform.getExtensionRegistry().getConfigurationElementsFor(LICENSE_EXTENSION_ID);
+		try {
+			for (IConfigurationElement e : config) {
+				final Object licenseExtension = e.createExecutableExtension("class");
+				if (licenseExtension instanceof ILicenseExtension) {
+					ISafeRunnable runnable = new ISafeRunnable() {
+
+						@Override
+						public void handleException(Throwable exception) {
+							logger.error("Exception license extension", exception);
+						}
+
+						@Override
+						public void run() throws Exception {
+							ILicenseExtension compositeExt = (ILicenseExtension) licenseExtension;
+							compositeExt.liveChage(strLicense);
+						}
+					};
+					SafeRunner.run(runnable);
+				}
+			}
+		} catch (CoreException ex) {
+			logger.error("license chage extension exception", ex);
 		}
 		
 		return (ILicenseExtension[]) listReturn.toArray(new ILicenseExtension[listReturn.size()]);

@@ -179,18 +179,21 @@ public class CommonMessages {
 	public String Version;
 	
 	/* [%s] must be greater than or equal to %d and less than or equal to %d. */
-	public String InvalidRange_GEAndLEWithItem; 
+	public String InvalidRange_GEAndLEWithItem;
 	
 	public String EnterItem;
 	
 	/* License */
-	public String EnterpriseLicense;
+	public String License;
+//	public String EnterpriseLicense;
+	public String Customer;
 	public String OpensourceLicense;
 	public String LicenseType;
 	public String ActivationDate;
 	public String ExpirationDate;
 	public String Remaining;
 	public String TadpoleHubLicenseOver;
+	public String NumberOfUsers;
 	
 	/* Company */
 	public String EmailCustomerSupport;
@@ -206,6 +209,7 @@ public class CommonMessages {
 	public String All;
 	
 	public String ResultNotFound;
+
 	
 	public static CommonMessages get() {
 		return RWT.NLS.getISO8859_1Encoded(BUNDLE_NAME, CommonMessages.class);
