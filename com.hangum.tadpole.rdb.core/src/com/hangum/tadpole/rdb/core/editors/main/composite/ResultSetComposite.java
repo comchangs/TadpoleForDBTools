@@ -826,12 +826,7 @@ public class ResultSetComposite extends Composite {
 				statement.setFetchSize(intSelectLimitCnt);
 				if(DBGroupDefine.HIVE_GROUP != getUserDB().getDBGroup()) {
 					statement.setQueryTimeout(queryTimeOut);
-					//
-					// setMaxRows 를 설정하면 SET SQL_SELECT_LIMIT=500 를 호출하게되고 그 후 풀텍스트 검색을하면 mysql 디비가 죽는다.
-					// 
-					if(DBGroupDefine.MYSQL_GROUP != getUserDB().getDBGroup()) {
-						statement.setMaxRows(intSelectLimitCnt);	
-					}
+					statement.setMaxRows(intSelectLimitCnt);	
 				}
 				
 				// check stop thread
@@ -857,9 +852,7 @@ public class ResultSetComposite extends Composite {
 				preparedStatement.setFetchSize(intSelectLimitCnt);
 				if(DBGroupDefine.HIVE_GROUP != getUserDB().getDBGroup()) {
 					preparedStatement.setQueryTimeout(queryTimeOut);
-					if(DBGroupDefine.MYSQL_GROUP != getUserDB().getDBGroup()) {
-						preparedStatement.setMaxRows(intSelectLimitCnt);	
-					}
+					preparedStatement.setMaxRows(intSelectLimitCnt);	
 				}
 				
 				// check stop thread
@@ -870,14 +863,14 @@ public class ResultSetComposite extends Composite {
 				
 				// execute query
 				execServiceQuery = Executors.newSingleThreadExecutor();
-//				if(intStartCnt == 0) {
-//					resultSet = _runSQLSelect(preparedStatement, reqQuery.getStatementParameter());
-//				} else {
+				if(intStartCnt == 0) {
+					resultSet = _runSQLSelect(preparedStatement, reqQuery.getStatementParameter());
+				} else {
 					strSQL = PartQueryUtil.makeSelect(getUserDB(), strSQL, intStartCnt, intSelectLimitCnt);
 					
 					if(logger.isDebugEnabled()) logger.debug("part sql called : " + strSQL);
-					resultSet = _runSQLSelect(reqQuery, preparedStatement, reqQuery.getStatementParameter());
-//				}
+					resultSet = _runSQLSelect(preparedStatement, reqQuery.getStatementParameter());
+				}
 			}
 			
 			queryResultDAO = new QueryExecuteResultDTO(getUserDB(), reqQuery.getSql(), true, resultSet, intSelectLimitCnt, intStartCnt);
@@ -915,7 +908,7 @@ public class ResultSetComposite extends Composite {
 	 * @param statementParameter
 	 * @return
 	 */
-	private ResultSet _runSQLSelect(final RequestQuery reqQuery, final PreparedStatement preparedStatement, final Object[] statementParameter) throws TadpoleException {
+	private ResultSet _runSQLSelect(final PreparedStatement preparedStatement, final Object[] statementParameter) throws TadpoleException {
 		if(logger.isDebugEnabled()) logger.debug("=======  wait for resultset prepared statement .......................................");
 		
 		Future<ResultSet> queryFuture = execServiceQuery.submit(new Callable<ResultSet>() {
