@@ -25,6 +25,29 @@ import org.apache.commons.lang.StringUtils;
  * @see original file location is (http://viralpatel.net/blogs/java-load-csv-file-to-database/)
  */
 public class DateUtil {
+	
+	/**
+	 * 
+	 * @param initSeconds
+	 * @return ? hour ? minute ? sec
+	 */
+	public static String getHoureMinSecString(long longMillis) {
+		String strRetValue = "00:00:00";
+
+		if (longMillis > 0) {
+			longMillis = longMillis / 1000;
+			long longViewHour = longMillis / 3600;
+			long longCalcHour = longMillis % 3600;
+			long longMinute = longCalcHour / 60;
+			long longSec = longCalcHour % 60;
+
+			strRetValue = (longViewHour < 10 ? "0" : "")+ String.valueOf(longViewHour) + ":" + 
+						  (longMinute < 10 ? "0" : "") + String.valueOf(longMinute) + ":" + 
+						  (longSec < 10 ? "0" : "") + String.valueOf(longSec);
+		}
+
+		return strRetValue;
+	}
 
 	/**
 	 * 현재 시간의 세컨드 
@@ -55,6 +78,18 @@ public class DateUtil {
 		Calendar _cal = Calendar.getInstance();
 		_cal.setTimeInMillis(longTimeMills);
 		return _cal.get(Calendar.YEAR) + "" + StringUtils.leftPad(""+(_cal.get(Calendar.MONTH) + 1), 2, "0"); 
+	}
+	
+	/**
+	 * 현재 년월일을 리턴합니다.
+	 * 
+	 * @param longTimeMills
+	 * @return
+	 */
+	public static String getYearMonthDay(long longTimeMills) {
+		Calendar _cal = Calendar.getInstance();
+		_cal.setTimeInMillis(longTimeMills);
+		return _cal.get(Calendar.YEAR) + "" + StringUtils.leftPad(""+(_cal.get(Calendar.MONTH) + 1), 2, "0")  + "" + StringUtils.leftPad(""+(_cal.get(Calendar.DAY_OF_MONTH) + 1), 2, "0"); 
 	}
 	
 	/**

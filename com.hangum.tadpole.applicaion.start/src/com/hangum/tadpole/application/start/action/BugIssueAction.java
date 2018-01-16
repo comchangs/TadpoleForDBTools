@@ -30,7 +30,7 @@ public class BugIssueAction extends Action {
 	public BugIssueAction(IWorkbenchWindow window) {
 		super(Messages.get().BugIssueAction_0);
 		setId(this.getClass().getName());
-		setImageDescriptor( ResourceManager.getPluginImageDescriptor(BrowserActivator.APPLICTION_ID, "resources/icons/bugAndIssue.png")); //$NON-NLS-1$
+		setImageDescriptor( ResourceManager.getPluginImageDescriptor(BrowserActivator.ID, "resources/icons/bugAndIssue.png")); //$NON-NLS-1$
 		setToolTipText(Messages.get().BugIssueAction_0);
 		
 		this.window = window;

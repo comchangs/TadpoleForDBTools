@@ -32,6 +32,12 @@ public interface ILicenseExtension {
 	public void initExtension(String file);
 	
 	/**
+	 * 
+	 * @param str
+	 */
+	public void liveChage(String str) throws Exception;
+	
+	/**
 	 * get host information
 	 * 
 	 * @return

@@ -80,7 +80,7 @@ public class AboutDialog extends Dialog {
 		gd_lblNewLabelImage.minimumHeight = 184;
 		gd_lblNewLabelImage.minimumWidth = 300;
 		lblNewLabelImage.setLayoutData(gd_lblNewLabelImage);
-		lblNewLabelImage.setImage(ResourceManager.getPluginImage(BrowserActivator.APPLICTION_ID, "resources/icons/TadpoleForDBTools.png")); //$NON-NLS-1$
+		lblNewLabelImage.setImage(ResourceManager.getPluginImage(BrowserActivator.ID, "resources/icons/TadpoleForDBTools.png")); //$NON-NLS-1$
 		
 		Composite composite_1 = new Composite(container, SWT.NONE);
 		composite_1.setLayout(new GridLayout(1, false));
@@ -103,13 +103,16 @@ public class AboutDialog extends Dialog {
 
 		if(LicenseValidator.isEnterprise()) {
 			Text txtLicenseType = new Text(composite_1, SWT.NONE);
-			txtLicenseType.setText(CommonMessages.get().LicenseType + ": " + CommonMessages.get().EnterpriseLicense);
+			txtLicenseType.setText(CommonMessages.get().Customer + ": " + LicenseValidator.getLicense().getCustomer());
 					
 			Text txtActivationDate = new Text(composite_1, SWT.NONE);
 			txtActivationDate.setText(CommonMessages.get().ActivationDate + ": " + LicenseValidator.getActivationDate());
 			
 			Text txtExpirationDate = new Text(composite_1, SWT.NONE);
 			txtExpirationDate.setText(CommonMessages.get().ExpirationDate + ": " + LicenseValidator.getExpirationDate());
+			
+			Text txtAccountCount = new Text(composite_1, SWT.NONE);
+			txtAccountCount.setText(CommonMessages.get().NumberOfUsers + ": " + LicenseValidator.getLicense().getPersonLimit());
 			
 			Text txtRemaining =  new Text(composite_1, SWT.NONE);
 			if(LicenseValidator.getRemaining() < 0) {

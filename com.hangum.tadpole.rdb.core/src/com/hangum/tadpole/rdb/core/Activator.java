@@ -18,7 +18,6 @@ import org.osgi.framework.BundleContext;
 
 import com.hangum.tadpole.commons.libs.core.logs.LogConfiguration;
 import com.hangum.tadpole.commons.libs.core.logs.LogListener;
-import com.hangum.tadpole.commons.start.TadpoleSystem;
 
 /**
  * The activator class controls the plug-in life cycle
@@ -52,8 +51,8 @@ public class Activator extends AbstractUIPlugin {
 		listener = new LogListener();
 		Platform.addLogListener(listener);
 		
-		// tadpole system 이 시작시 해야하는 부분 설정. 
-		TadpoleSystem.startInit();
+		// tadpole system 이 시작시 해야하는 부분 설정.  war 타입은 없음.
+//		TadpoleSystem.startInit();
 	}
 
 	/*

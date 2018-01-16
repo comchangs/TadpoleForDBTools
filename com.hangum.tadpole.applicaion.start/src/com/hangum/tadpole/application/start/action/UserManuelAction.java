@@ -30,7 +30,7 @@ public class UserManuelAction extends Action {
 	public UserManuelAction(IWorkbenchWindow window) {
 		super(Messages.get().OpenUserManuel);
 		setId(this.getClass().getName());
-		setImageDescriptor( ResourceManager.getPluginImageDescriptor(BrowserActivator.APPLICTION_ID, "resources/icons/document.png")); //$NON-NLS-1$
+		setImageDescriptor( ResourceManager.getPluginImageDescriptor(BrowserActivator.ID, "resources/icons/document.png")); //$NON-NLS-1$
 		setToolTipText(Messages.get().OpenUserManuel);
 		
 //		this.window = window;

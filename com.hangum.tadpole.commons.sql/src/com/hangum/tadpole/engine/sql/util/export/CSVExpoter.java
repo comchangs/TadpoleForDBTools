@@ -18,7 +18,7 @@ import java.util.Map;
 import org.apache.commons.io.FileUtils;
 import org.apache.log4j.Logger;
 
-import com.hangum.tadpole.commons.util.CSVUtils;
+import com.hangum.tadpole.commons.csv.CSVUtils;
 import com.hangum.tadpole.engine.sql.util.SQLUtil;
 import com.hangum.tadpole.engine.sql.util.resultset.QueryExecuteResultDTO;
 
@@ -110,12 +110,14 @@ public class CSVExpoter extends AbstractTDBExporter {
 	}
 
 	/**
-	 * make content
 	 * 
-	 * @param tableName
+	 * @param isAddHead
 	 * @param rsDAO
+	 * @param seprator
 	 * @param intLimitCnt
+	 * @param strDefaultNullValue
 	 * @return
+	 * @throws Exception
 	 */
 	public static String makeContent(boolean isAddHead, QueryExecuteResultDTO rsDAO, char seprator, int intLimitCnt, String strDefaultNullValue) throws Exception {
 
@@ -143,7 +145,7 @@ public class CSVExpoter extends AbstractTDBExporter {
 			}
 			listCsvData.add(listLabel.toArray(new String[listLabel.size()]));
 
-			sbReturn.append(CSVUtils.makeData(listCsvData, seprator));
+			sbReturn.append(CSVUtils.makeDataString(listCsvData, seprator));
 			listCsvData.clear();
 			if (intLimitCnt == i) break;
 		}

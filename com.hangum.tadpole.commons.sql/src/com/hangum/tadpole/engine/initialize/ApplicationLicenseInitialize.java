@@ -51,5 +51,16 @@ public class ApplicationLicenseInitialize {
 		}
 		
 	}
+	
+	/**
+	 * live chage 
+	 * 
+	 * @param strLicense
+	 * @throws Exception
+	 */
+	public static void liveChange(String strLicense) throws Exception {
+		LicenseExtensionHandler linceseHandler = new LicenseExtensionHandler();
+		linceseHandler.liveChange(strLicense);
+	}
 
 }

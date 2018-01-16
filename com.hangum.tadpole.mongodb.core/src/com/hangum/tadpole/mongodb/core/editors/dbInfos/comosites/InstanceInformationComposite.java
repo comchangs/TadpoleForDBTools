@@ -29,9 +29,9 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
 
 import com.hangum.tadpole.commons.util.ColorsSWTUtils;
+import com.hangum.tadpole.commons.util.DateUtil;
 import com.hangum.tadpole.commons.util.ENumberUtils;
 import com.hangum.tadpole.commons.util.NumberFormatUtils;
-import com.hangum.tadpole.commons.util.TimeUtils;
 import com.hangum.tadpole.engine.query.dao.system.UserDBDAO;
 import com.hangum.tadpole.mongodb.core.dialogs.resultview.FindOneDetailComposite;
 import com.hangum.tadpole.mongodb.core.query.MongoDBQuery;
@@ -258,7 +258,7 @@ public class InstanceInformationComposite extends Composite {
 		String pid 		= StringUtils.trimToEmpty(commandResult.getString("pid"));
 		String uptime 	= StringUtils.trimToEmpty(commandResult.getString("uptime"));
 		
-		String uptimeMillis 	= StringUtils.trimToEmpty(TimeUtils.getHoureMinSecString(ENumberUtils.toInt(commandResult.getString("uptimeMillis"))));
+		String uptimeMillis 	= StringUtils.trimToEmpty(DateUtil.getHoureMinSecString(ENumberUtils.toInt(commandResult.getString("uptimeMillis"))));
 		String uptimeEstimate 	= StringUtils.trimToEmpty(commandResult.getString("uptimeEstimate"));
 		String localTime 		= StringUtils.trimToEmpty(commandResult.getString("localTime"));
 		

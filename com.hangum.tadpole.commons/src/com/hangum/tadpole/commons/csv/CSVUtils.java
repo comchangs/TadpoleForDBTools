@@ -8,7 +8,7 @@
  * Contributors:
  *     hangum - initial API and implementation
  ******************************************************************************/
-package com.hangum.tadpole.commons.util;
+package com.hangum.tadpole.commons.csv;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -17,6 +17,7 @@ import java.io.FileOutputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.io.StringReader;
+import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -27,6 +28,7 @@ import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.swt.widgets.TableItem;
 
 import com.hangum.tadpole.commons.libs.core.define.PublicTadpoleDefine;
+import com.hangum.tadpole.commons.util.Utils;
 import com.opencsv.CSVReader;
 import com.opencsv.CSVWriter;
 
@@ -52,6 +54,7 @@ public class CSVUtils {
 	 */
 	public static byte[] tableToCSV(Table tbl) throws Exception {
 		List<String[]> listCsvData = new ArrayList<String[]>();
+		
 		TableColumn[] tcs = tbl.getColumns();
 		String[] strArryHeader = new String[tcs.length];
 		for (int i=0; i<strArryHeader.length; i++) {
@@ -73,6 +76,13 @@ public class CSVUtils {
 		return CSVUtils.makeData(listCsvData);
 	}
 	
+	/**
+	 * make csv data
+	 * 
+	 * @param listContent
+	 * @return
+	 * @throws Exception
+	 */
 	public static byte[] makeData(List<String[]> listContent) throws Exception {
 		return makeData(listContent, CSVWriter.DEFAULT_SEPARATOR);
 	}
@@ -97,15 +107,40 @@ public class CSVUtils {
 			writer = new CSVWriter(new OutputStreamWriter(fos), seprator);
 			writer.writeAll(listContent);
 			
-			bytesDatas = FileUtils.readFileToByteArray(strTemp);
 		} finally {
 			if(writer != null) try { writer.close(); } catch(Exception e) {}
 			if(fos != null) try {fos.close(); } catch(Exception e) {}
-			
+
+			bytesDatas = FileUtils.readFileToByteArray(strTemp);
 			FileUtils.forceDelete(strTemp);
 		}
 		
 		return bytesDatas;
+	}
+	
+	/**
+	 * csv data
+	 * @param seprator 
+	 * 
+	 * @param 
+	 */
+	public static String makeDataString(List<String[]> listContent, char seprator) throws Exception {
+		String strReust = "";
+		
+		StringWriter sw = new StringWriter();
+		CSVWriter writer = null;
+		
+		try {
+			writer = new CSVWriter(sw, seprator);
+			writer.writeAll(listContent);
+			
+			strReust = sw.getBuffer().toString();
+		} finally {
+			if(writer != null) try { writer.close(); } catch(Exception e) {}
+			sw.close();
+		}
+		
+		return strReust;
 	}
 	
 	/**
