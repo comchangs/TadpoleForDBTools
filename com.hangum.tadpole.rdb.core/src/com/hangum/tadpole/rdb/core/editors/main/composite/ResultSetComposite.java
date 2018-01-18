@@ -410,20 +410,18 @@ public class ResultSetComposite extends Composite {
 		final RequestResultDAO reqResultDAO = new RequestResultDAO();
 		reqResultDAO.setStartDateExecute(new Timestamp(System.currentTimeMillis()));
 		reqResultDAO.setIpAddress(reqQuery.getUserIp());
-//		not set default value is EXECUTE_SQL_TYPE.EDITOR		
-//		reqResultDAO.setEXECUSTE_SQL_TYPE(PublicTadpoleDefine.EXECUTE_SQL_TYPE.EDITOR);
 		
 		// prepared statement 일 경우는 인자도 넣어준다.
+		StringBuffer sbParameter = new StringBuffer("/* Type is ").append(reqQuery.getMode());
 		if(reqQuery.getSqlStatementType() == SQL_STATEMENT_TYPE.PREPARED_STATEMENT) {
-			StringBuffer sbParameter = new StringBuffer("/* TadpoleHub comment is ").append(reqQuery.getMode());
 			sbParameter.append(", Parameter is ");
 			for (int i=0; i<reqQuery.getStatementParameter().length; i++) {
 				Object objParam = reqQuery.getStatementParameter()[i];
 				sbParameter.append(String.format("[ %d = %s ]", i, ""+objParam));
 			}
-			sbParameter.append(" */ \n");	
-			reqResultDAO.setTdb_sql_head(sbParameter.toString());
 		}
+		sbParameter.append(" */ \n");
+		reqResultDAO.setTdb_sql_head(sbParameter.toString());
 		reqResultDAO.setSql_text(reqQuery.getOriginalSql());
 		
 		// 쿼리가 실행 가능한 상태인지(디비 락상태인지?, 프러덕디비이고 select가 아닌지?,설정인지?) 
@@ -504,10 +502,10 @@ public class ResultSetComposite extends Composite {
 						}
 						
 					} else {
-						if(reqQuery.isStatement()) {
-							if(reqQuery.getMode() == EditorDefine.QUERY_MODE.EXPLAIN_PLAN) {
-								listRSDao.add(ExecuteQueryPlan.runSQLExplainPlan(getUserDB(), reqQuery, strPlanTBName));
-							} else {
+						if(reqQuery.getMode() == EditorDefine.QUERY_MODE.EXPLAIN_PLAN) {
+							listRSDao.add(ExecuteQueryPlan.runSQLExplainPlan(getUserDB(), reqQuery, strPlanTBName));
+						} else {
+							if(reqQuery.isStatement()) {
 								QueryExecuteResultDTO rsDAO = null;
 
 								// 
@@ -576,21 +574,21 @@ public class ResultSetComposite extends Composite {
 								}
 								//DBMS_OUTPUT 에서 출력된 메시지가 있으면 쿼리History에 함께 저장하도록 한다.
 								reqResultDAO.setMesssage(rsDAO.getQueryMsg());
-							}
-						} else if(TransactionManger.isTransaction(reqQuery.getSql())) {
-							if(TransactionManger.isStartTransaction(reqQuery.getSql())) {
-								startTransactionMode();
-								reqQuery.setAutoCommit(false);
+							} else if(TransactionManger.isTransaction(reqQuery.getSql())) {
+								if(TransactionManger.isStartTransaction(reqQuery.getSql())) {
+									startTransactionMode();
+									reqQuery.setAutoCommit(false);
+								} else {
+									TransactionManger.calledCommitOrRollback(reqQuery.getSql(), strUserEmail, getUserDB());
+								}
 							} else {
-								TransactionManger.calledCommitOrRollback(reqQuery.getSql(), strUserEmail, getUserDB());
+								int intEfficeCnt = ExecuteOtherSQL.runPermissionSQLExecution(errMsg, reqQuery, getUserDB(), getDbUserRoleType(), strUserEmail);
+								if(intEfficeCnt != -1) {
+									long longUseTime = System.currentTimeMillis() - reqResultDAO.getStartDateExecute().getTime();
+									reqResultDAO.setMesssage(String.format(MSG_ROW_CHAGE, intEfficeCnt, longUseTime));
+								}
 							}
-						} else {
-							int intEfficeCnt = ExecuteOtherSQL.runPermissionSQLExecution(errMsg, reqQuery, getUserDB(), getDbUserRoleType(), strUserEmail);
-							if(intEfficeCnt != -1) {
-								long longUseTime = System.currentTimeMillis() - reqResultDAO.getStartDateExecute().getTime();
-								reqResultDAO.setMesssage(String.format(MSG_ROW_CHAGE, intEfficeCnt, longUseTime));
-							}
-						}
+						}	// end execute plan
 					}
 				} catch(TadpoleSQLManagerException e) {
 					reqResultDAO.setResult(PublicTadpoleDefine.SUCCESS_FAIL.F.name()); //$NON-NLS-1$
@@ -1164,21 +1162,19 @@ public class ResultSetComposite extends Composite {
 		// 하나의 쿼리만 수행
 		} else {
 			
-			// 결과에 메시지가 있으면 시스템 메시지에 결과 메시지를 출력한다. 종료.
-			if(reqQuery.isStatement()) {
+			if(reqQuery.getMode() == EditorDefine.QUERY_MODE.EXPLAIN_PLAN) {
+				getRdbResultComposite().setQueryPlanView(reqQuery, listRSDao.get(0), listLongHistorySeq.get(0));
+				getRdbResultComposite().resultFolderSel(EditorDefine.RESULT_TAB.QUERY_PLAN);
+				// 결과에 메시지가 있으면 시스템 메시지에 결과 메시지를 출력한다. 종료.
+			} else if(reqQuery.isStatement()) {
 				getRdbResultComposite().refreshErrorMessageView(reqQuery, null, _strBasicMsg);
-				
-				if(reqQuery.getMode() == EditorDefine.QUERY_MODE.EXPLAIN_PLAN) {
-					getRdbResultComposite().setQueryPlanView(reqQuery, listRSDao.get(0), listLongHistorySeq.get(0));
-					getRdbResultComposite().resultFolderSel(EditorDefine.RESULT_TAB.QUERY_PLAN);
-				} else {	// table data를 생성한다.
-					if(reqQuery.getExecuteType() == EditorDefine.EXECUTE_TYPE.ALL) {
-						getRdbResultComposite().refreshInfoMessageView(reqQuery, Messages.get().ResultSetComposite_10 + reqQuery.getResultDao().getMesssage() + PublicTadpoleDefine.LINE_SEPARATOR + _strBasicMsg  + StringUtils.abbreviate(reqQuery.getOriginalSql(), 200));
-						getRdbResultComposite().resultFolderSel(EditorDefine.RESULT_TAB.TADPOLE_MESSAGE);
-						refreshExplorerView(getUserDB(), reqQuery);
-					}
-					if(!listRSDao.isEmpty()) showResultView(reqQuery, listRSDao, listLongHistorySeq);
+			
+				if(reqQuery.getExecuteType() == EditorDefine.EXECUTE_TYPE.ALL) {
+					getRdbResultComposite().refreshInfoMessageView(reqQuery, Messages.get().ResultSetComposite_10 + reqQuery.getResultDao().getMesssage() + PublicTadpoleDefine.LINE_SEPARATOR + _strBasicMsg  + StringUtils.abbreviate(reqQuery.getOriginalSql(), 200));
+					getRdbResultComposite().resultFolderSel(EditorDefine.RESULT_TAB.TADPOLE_MESSAGE);
+					refreshExplorerView(getUserDB(), reqQuery);
 				}
+				if(!listRSDao.isEmpty()) showResultView(reqQuery, listRSDao, listLongHistorySeq);
 			} else {
 				if(reqQuery.getSqlType() == SQL_TYPE.DDL) {
 					String strDefaultMsg = Messages.get().ResultSetComposite_10 + reqQuery.getOriginalSql();
