@@ -303,7 +303,7 @@ public class ExecuteProcedureDialog extends Dialog {
 					
 					sqlSorter = new SQLResultSorter(-999);
 					
-					SQLResultLabelProvider.createTableColumn(sqlResultTableViewer[i], resultDao, sqlSorter);
+					TableUtil.createTableColumn(sqlResultTableViewer[i], resultDao, sqlSorter);
 					sqlResultTableViewer[i].setLabelProvider(new SQLResultLabelProvider(GetPreferenceGeneral.getISRDBNumberIsComma(), resultDao, GetPreferenceGeneral.getResultNull()));
 					sqlResultTableViewer[i].setContentProvider(new SQLResultContentProvider(resultDao.getDataList().getData()));
 					

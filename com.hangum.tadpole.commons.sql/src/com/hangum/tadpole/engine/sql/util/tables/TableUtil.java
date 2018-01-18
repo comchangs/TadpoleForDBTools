@@ -10,6 +10,8 @@
  ******************************************************************************/
 package com.hangum.tadpole.engine.sql.util.tables;
 
+import org.apache.commons.lang.StringUtils;
+import org.apache.log4j.Logger;
 import org.eclipse.jface.viewers.ColumnLabelProvider;
 import org.eclipse.jface.viewers.ColumnPixelData;
 import org.eclipse.jface.viewers.ColumnViewerEditor;
@@ -21,10 +23,15 @@ import org.eclipse.jface.viewers.TableViewerColumn;
 import org.eclipse.jface.viewers.TableViewerEditor;
 import org.eclipse.jface.viewers.TableViewerFocusCellManager;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.SelectionAdapter;
+import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
 
+import com.hangum.tadpole.commons.libs.core.define.PublicTadpoleDefine;
 import com.hangum.tadpole.commons.util.AutoResizeTableLayout;
+import com.hangum.tadpole.engine.sql.util.RDBTypeToJavaTypeUtils;
+import com.hangum.tadpole.engine.sql.util.resultset.ResultSetUtilDTO;
 import com.hangum.tadpole.engine.sql.util.tables.DefaultViewerSorter.COLUMN_TYPE;
 
 /**
@@ -33,6 +40,66 @@ import com.hangum.tadpole.engine.sql.util.tables.DefaultViewerSorter.COLUMN_TYPE
  *
  */
 public class TableUtil {
+	private static final Logger logger = Logger.getLogger(TableUtil.class);
+
+	/**
+	 * table의 Column을 생성한다.
+	 * 
+	 * @param tableViewer
+	 * @param rsDAO
+	 * @param tableSorter
+	 */
+	public static void createTableColumn(final TableViewer tableViewer,
+										final ResultSetUtilDTO rsDAO,
+										final SQLResultSorter tableSorter
+									) {
+		// 기존 column을 삭제한다.
+		Table table = tableViewer.getTable();
+		int columnCount = table.getColumnCount();
+		for(int i=0; i<columnCount; i++) {
+			table.getColumn(0).dispose();
+		}
+		
+		if(rsDAO.getColumnName() == null) return;
+			
+		try {			
+			for(int i=0; i<rsDAO.getColumnName().size(); i++) {
+				final int index = i;
+				final int columnAlign = RDBTypeToJavaTypeUtils.isNumberType(rsDAO.getColumnType().get(i))?SWT.RIGHT:SWT.LEFT;
+				String strColumnName = rsDAO.getColumnName().get(i);
+		
+				/** 표시 되면 안되는 컬럼을 제거 합니다 */
+				if(StringUtils.startsWithIgnoreCase(strColumnName, PublicTadpoleDefine.SPECIAL_USER_DEFINE_HIDE_COLUMN)) continue;
+				
+				final TableViewerColumn tv = new TableViewerColumn(tableViewer, columnAlign);
+				final TableColumn tc = tv.getColumn();
+				
+				tc.setText(strColumnName);
+				tc.setResizable(true);
+				tc.setMoveable(true);
+				
+				tc.addSelectionListener(new SelectionAdapter() {
+					@Override
+					public void widgetSelected(SelectionEvent e) {
+						tableSorter.setColumn(index);
+						int dir = tableViewer.getTable().getSortDirection();
+						if (tableViewer.getTable().getSortColumn() == tc) {
+							dir = dir == SWT.UP ? SWT.DOWN : SWT.UP;
+						} else {
+							dir = SWT.DOWN;
+						}
+						tableViewer.getTable().setSortDirection(dir);
+						tableViewer.getTable().setSortColumn(tc);
+						tableViewer.refresh();
+					}
+				});
+				
+			}	// end for
+			
+		} catch(Exception e) { 
+			logger.error("SQLResult TableViewer", e);
+		}		
+	}
 	
 	/**
 	 * make selected single column
@@ -73,6 +140,11 @@ public class TableUtil {
 			}
 	}
 	
+	/**
+	 * 
+	 * @param tableViewer
+	 * @param header
+	 */
 	public static void makeTableColumnViewer(TableViewer tableViewer, String[] header) {
 		Table table = tableViewer.getTable();
 		int columnCount = table.getColumnCount();
@@ -95,6 +167,10 @@ public class TableUtil {
 		}
 	}
 	
+	/**
+	 * 
+	 * @param table
+	 */
 	public static void packTable(Table table) {
 		AutoResizeTableLayout layoutColumnLayout = new AutoResizeTableLayout(table);
 		table.setLayout(layoutColumnLayout);

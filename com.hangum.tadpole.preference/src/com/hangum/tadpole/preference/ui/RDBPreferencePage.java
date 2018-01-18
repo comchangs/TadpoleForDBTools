@@ -425,7 +425,7 @@ public class RDBPreferencePage extends TadpoleDefaulPreferencePage implements IW
 		String strFontInfo = GetPreferenceGeneral.getRDBResultFont();
 		lblUserFont.setText(strFontInfo);
 		
-		textShowInTheColumn.setText(GetPreferenceGeneral.getRDBShowInTheColumn());
+		textShowInTheColumn.setText(""+GetPreferenceGeneral.getRDBShowInTheColumn());
 		
 		if(PreferenceDefine.RDB_RESULT_SET_HEAD_CLICK_SORTDATA_VALUE.equals(GetPreferenceGeneral.getRDBResultHeadClick())) {
 			comboResultHeadClick.select(0);

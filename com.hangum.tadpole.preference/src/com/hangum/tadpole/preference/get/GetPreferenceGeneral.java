@@ -128,9 +128,9 @@ public class GetPreferenceGeneral extends AbstractPreference {
 	 * RDB Character shown in the column
 	 * @return
 	 */
-	public static String getRDBShowInTheColumn() {
+	public static int getRDBShowInTheColumn() {
 		UserInfoDataDAO userInfo = SessionManager.getUserInfo(PreferenceDefine.RDB_CHARACTER_SHOW_IN_THE_COLUMN, PreferenceDefine.RDB_CHARACTER_SHOW_IN_THE_COLUMN_VALUE);
-		return userInfo.getValue0();
+		return Integer.parseInt(userInfo.getValue0());
 	}
 	
 	/**

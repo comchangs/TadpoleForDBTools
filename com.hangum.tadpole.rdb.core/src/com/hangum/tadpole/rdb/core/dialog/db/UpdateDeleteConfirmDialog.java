@@ -45,7 +45,7 @@ import com.hangum.tadpole.engine.sql.util.tables.TableUtil;
 import com.hangum.tadpole.engine.utils.RequestQuery;
 import com.hangum.tadpole.preference.get.GetPreferenceGeneral;
 import com.hangum.tadpole.rdb.core.Messages;
-import com.hangum.tadpole.rdb.core.editors.main.composite.direct.SQLResultLabelProvider;
+import com.hangum.tadpole.rdb.core.editors.main.composite.direct.QueryResultLabelProvider;
 import com.hangum.tadpole.sql.parse.UpdateDeleteStatementParser;
 
 /**
@@ -181,7 +181,7 @@ public class UpdateDeleteConfirmDialog extends Dialog {
 				}
 				createTableColumn(reqQuery, tvQueryResult, rsDAO, false);
 				
-				tvQueryResult.setLabelProvider(new SQLResultLabelProvider(reqQuery.getMode(), rsDAO));
+				tvQueryResult.setLabelProvider(new QueryResultLabelProvider(reqQuery.getMode(), rsDAO));
 				tvQueryResult.setContentProvider(new ArrayContentProvider());
 				final TadpoleResultSet trs = rsDAO.getDataList();
 				tvQueryResult.setInput(trs.getData());

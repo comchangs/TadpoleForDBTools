@@ -70,10 +70,11 @@ import com.hangum.tadpole.rdb.core.actions.resultView.SelectColumnToEditorAction
 import com.hangum.tadpole.rdb.core.actions.resultView.SelectRowToEditorAction;
 import com.hangum.tadpole.rdb.core.dialog.msg.TDBClipboardDialog;
 import com.hangum.tadpole.rdb.core.editors.main.composite.ResultSetComposite;
-import com.hangum.tadpole.rdb.core.editors.main.composite.direct.SQLResultLabelProvider;
+import com.hangum.tadpole.rdb.core.editors.main.composite.direct.QueryResultLabelProvider;
 import com.hangum.tadpole.rdb.core.editors.main.composite.plandetail.mysql.MySQLExtensionViewDialog;
 import com.hangum.tadpole.rdb.core.editors.main.composite.plandetail.mysql.MySQLExtensionViewDialog.MYSQL_EXTENSION_VIEW;
 import com.hangum.tadpole.rdb.core.editors.main.composite.tail.ResultTailComposite;
+import com.hangum.tadpole.rdb.core.editors.main.utils.SQLResultTableUtil;
 import com.hangum.tadpole.rdb.core.editors.main.utils.TableToDataUtils;
 import com.hangum.tadpole.rdb.core.extensionpoint.definition.IMainEditorExtension;
 import com.hangum.tadpole.session.manager.SessionManager;
@@ -677,12 +678,12 @@ public class ResultTableComposite extends AbstractResultDetailComposite {
 		
 		boolean isEditable = true;
 		if("".equals(rsDAO.getColumnTableName().get(1))) isEditable = false; //$NON-NLS-1$
-		SQLResultLabelProvider.createTableColumn(this, reqQuery, tvQueryResult, rsDAO, sqlSorter, strResultSetHeadClicks, isEditable);
+		SQLResultTableUtil.createTableColumn(this, reqQuery, tvQueryResult, rsDAO, sqlSorter, strResultSetHeadClicks, isEditable);
 
 		// 연속 쿼리 실행시 쿼리 스크롤이 최 상위로 가도록 테이블 인덱스를 수정.  이렇게 하지 않으면 쿼리 결과가 많을 경우 제일 하단으로 가서 쿼리를 여러번 호출할 여지가 있습니다.  
 		tvQueryResult.getTable().setTopIndex(0);
 		
-		tvQueryResult.setLabelProvider(new SQLResultLabelProvider(reqQuery.getMode(), rsDAO));
+		tvQueryResult.setLabelProvider(new QueryResultLabelProvider(reqQuery.getMode(), rsDAO));
 		tvQueryResult.setContentProvider(new ArrayContentProvider());
 		
 		// 쿼리를 설정한 사용자가 설정 한 만큼 보여준다.
