@@ -59,8 +59,9 @@ public class AbstractPreference {
 			mapUserInfoData.put(key, userInfoDao);
 			
 			return defaultValue;
+		} else {
+			return userInfoDao.getValue0();
 		}
-		else return userInfoDao.getValue0();
 	}
 
 }

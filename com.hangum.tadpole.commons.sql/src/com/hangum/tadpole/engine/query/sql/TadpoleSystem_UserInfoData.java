@@ -123,7 +123,7 @@ public class TadpoleSystem_UserInfoData {
 	public static UserInfoDataDAO updateAdminValue(String key, String value) throws TadpoleSQLManagerException, SQLException {
 		SqlMapClient sqlClient = TadpoleSQLManager.getInstance(TadpoleEngineUserDB.getUserDB());
 		UserInfoDataDAO userInfoData = new UserInfoDataDAO(PublicTadpoleDefine.systemAdminId, key, value);
-		int updateCnt = sqlClient.update("userInfoDataUpdate", userInfoData); //$NON-NLS-1$
+		sqlClient.update("userInfoDataUpdate", userInfoData); //$NON-NLS-1$
 		
 		return userInfoData;
 	}
@@ -266,7 +266,7 @@ public class TadpoleSystem_UserInfoData {
 		sqlClient.insert("userInfoDataInsert", new UserInfoDataDAO(userdb.getSeq(), PreferenceDefine.SQL_FORMATTER_WORD_WIDTH_PREFERENCE, PreferenceDefine.SQL_FORMATTER_WORD_WIDTH_PREFERENCE_VALUE));
 		
 		sqlClient.insert("userInfoDataInsert", new UserInfoDataDAO(userdb.getSeq(), PreferenceDefine.DEFAULT_HOME_PAGE, GetAdminPreference.getHomePage()));
-		sqlClient.insert("userInfoDataInsert", new UserInfoDataDAO(userdb.getSeq(), PreferenceDefine.DEFAULT_HOME_PAGE_USE, GetAdminPreference.getHomePageOpen()));
+		sqlClient.insert("userInfoDataInsert", new UserInfoDataDAO(userdb.getSeq(), PreferenceDefine.DEFAULT_HOME_PAGE_USE, ""+GetAdminPreference.getHomePageOpen()));
 		
 		sqlClient.executeBatch();
 		sqlClient.commitTransaction();

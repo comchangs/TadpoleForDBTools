@@ -61,9 +61,9 @@ public class GetPreferenceGeneral extends AbstractPreference {
 	 * default home page use
 	 * @return
 	 */
-	public static String getDefaultHomePageUse() {
+	public static boolean getDefaultHomePageUse() {
 		UserInfoDataDAO userInfo = SessionManager.getUserInfo(PreferenceDefine.DEFAULT_HOME_PAGE_USE, PreferenceDefine.DEFAULT_HOME_PAGE_USE_VALUE);
-		return userInfo.getValue0();
+		return Boolean.valueOf(userInfo.getValue0()).booleanValue();
 	}
 	
 	////////////////// rdb 설정 ////////////////////////////////////////////////////////////////////////////

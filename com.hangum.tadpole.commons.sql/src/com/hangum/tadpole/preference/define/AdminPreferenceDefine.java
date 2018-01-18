@@ -23,6 +23,10 @@ public class AdminPreferenceDefine {
 	public static final String DB_TIME_ZONE = _PREFIX + "DB_TIME_ZONE";
 	public static final String DB_TIME_ZONE_VALUE = "";
 	
+	/** 로그인시 브라우저 IP 사용 여부 */
+	public static final String USER_BROWSER_IP = _PREFIX + "USE_BROWSER_IP";
+	public static final String USER_BROWSER_IP_VALUE = "true";
+	
 	/** PRODUCT FILTER */
 	public static final String SYSTEM_VIEW_PRODUCT_TYPE_FILTER = _PREFIX + "SYSTEM_VIEW_PRODUCT_TYPE_FILTER";
 	public static final String SYSTEM_VIEW_PRODUCT_TYPE_FILTER_VALUE = "";
