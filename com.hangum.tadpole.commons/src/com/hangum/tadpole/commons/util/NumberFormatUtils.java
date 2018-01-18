@@ -95,6 +95,25 @@ public class NumberFormatUtils {
 	}
 	
 	/**
+	 * 숫자일 경우 ,를 찍어보여줍니다.
+	 * 
+	 * @param value
+	 * @return
+	 */
+	public static String addComma(Object value) {
+		if(value == null) return null;
+		
+		try{
+			DecimalFormat nf = new DecimalFormat("###,###.#############");
+			return nf.format(Double.parseDouble(value.toString()));
+		} catch(Exception e){
+			//
+		}
+
+		return value.toString();
+	}
+	
+	/**
 	 * kb, mb 변환
 	 * 
 	 * @param value

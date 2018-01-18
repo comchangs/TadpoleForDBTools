@@ -27,9 +27,9 @@ import com.hangum.tadpole.engine.license.LicenseExtensionHandler;
  */
 public class ApplicationLicenseInitialize {
 	private static final Logger logger = Logger.getLogger(ApplicationLicenseInitialize.class);
-	public static String TDB_License_FILE = ApplicationArgumentUtils.getResourcesDir() + "TadpoleHub.lic";
+	public static String TDB_License_FILE = ApplicationArgumentUtils.getResourcesDir();// + "TadpoleHub.lic";
 	
-	public static void load() {
+	public static void load(String strProductName) {
 		LicenseExtensionHandler linceseHandler = new LicenseExtensionHandler();
 		try {
 			String strLicenseInfo = ApplicationArgumentUtils.initDBServer();
@@ -37,7 +37,7 @@ public class ApplicationLicenseInitialize {
 				logger.info("******** [0] Start enterprise version ");
 				linceseHandler.license(strLicenseInfo);
 			} else {
-				File fileExist = new File(TDB_License_FILE);
+				File fileExist = new File(TDB_License_FILE + strProductName);
 				if(fileExist.isFile()) {
 					logger.info("******** [1] Start enterprise version ");
 					linceseHandler.license(fileExist);

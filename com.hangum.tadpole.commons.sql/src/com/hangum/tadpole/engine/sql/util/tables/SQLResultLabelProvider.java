@@ -10,7 +10,6 @@
  ******************************************************************************/
 package com.hangum.tadpole.engine.sql.util.tables;
 
-import java.text.NumberFormat;
 import java.util.HashMap;
 
 import org.apache.commons.lang.StringUtils;
@@ -29,6 +28,7 @@ import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
 
 import com.hangum.tadpole.commons.libs.core.define.PublicTadpoleDefine;
+import com.hangum.tadpole.commons.util.NumberFormatUtils;
 import com.hangum.tadpole.engine.query.dao.system.UserInfoDataDAO;
 import com.hangum.tadpole.engine.sql.util.RDBTypeToJavaTypeUtils;
 import com.hangum.tadpole.engine.sql.util.resultset.ResultSetUtilDTO;
@@ -96,7 +96,7 @@ public class SQLResultLabelProvider extends LabelProvider implements ITableLabel
 		
 		Object obj = rsResult.get(columnIndex);
 		if(rsDAO != null) {
-			if(isPretty & RDBTypeToJavaTypeUtils.isNumberType(rsDAO.getColumnType().get(columnIndex))) return addComma(obj);
+			if(isPretty & RDBTypeToJavaTypeUtils.isNumberType(rsDAO.getColumnType().get(columnIndex))) return NumberFormatUtils.addComma(obj);
 		}
 		String showValue = "";
 		try {
@@ -163,22 +163,4 @@ public class SQLResultLabelProvider extends LabelProvider implements ITableLabel
 		}		
 	}
 	
-	/**
-	 * 숫자일 경우 ,를 찍어보여줍니다.
-	 * 
-	 * @param value
-	 * @return
-	 */
-	private String addComma(Object value) {
-		if(value==null) return strNullValue;
-		
-		try{
-			NumberFormat nf = NumberFormat.getNumberInstance();
-			return nf.format(value);
-		} catch(Exception e){
-			// ignore exception
-		}
-
-		return value.toString();
-	}
 }

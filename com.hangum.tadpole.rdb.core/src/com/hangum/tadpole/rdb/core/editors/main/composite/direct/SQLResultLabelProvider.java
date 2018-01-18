@@ -10,7 +10,6 @@
  ******************************************************************************/
 package com.hangum.tadpole.rdb.core.editors.main.composite.direct;
 
-import java.text.DecimalFormat;
 import java.util.HashMap;
 
 import org.apache.commons.lang.StringUtils;
@@ -29,6 +28,7 @@ import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
 
 import com.hangum.tadpole.commons.libs.core.define.PublicTadpoleDefine;
+import com.hangum.tadpole.commons.util.NumberFormatUtils;
 import com.hangum.tadpole.engine.query.dao.system.UserInfoDataDAO;
 import com.hangum.tadpole.engine.sql.util.RDBTypeToJavaTypeUtils;
 import com.hangum.tadpole.engine.sql.util.resultset.ResultSetUtilDTO;
@@ -120,7 +120,7 @@ public class SQLResultLabelProvider extends LabelProvider implements ITableLabel
 		if(obj == null) {
 			return GetPreferenceGeneral.getResultNull();
 		} else if(GetPreferenceGeneral.getISRDBNumberIsComma() && RDBTypeToJavaTypeUtils.isNumberType(rsDAO.getColumnType().get(columnIndex))) {
-			return addComma(obj);
+			return NumberFormatUtils.addComma(obj);
 		} else {
 			if(getRDBShowInTheColumn() == -1) {
 				return obj.toString();
@@ -275,26 +275,6 @@ public class SQLResultLabelProvider extends LabelProvider implements ITableLabel
 		} catch(Exception e) { 
 			logger.error("SQLResult TableViewer", e);
 		}		
-	}
-	
-	/**
-	 * 숫자일 경우 ,를 찍어보여줍니다.
-	 * 
-	 * @param value
-	 * @return
-	 */
-	private static String addComma(Object value) {
-		if(value==null) return null;
-		
-		try{
-			DecimalFormat nf = new DecimalFormat("###,###.#############");
-			return nf.format(Long.parseLong(value.toString()));
-		} catch(Exception e){
-			// ignore exception
-			logger.error("column value parse error" + value);
-		}
-
-		return value.toString();
 	}
 
 }

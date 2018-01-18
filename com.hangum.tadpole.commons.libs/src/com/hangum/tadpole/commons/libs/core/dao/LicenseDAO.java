@@ -12,6 +12,7 @@ import java.util.Date;
 public class LicenseDAO {
 	boolean isValidate = false;
 	boolean isEnterprise = false;
+	String productType = "";
 	String term = "";
 	String msg = "";
 	
@@ -26,6 +27,20 @@ public class LicenseDAO {
 	public LicenseDAO() {
 	}
 	
+	/**
+	 * @return the productType
+	 */
+	public String getProductType() {
+		return productType;
+	}
+
+	/**
+	 * @param productType the productType to set
+	 */
+	public void setProductType(String productType) {
+		this.productType = productType;
+	}
+
 	/**
 	 * @return the isEnterprise
 	 */
