@@ -386,7 +386,6 @@ public class Messages {
 	public String RecordViewDialog_2;
 	public String RecordViewDialog_5;
 	public String RecordViewDialog_7;
-	public String ResultMainComposite_1;
 	public String QueryPlan;
 	public String ResultSetComposite_0;
 	public String ResultSetComposite_1;

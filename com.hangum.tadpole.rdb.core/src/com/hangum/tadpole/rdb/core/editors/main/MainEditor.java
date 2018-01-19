@@ -352,22 +352,15 @@ public class MainEditor extends EditorExtension {
 					for (Object object : DBSystemSchema.getSchemas(userDB)) {
 						HashMap<String, String> mapData = (HashMap)object;
 						comboSchema.add(mapData.get("SCHEMA"));
-						userDB.addSchema(comboSchema.getText());
+						userDB.addSchema(mapData.get("SCHEMA"));
 					}
-					comboSchema.select(0);
-					userDB.setSchema(comboSchema.getText());
-					
+					userDB.setSchema(userDB.getDb());
 				} catch(Exception e) {
 					logger.error("get schema list " + e.getMessage());
 				}
 			} else {
-			
 				for (String schema : userDB.getSchemas()) {
 					comboSchema.add(schema);
-				}
-				if("".equals(userDB.getSchema())) {
-					comboSchema.select(0);
-					userDB.setSchema(comboSchema.getText());
 				}
 			}
 			comboSchema.setVisibleItemCount(comboSchema.getItemCount() > 15 ? 15 : comboSchema.getItemCount());
@@ -685,8 +678,6 @@ public class MainEditor extends EditorExtension {
 		tltmConnectURL.setText(String.format("%s", userDB.getDisplay_name()));
 	
 		// if selected DB is mysql, reset schema list
-		
-		
 	}
 	
 	public Browser getBrowserQueryEditor() {

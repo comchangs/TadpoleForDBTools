@@ -126,8 +126,6 @@ public class CommonMessages {
 
 	public String DownloadIsComplete;
 
-	public String UserRequestQuery;
-	
 	public String TermExpired;
 	
 	public String TermExpiredMsg;

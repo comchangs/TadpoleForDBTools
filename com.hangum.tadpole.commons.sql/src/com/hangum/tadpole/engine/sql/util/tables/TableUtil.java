@@ -41,6 +41,16 @@ import com.hangum.tadpole.engine.sql.util.tables.DefaultViewerSorter.COLUMN_TYPE
  */
 public class TableUtil {
 	private static final Logger logger = Logger.getLogger(TableUtil.class);
+	
+	/**
+	 * create column of table
+	 * 
+	 * @param tableViewer
+	 * @param rsDAO
+	 */
+	public static void createTableColumn(final TableViewer tableViewer, final ResultSetUtilDTO rsDAO) {
+		createTableColumn(tableViewer, rsDAO, null);
+	}
 
 	/**
 	 * table의 Column을 생성한다.
@@ -81,7 +91,7 @@ public class TableUtil {
 				tc.addSelectionListener(new SelectionAdapter() {
 					@Override
 					public void widgetSelected(SelectionEvent e) {
-						tableSorter.setColumn(index);
+						if(tableSorter != null) tableSorter.setColumn(index);
 						int dir = tableViewer.getTable().getSortDirection();
 						if (tableViewer.getTable().getSortColumn() == tc) {
 							dir = dir == SWT.UP ? SWT.DOWN : SWT.UP;

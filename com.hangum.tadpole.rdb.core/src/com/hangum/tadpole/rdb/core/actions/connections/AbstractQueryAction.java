@@ -100,21 +100,21 @@ public abstract class AbstractQueryAction implements IViewActionDelegate {
 	public IEditorPart open(UserDBDAO userDB) {
 			
 		// mongodb인지 검사하여..
-		if(userDB.getDBDefine() != DBDefine.MONGODB_DEFAULT) {
-			MainEditorInput mei = new MainEditorInput(userDB);
-			
+		if(userDB.getDBDefine() == DBDefine.MONGODB_DEFAULT) {
 			try {
-				return PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().openEditor(mei, MainEditor.ID);
+				return PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().openEditor(
+						new MongoDBInfosInput(userDB, MongoDBInfosEditor.PAGES.COLLECTION_SUMMERY), 
+						MongoDBInfosEditor.ID);
 			} catch (PartInitException e) {
 				logger.error("open editor", e); //$NON-NLS-1$
 				
 				Status errStatus = new Status(IStatus.ERROR, Activator.PLUGIN_ID, e.getMessage(), e); //$NON-NLS-1$
 				ExceptionDetailsErrorDialog.openError(null, CommonMessages.get().Error, Messages.get().AbstractQueryAction_1, errStatus); //$NON-NLS-1$
 			}
+			
 		} else {
-			MongoDBInfosInput mongoInput = new MongoDBInfosInput(userDB, MongoDBInfosEditor.PAGES.COLLECTION_SUMMERY);
 			try {
-				return PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().openEditor(mongoInput, MongoDBInfosEditor.ID);
+				return PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().openEditor(new MainEditorInput(userDB), MainEditor.ID);
 			} catch (PartInitException e) {
 				logger.error("open editor", e); //$NON-NLS-1$
 				
