@@ -737,7 +737,7 @@ public class ExplorerViewer extends ViewPart {
 		} else if (strSelectItemText.equalsIgnoreCase(OBJECT_TYPE.JAVA.name())) {
 			refreshJava(isRefresh, strObjectName);
 		}
-		filterText();
+		if(isRefresh) filterText();
 		
 		// google analytic
 		AnalyticCaller.track(ExplorerViewer.ID, strSelectItemText);
