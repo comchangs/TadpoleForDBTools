@@ -127,6 +127,7 @@ public class QueryUtils {
 	/**
 	 * execute query
 	 * 
+	 * @param connectId
 	 * @param userDB
 	 * @param strQuery
 	 * @param intStartCnt
@@ -134,14 +135,14 @@ public class QueryUtils {
 	 * @return
 	 * @throws Exception
 	 */
-	public static QueryExecuteResultDTO executeQueryIsTransaction(final UserDBDAO userDB, String strSQL, final int intStartCnt, final int intSelectLimitCnt) throws Exception {
+	public static QueryExecuteResultDTO executeQueryIsTransaction(final String connectId, final UserDBDAO userDB, String strSQL, final int intStartCnt, final int intSelectLimitCnt) throws Exception {
 		ResultSet resultSet = null;
 		java.sql.Connection javaConn = null;
 		Statement statement = null;
 		
 		strSQL = SQLUtil.makeExecutableSQL(userDB, strSQL);
 		try {
-			javaConn = TadpoleSQLTransactionManager.getInstance(SessionManager.getEMAIL(), userDB);
+			javaConn = TadpoleSQLTransactionManager.getInstance(connectId, SessionManager.getEMAIL(), userDB);
 			statement = javaConn.createStatement();
 			
 			if(intStartCnt == 0) {

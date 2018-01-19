@@ -92,7 +92,7 @@ public class DisconnectDBAction implements IViewActionDelegate {
 		}
 		
 		try {
-			TadpoleSQLTransactionManager.rollback(strUserID, userDB);
+			TadpoleSQLTransactionManager.rollbackAll(strUserID, userDB);
 		} catch (Exception e) { 
 			logger.error("disconnection exception", e);			
 			

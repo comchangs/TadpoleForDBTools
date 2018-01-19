@@ -111,8 +111,8 @@ public class PublicTadpoleDefine {
 	/**
 	 * 분리자
 	 */
-	public static final String DELIMITER = "||DEL||"; //$NON-NLS-1$
-	public static final String DELIMITER_DBL = "||DEL-DBL||"; //$NON-NLS-1$
+	public static final String DELIMITER = "||_D_||"; //$NON-NLS-1$
+	public static final String DELIMITER_DBL = "||_D_D_||"; //$NON-NLS-1$
 	
 	/** 라인분리자 */
 	public static final String LINE_SEPARATOR = "\n";//System.getProperty("line.separator"); //$NON-NLS-1$
@@ -165,8 +165,8 @@ public class PublicTadpoleDefine {
 	/** erd - select table */
 	public static final String SELECT_ERD_TABLE = "SELECT_ERD_TABLE_RESOURE"; //$NON-NLS-1$
 	
-	/** auto commit 사용여부를 가립니다. */
-	public static final String AUTOCOMMIT_USE = "_AUTOCOMMIT_USE"; //$NON-NLS-1$
+//	/** auto commit 사용여부를 가립니다. */
+//	public static final String AUTOCOMMIT_USE = "_AUTOCOMMIT_USE"; //$NON-NLS-1$
 	
 	/** Tadpole support browser list  */
 	public static enum TADPOLE_SUPPORT_BROWSER {EDGE, FIREFOX, CHROME, SAFARI, IE, OPERA};

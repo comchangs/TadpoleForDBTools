@@ -101,7 +101,7 @@ public class TableToDataUtils {
 				// if select value is null can 
 				if(columnObject == null) strText = strNullValue;
 				else strText = columnObject.toString();
-				columnDao.setCol_value(columnDao.getCol_value() + strText + PublicTadpoleDefine.DELIMITER_DBL);
+				columnDao.setCol_value(columnDao.getCol_value() + strText + PublicTadpoleDefine.DELIMITER);
 			} else if("BLOB".equalsIgnoreCase(columnDao.getData_type())) { //$NON-NLS-1$
 				// ignore blob type
 			} else {
@@ -110,15 +110,15 @@ public class TableToDataUtils {
 				// if select value is null can 
 				if(columnObject == null) {
 					strText = strNullValue;
-					columnDao.setCol_value(columnDao.getCol_value() + strText + PublicTadpoleDefine.DELIMITER_DBL);
+					columnDao.setCol_value(columnDao.getCol_value() + strText + PublicTadpoleDefine.DELIMITER);
 				} else {
 					strText = columnObject.toString();
-					columnDao.setCol_value(columnDao.getCol_value() + SQLUtil.makeQuote(strText) + PublicTadpoleDefine.DELIMITER_DBL);
+					columnDao.setCol_value(columnDao.getCol_value() + SQLUtil.makeQuote(strText) + PublicTadpoleDefine.DELIMITER);
 				}
 				
 			}
 		}
-		columnDao.setCol_value(StringUtils.removeEnd(""+columnDao.getCol_value(), PublicTadpoleDefine.DELIMITER_DBL));
+		columnDao.setCol_value(StringUtils.removeEnd(""+columnDao.getCol_value(), PublicTadpoleDefine.DELIMITER));
 		
 		return columnDao;
 	}

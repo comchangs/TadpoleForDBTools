@@ -46,14 +46,17 @@ public class TransactionManger {
 	 * transaction 쿼리인지 검사합니다.
 	 * 
 	 * @param query
+	 * @param connectId
+	 * @param userEmail
+	 * @param userDB
 	 * @return
 	 */
-	public static boolean calledCommitOrRollback(String query, String userEmail, UserDBDAO userDB) {
+	public static boolean calledCommitOrRollback(String query, String connectId, String userEmail, UserDBDAO userDB) {
 		if(StringUtils.startsWithIgnoreCase(query, COMMIT_STATEMENT)) {
-			TadpoleSQLTransactionManager.commit(userEmail, userDB);
+			TadpoleSQLTransactionManager.commit(connectId, userEmail, userDB);
 			return true;
 		} else if(StringUtils.startsWithIgnoreCase(query, ROLLBACK_STATEMENT)) {
-			TadpoleSQLTransactionManager.rollback(userEmail, userDB);
+			TadpoleSQLTransactionManager.rollback(connectId, userEmail, userDB);
 			return true;
 		}
 		

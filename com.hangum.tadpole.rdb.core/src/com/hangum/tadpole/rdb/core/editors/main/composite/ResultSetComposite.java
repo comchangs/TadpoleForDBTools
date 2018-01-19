@@ -556,11 +556,12 @@ public class ResultSetComposite extends Composite {
 												logger.error("MySQL Profiling execute plan", e);
 											}
 										}
-
-									} else {
+									// is not profilling
+									} else{
 										rsDAO = runSelect(reqQuery, queryTimeOut, strUserEmail, intSelectLimitCnt, 0);
-										listRSDao.add(rsDAO);	
+										listRSDao.add(rsDAO);
 									}
+								// other db query
 								} else {
 									rsDAO = runSelect(reqQuery, queryTimeOut, strUserEmail, intSelectLimitCnt, 0);
 									listRSDao.add(rsDAO);
@@ -579,7 +580,7 @@ public class ResultSetComposite extends Composite {
 									startTransactionMode();
 									reqQuery.setAutoCommit(false);
 								} else {
-									TransactionManger.calledCommitOrRollback(reqQuery.getSql(), strUserEmail, getUserDB());
+									TransactionManger.calledCommitOrRollback(reqQuery.getSql(), reqQuery.getConnectId(), strUserEmail, getUserDB());
 								}
 							} else {
 								int intEfficeCnt = ExecuteOtherSQL.runPermissionSQLExecution(errMsg, reqQuery, getUserDB(), getDbUserRoleType(), strUserEmail);
@@ -803,7 +804,7 @@ public class ResultSetComposite extends Composite {
 				if(reqQuery.isAutoCommit()) {
 					javaConn = TadpoleSQLManager.getConnection(getUserDB());
 				} else {
-					javaConn = TadpoleSQLTransactionManager.getInstance(strUserEmail, getUserDB());
+					javaConn = TadpoleSQLTransactionManager.getInstance(reqQuery.getConnectId(), strUserEmail, getUserDB());
 				}
 			}
 			
@@ -1153,7 +1154,7 @@ public class ResultSetComposite extends Composite {
 				
 				// ddl history 를 기록한다.
 				for (String strQuery : listStrExecuteQuery) {
-					RequestQuery _rq = new RequestQuery(getUserDB(), strQuery, reqQuery.getDbAction(), EditorDefine.QUERY_MODE.QUERY, reqQuery.getExecuteType(), false);
+					RequestQuery _rq = new RequestQuery(reqQuery.getConnectId(), getUserDB(), strQuery, reqQuery.getDbAction(), EditorDefine.QUERY_MODE.QUERY, reqQuery.getExecuteType(), false);
 					saveSchemaHistory(_rq);
 				}
 			}

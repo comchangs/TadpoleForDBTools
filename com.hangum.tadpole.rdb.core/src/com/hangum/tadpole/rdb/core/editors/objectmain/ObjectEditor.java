@@ -185,7 +185,7 @@ public class ObjectEditor extends MainEditor {
 					executeType = EditorDefine.EXECUTE_TYPE.BLOCK;
 				}
 				
-				RequestQuery reqQuery = new RequestQuery(userDB, strQuery, dbAction, EditorDefine.QUERY_MODE.QUERY, executeType, isAutoCommit());
+				RequestQuery reqQuery = new RequestQuery(getConnectionid(), userDB, strQuery, dbAction, EditorDefine.QUERY_MODE.QUERY, executeType, isAutoCommit());
 				executeCommand(reqQuery);
 			}
 		});

@@ -50,6 +50,7 @@ public class ExecuteBatchSQL {
 	 * @param userDB
 	 * @param userType
 	 * @param intCommitCount
+	 * @param connectId
 	 * @param userEmail
 	 * @throws Exception
 	 */     
@@ -98,14 +99,14 @@ public class ExecuteBatchSQL {
 			if(reqQuery.isAutoCommit()) {
 				javaConn = TadpoleSQLManager.getConnection(userDB);
 			} else {
-				javaConn = TadpoleSQLTransactionManager.getInstance(userEmail, userDB);
+				javaConn = TadpoleSQLTransactionManager.getInstance(reqQuery.getConnectId(), userEmail, userDB);
 			}
 			statement = javaConn.createStatement();
 			
 			int count = 0;
 			for (String strQuery : listQuery) {
 				// 쿼리 중간에 commit이나 rollback이 있으면 어떻게 해야 하나???
-				if(!TransactionManger.calledCommitOrRollback(reqQuery.getSql(), userEmail, userDB)) {
+				if(!TransactionManger.calledCommitOrRollback(reqQuery.getSql(), reqQuery.getConnectId(), userEmail, userDB)) {
 					
 					if(StringUtils.startsWithIgnoreCase(strQuery.trim(), "CREATE TABLE")) { //$NON-NLS-1$
 						strQuery = StringUtils.replaceOnce(strQuery, "(", " ("); //$NON-NLS-1$ //$NON-NLS-2$

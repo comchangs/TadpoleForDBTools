@@ -95,7 +95,7 @@ public class MainEditorBrowserFunctionService extends EditorFunctionService {
 		EditorDefine.EXECUTE_TYPE exeType = EXECUTE_TYPE.NONE;
 		if((Boolean) arguments[2]) exeType = EXECUTE_TYPE.BLOCK;
 		
-		RequestQuery rq = new RequestQuery(userDB, strSQL, editor.getDbAction(), EditorDefine.QUERY_MODE.QUERY, exeType, editor.isAutoCommit());
+		RequestQuery rq = new RequestQuery(editor.getConnectionid(), userDB, strSQL, editor.getDbAction(), EditorDefine.QUERY_MODE.QUERY, exeType, editor.isAutoCommit());
 		editor.executeCommand(rq);
 	}
 	
@@ -105,7 +105,7 @@ public class MainEditorBrowserFunctionService extends EditorFunctionService {
 	@Override
 	protected void doExecutePlan(Object[] arguments) {
 		String strSQL = (String) arguments[1];
-		RequestQuery rq = new RequestQuery(userDB, strSQL, editor.getDbAction(), EditorDefine.QUERY_MODE.EXPLAIN_PLAN, EditorDefine.EXECUTE_TYPE.NONE, editor.isAutoCommit());
+		RequestQuery rq = new RequestQuery(editor.getConnectionid(), userDB, strSQL, editor.getDbAction(), EditorDefine.QUERY_MODE.EXPLAIN_PLAN, EditorDefine.EXECUTE_TYPE.NONE, editor.isAutoCommit());
 		editor.executeCommand(rq);
 	}
 	
@@ -190,7 +190,7 @@ public class MainEditorBrowserFunctionService extends EditorFunctionService {
 		EditorDefine.EXECUTE_TYPE exeType = EXECUTE_TYPE.NONE;
 		exeType = EXECUTE_TYPE.BLOCK;
 		
-		RequestQuery rq = new RequestQuery(userDB, strSQL, editor.getDbAction(), EditorDefine.QUERY_MODE.QUERY, exeType, editor.isAutoCommit());
+		RequestQuery rq = new RequestQuery(editor.getConnectionid(), userDB, strSQL, editor.getDbAction(), EditorDefine.QUERY_MODE.QUERY, exeType, editor.isAutoCommit());
 		editor.executeCommand(rq);
 	}
 

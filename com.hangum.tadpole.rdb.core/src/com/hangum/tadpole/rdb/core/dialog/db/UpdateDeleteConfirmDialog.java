@@ -52,6 +52,8 @@ import com.hangum.tadpole.sql.parse.UpdateDeleteStatementParser;
  */
 public class UpdateDeleteConfirmDialog extends Dialog {
 	private static final Logger logger = Logger.getLogger(UpdateDeleteConfirmDialog.class);
+	
+	private String connectId;
 	private UserDBDAO userDB;
 	private RequestQuery reqQuery;
 	private TableViewer tvQueryResult;
@@ -69,10 +71,11 @@ public class UpdateDeleteConfirmDialog extends Dialog {
 	 * @param reqQuery 
 	 * @param userDB 
 	 */
-	public UpdateDeleteConfirmDialog(Shell parentShell, UserDBDAO userDB, RequestQuery reqQuery) {
+	public UpdateDeleteConfirmDialog(Shell parentShell, String connectId, UserDBDAO userDB, RequestQuery reqQuery) {
 		super(parentShell);
 		setShellStyle(SWT.MAX | SWT.RESIZE | SWT.TITLE | SWT.APPLICATION_MODAL);
 		
+		this.connectId = connectId;
 		this.userDB = userDB;
 		this.reqQuery = reqQuery;
 	}
@@ -173,7 +176,7 @@ public class UpdateDeleteConfirmDialog extends Dialog {
 				if(reqQuery.isAutoCommit()) {
 					rsDAO = QueryUtils.executeQuery(userDB, sqlSelect, 0, 500);
 				} else {
-					rsDAO = QueryUtils.executeQueryIsTransaction(userDB, sqlSelect, 0, 500);
+					rsDAO = QueryUtils.executeQueryIsTransaction(connectId, userDB, sqlSelect, 0, 500);
 				}
 				TableUtil.createTableColumn(tvQueryResult, rsDAO);
 				

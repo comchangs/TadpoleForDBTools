@@ -355,7 +355,7 @@ public class ResultTableComposite extends AbstractResultDetailComposite {
 			return;
 		}
 		
-		appendTextAtPosition(StringUtils.replace(""+columnDao.getCol_value(), PublicTadpoleDefine.DELIMITER_DBL, ",")); //$NON-NLS-1$
+		appendTextAtPosition(StringUtils.replace(""+columnDao.getCol_value(), PublicTadpoleDefine.DELIMITER, ",")); //$NON-NLS-1$
 	}
 	
 	/**
@@ -368,7 +368,7 @@ public class ResultTableComposite extends AbstractResultDetailComposite {
 			return;
 		}
 		
-		String strData = StringUtils.replace(""+columnDao.getCol_value(), PublicTadpoleDefine.DELIMITER_DBL, ",");
+		String strData = StringUtils.replace(""+columnDao.getCol_value(), PublicTadpoleDefine.DELIMITER, ",");
 		if(!"".equals(columnDao.getCol_value())) { //$NON-NLS-1$
 			if(PublicTadpoleDefine.DEFINE_TABLE_COLUMN_BASE_ZERO.equals(columnDao.getName())) {
 				appendTextAtPosition(strData); //$NON-NLS-1$
@@ -500,7 +500,7 @@ public class ResultTableComposite extends AbstractResultDetailComposite {
 		}
 		
 		String strType = columnDao.getType();
-		String strData = StringUtils.replace(""+columnDao.getCol_value(), PublicTadpoleDefine.DELIMITER_DBL, ","); //$NON-NLS-1$
+		String strData = StringUtils.replace(""+columnDao.getCol_value(), PublicTadpoleDefine.DELIMITER, ","); //$NON-NLS-1$
 		if("JSON".equalsIgnoreCase(strType)) { //$NON-NLS-1$
 			TadpoleSimpleMessageDialog dialog = new TadpoleSimpleMessageDialog(getShell(), Messages.get().ResultSetComposite_16, strData);
 			dialog.open();

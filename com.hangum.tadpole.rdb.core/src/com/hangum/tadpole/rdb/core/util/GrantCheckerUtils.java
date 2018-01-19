@@ -108,7 +108,7 @@ public class GrantCheckerUtils {
 					if(isDDLQuestion) {
 						PublicTadpoleDefine.QUERY_DML_TYPE dmlType = reqQuery.getSqlDMLType();
 						if(PublicTadpoleDefine.QUERY_DML_TYPE.UPDATE == dmlType || PublicTadpoleDefine.QUERY_DML_TYPE.DELETE == dmlType) {
-							UpdateDeleteConfirmDialog dialog = new UpdateDeleteConfirmDialog(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(), userDB, reqQuery);
+							UpdateDeleteConfirmDialog dialog = new UpdateDeleteConfirmDialog(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(), reqQuery.getConnectId(), userDB, reqQuery);
 							if(dialog.open() != Dialog.OK) return false;
 						} else {
 							MessageDialog dialog = new MessageDialog(null, Messages.get().Execute, null, Messages.get().GrantCheckerUtils_0, MessageDialog.QUESTION, new String[] {CommonMessages.get().Yes, CommonMessages.get().No}, 1);

@@ -354,7 +354,11 @@ public class MainEditor extends EditorExtension {
 						comboSchema.add(mapData.get("SCHEMA"));
 						userDB.addSchema(mapData.get("SCHEMA"));
 					}
-					userDB.setSchema(userDB.getDb());
+					if(userDB.getDBGroup() == DBGroupDefine.ORACLE_GROUP) {
+						userDB.setSchema(userDB.getUsers());
+					} else if(userDB.getDBGroup() == DBGroupDefine.MYSQL_GROUP) {
+						userDB.setSchema(userDB.getDb());
+					}
 				} catch(Exception e) {
 					logger.error("get schema list " + e.getMessage());
 				}
@@ -433,7 +437,7 @@ public class MainEditor extends EditorExtension {
 					executeType = EditorDefine.EXECUTE_TYPE.BLOCK;
 				}
 				
-				RequestQuery reqQuery = new RequestQuery(userDB, strQuery, dbAction, EditorDefine.QUERY_MODE.QUERY, executeType, isAutoCommit());
+				RequestQuery reqQuery = new RequestQuery(getConnectionid(), userDB, strQuery, dbAction, EditorDefine.QUERY_MODE.QUERY, executeType, isAutoCommit());
 				executeCommand(reqQuery);
 			}
 		});
@@ -448,7 +452,7 @@ public class MainEditor extends EditorExtension {
 				public void widgetSelected(SelectionEvent e) {
 					String strQuery = browserEvaluateToStr(EditorFunctionService.ALL_TEXT);
 					
-					RequestQuery reqQuery = new RequestQuery(userDB, strQuery, dbAction, EditorDefine.QUERY_MODE.QUERY, EditorDefine.EXECUTE_TYPE.ALL, isAutoCommit());
+					RequestQuery reqQuery = new RequestQuery(getConnectionid(), userDB, strQuery, dbAction, EditorDefine.QUERY_MODE.QUERY, EditorDefine.EXECUTE_TYPE.ALL, isAutoCommit());
 					executeCommand(reqQuery);
 				}
 			});
@@ -462,7 +466,7 @@ public class MainEditor extends EditorExtension {
 			public void widgetSelected(SelectionEvent e) {
 				String strQuery = browserEvaluateToStr(EditorFunctionService.GET_SELECTED_TEXT, PublicTadpoleDefine.SQL_DELIMITER); //$NON-NLS-1$
 				
-				RequestQuery reqQuery = new RequestQuery(userDB, strQuery, dbAction, EditorDefine.QUERY_MODE.EXPLAIN_PLAN, EditorDefine.EXECUTE_TYPE.NONE, isAutoCommit());
+				RequestQuery reqQuery = new RequestQuery(getConnectionid(), userDB, strQuery, dbAction, EditorDefine.QUERY_MODE.EXPLAIN_PLAN, EditorDefine.EXECUTE_TYPE.NONE, isAutoCommit());
 				executeCommand(reqQuery);
 				
 			}
@@ -540,7 +544,7 @@ public class MainEditor extends EditorExtension {
 			public void widgetSelected(SelectionEvent e) {
 				if(logger.isDebugEnabled()) logger.debug("[set commit][user id]" + getUserEMail() + "[user id]" + userDB); //$NON-NLS-1$ //$NON-NLS-2$
 				
-				TadpoleSQLTransactionManager.commit(getUserEMail(), userDB);
+				TadpoleSQLTransactionManager.commit(getConnectionid(), getUserEMail(), userDB);
 				MessageDialog.openInformation(getSite().getShell(), CommonMessages.get().Confirm, Messages.get().ConfirmCommit);
 			}
 		});
@@ -553,7 +557,7 @@ public class MainEditor extends EditorExtension {
 			public void widgetSelected(SelectionEvent e) {
 				if(logger.isDebugEnabled()) logger.debug("[set rollback][user id]" + getUserEMail() + "[user id]" + userDB); //$NON-NLS-1$ //$NON-NLS-2$
 				
-				TadpoleSQLTransactionManager.rollback(getUserEMail(), userDB);
+				TadpoleSQLTransactionManager.rollback(getConnectionid(), getUserEMail(), userDB);
 				MessageDialog.openInformation(getSite().getShell(), CommonMessages.get().Confirm, Messages.get().ConfirmRollback);
 			}
 		});
@@ -637,26 +641,27 @@ public class MainEditor extends EditorExtension {
 			@Override
 			public void propertyChange(PropertyChangeEvent event) {
 
-				if (event.getProperty() == PublicTadpoleDefine.AUTOCOMMIT_USE) {
-					String strAutoCommit_seq = event.getNewValue().toString();
-					// UserDB.seq || auto commit ture or false 
-					String[] arryVal = StringUtils.split(strAutoCommit_seq, "||"); //$NON-NLS-1$
-					int seq = Integer.parseInt(arryVal[0]);
-					boolean boolUseAutocommit = Boolean.parseBoolean(arryVal[1]);
-
-					if(!tiAutoCommit.isDisposed()) {
-						if(seq == userDB.getSeq()) {
-							tiAutoCommit.setSelection(boolUseAutocommit);
-							if(!boolUseAutocommit) {
-								tiAutoCommitCommit.setEnabled(false);
-								tiAutoCommitRollback.setEnabled(false);
-							} else {
-								tiAutoCommitCommit.setEnabled(true);
-								tiAutoCommitRollback.setEnabled(true);
-							}
-						}	// end tltmAutoCommit
-					}	// end seq
-				} else if(event.getProperty() == PreferenceDefine.EDITOR_CHANGE_EVENT) {
+//				if (event.getProperty() == PublicTadpoleDefine.AUTOCOMMIT_USE) {
+//					String strAutoCommit_seq = event.getNewValue().toString();
+//					// UserDB.seq || auto commit ture or false 
+//					String[] arryVal = StringUtils.split(strAutoCommit_seq, "||"); //$NON-NLS-1$
+//					int seq = Integer.parseInt(arryVal[0]);
+//					boolean boolUseAutocommit = Boolean.parseBoolean(arryVal[1]);
+//
+//					if(!tiAutoCommit.isDisposed()) {
+//						if(seq == userDB.getSeq()) {
+//							tiAutoCommit.setSelection(boolUseAutocommit);
+//							if(!boolUseAutocommit) {
+//								tiAutoCommitCommit.setEnabled(false);
+//								tiAutoCommitRollback.setEnabled(false);
+//							} else {
+//								tiAutoCommitCommit.setEnabled(true);
+//								tiAutoCommitRollback.setEnabled(true);
+//							}
+//						}	// end tltmAutoCommit
+//					}	// end seq
+//				} else 
+				if(event.getProperty() == PreferenceDefine.EDITOR_CHANGE_EVENT) {
 					final String varTheme 		= PublicTadpoleDefine.getMapTheme().get(GetPreferenceGeneral.getEditorTheme());
 				    final String varFontSize 	= GetPreferenceGeneral.getEditorFontSize();
 				    final String varIsWrap 		= ""+GetPreferenceGeneral.getEditorIsWarp();
@@ -810,11 +815,11 @@ public class MainEditor extends EditorExtension {
 			tiAutoCommitRollback.setEnabled(false);
 			
 			if(!isFirst) {
-				if(TadpoleSQLTransactionManager.isInstance(getUserEMail(), userDB)) {
+				if(TadpoleSQLTransactionManager.isInstance(getConnectionid(), getUserEMail(), userDB)) {
 					if(MessageDialog.openConfirm(null, CommonMessages.get().Confirm, Messages.get().MainEditor_47)) {
-						TadpoleSQLTransactionManager.commit(getUserEMail(), userDB);
+						TadpoleSQLTransactionManager.commit(getConnectionid(), getUserEMail(), userDB);
 					} else {
-						TadpoleSQLTransactionManager.rollback(getUserEMail(), userDB);
+						TadpoleSQLTransactionManager.rollback(getConnectionid(), getUserEMail(), userDB);
 					}
 				}
 			}
@@ -823,10 +828,10 @@ public class MainEditor extends EditorExtension {
 			tiAutoCommitRollback.setEnabled(true);
 		}
 		
-		if(isRiseEvent) {
-			// auto commit의 실행버튼을 동일한 db를 열고 있는 에디터에서 공유합니다.
-			PlatformUI.getPreferenceStore().setValue(PublicTadpoleDefine.AUTOCOMMIT_USE, userDB.getSeq() + "||" + tiAutoCommit.getSelection() + "||" + System.currentTimeMillis()); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-		}
+//		if(isRiseEvent) {
+//			// auto commit의 실행버튼을 동일한 db를 열고 있는 에디터에서 공유합니다.
+//			PlatformUI.getPreferenceStore().setValue(PublicTadpoleDefine.AUTOCOMMIT_USE, userDB.getSeq() + "||" + tiAutoCommit.getSelection() + "||" + System.currentTimeMillis()); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+//		}
 	}
 	
 	/**
@@ -842,6 +847,10 @@ public class MainEditor extends EditorExtension {
 
 		// 요청쿼리가 없다면 무시합니다. 
 		if(StringUtils.isEmpty(reqQuery.getSql())) return;
+		
+		if(logger.isDebugEnabled()) {
+			logger.debug("===> [connection id]" + reqQuery.getConnectId());
+		}
 		
 		//
 		//  schema test code start
@@ -1200,5 +1209,5 @@ public class MainEditor extends EditorExtension {
 	public PublicTadpoleDefine.RESULT_COMP_TYPE getResultViewType() {
 		return resultViewType;
 	}
-
+	
 }

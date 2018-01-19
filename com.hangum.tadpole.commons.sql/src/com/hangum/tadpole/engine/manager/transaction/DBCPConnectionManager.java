@@ -46,8 +46,7 @@ public class DBCPConnectionManager {
 	private Map<String, DataSource> mapDataSource = new HashMap<String, DataSource>();
 	private Map<String, GenericObjectPool<Object> > mapGenericObject = new HashMap<String, GenericObjectPool<Object> >();
 	
-	private DBCPConnectionManager() {
-	}
+	private DBCPConnectionManager() {}
 	
 	public static DBCPConnectionManager getInstance() {
 		if(instance == null) {
