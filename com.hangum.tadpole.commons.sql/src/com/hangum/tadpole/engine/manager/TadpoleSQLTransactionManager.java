@@ -282,16 +282,14 @@ public class TadpoleSQLTransactionManager extends AbstractTadpoleManager {
 	 * @param userId
 	 */
 	public static void executeAllRollback(final String userId) {
-		Iterator iteratorEntrySet = dbManager.entrySet().iterator();
-		while(iteratorEntrySet.hasNext()) {
-			Map.Entry mapObject = (Map.Entry)iteratorEntrySet.next();
-			String searchKey = (String)mapObject.getKey();
-			
+		
+		final List<String> listKeys = new ArrayList<String>(dbManager.keySet());
+		for (String searchKey : listKeys) {
 			try {
 				if (StringUtils.startsWith(searchKey, userId + PublicTadpoleDefine.DELIMITER)) {
 					if (logger.isDebugEnabled()) logger.debug(String.format("== logout executeRollback start== [%s]", searchKey));
 	
-					TransactionDAO transactionDAO = (TransactionDAO)mapObject.getValue();
+					TransactionDAO transactionDAO = (TransactionDAO)dbManager.get(searchKey);
 					if (transactionDAO != null) {
 						Connection conn = transactionDAO.getConn();
 						
@@ -305,14 +303,14 @@ public class TadpoleSQLTransactionManager extends AbstractTadpoleManager {
 					} // end trsansaction dao
 
 					// 기존 object와 커넥션 풀을 삭제한다.
-					iteratorEntrySet.remove();
+					dbManager.remove(searchKey);
 					transactionDAO =null;
 					DBCPConnectionManager.getInstance().releaseConnectionPool(searchKey);
 				}
 			} catch(Exception e) {
 				logger.error("********************** Release connection pool exception", e);
-			}
-		}
+			}	// end try
+		}	// end for
 	}
 
 	/**

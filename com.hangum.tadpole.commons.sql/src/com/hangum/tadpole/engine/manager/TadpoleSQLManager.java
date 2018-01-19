@@ -434,6 +434,4 @@ public class TadpoleSQLManager extends AbstractTadpoleManager {
 	public static String removePassword(final UserDBDAO userDB) {
 		return pwdManager.remove(getDBPasswdKey(userDB));
 	}
-	
-	
 }
