@@ -95,6 +95,9 @@ public class MainEditorBrowserFunctionService extends EditorFunctionService {
 		EditorDefine.EXECUTE_TYPE exeType = EXECUTE_TYPE.NONE;
 		if((Boolean) arguments[2]) exeType = EXECUTE_TYPE.BLOCK;
 		
+		// 쿼리 내용이 없으면 아래쪽으로 오지 못하도록합니다.
+		if("".equals(StringUtils.trim(strSQL))) return;
+		
 		RequestQuery rq = new RequestQuery(editor.getConnectionid(), userDB, strSQL, editor.getDbAction(), EditorDefine.QUERY_MODE.QUERY, exeType, editor.isAutoCommit());
 		editor.executeCommand(rq);
 	}

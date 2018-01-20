@@ -108,14 +108,9 @@ public class TableToDataUtils {
 				String strText = ""; //$NON-NLS-1$
 				
 				// if select value is null can 
-				if(columnObject == null) {
-					strText = strNullValue;
-					columnDao.setCol_value(columnDao.getCol_value() + strText + PublicTadpoleDefine.DELIMITER);
-				} else {
-					strText = columnObject.toString();
-					columnDao.setCol_value(columnDao.getCol_value() + SQLUtil.makeQuote(strText) + PublicTadpoleDefine.DELIMITER);
-				}
-				
+				if(columnObject == null) strText = strNullValue;
+				else strText = columnObject.toString();
+				columnDao.setCol_value(columnDao.getCol_value() + strText + PublicTadpoleDefine.DELIMITER);
 			}
 		}
 		columnDao.setCol_value(StringUtils.removeEnd(""+columnDao.getCol_value(), PublicTadpoleDefine.DELIMITER));

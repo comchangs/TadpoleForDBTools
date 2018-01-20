@@ -224,7 +224,7 @@ public class TadpoleJavaComposite extends AbstractObjectComposite {
 			isSupportJavaObject = true;
 		} catch (Exception e) {
 			isSupportJavaObject = false;
-			MessageDialog.openInformation(getShell(), CommonMessages.get().Information, Messages.get().doesnotSupportJavaObject);
+			MessageDialog.openInformation(null, CommonMessages.get().Information, Messages.get().doesnotSupportJavaObject);
 		}
 		
 		return isSupportJavaObject;

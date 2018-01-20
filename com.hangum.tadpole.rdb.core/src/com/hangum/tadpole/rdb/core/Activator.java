@@ -10,7 +10,6 @@
  ******************************************************************************/
 package com.hangum.tadpole.rdb.core;
 
-import org.apache.log4j.Logger;
 import org.eclipse.core.runtime.ILogListener;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
@@ -23,7 +22,7 @@ import com.hangum.tadpole.commons.libs.core.logs.LogListener;
  * The activator class controls the plug-in life cycle
  */
 public class Activator extends AbstractUIPlugin {
-	private static final Logger logger = Logger.getLogger(Activator.class);
+//	private static final Logger logger = Logger.getLogger(Activator.class);
 	// The plug-in ID
 	public static final String PLUGIN_ID = "com.hangum.tadpole.rdb.core"; //$NON-NLS-1$
 

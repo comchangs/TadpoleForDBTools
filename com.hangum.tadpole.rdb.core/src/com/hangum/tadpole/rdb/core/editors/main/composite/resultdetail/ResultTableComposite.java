@@ -392,13 +392,14 @@ public class ResultTableComposite extends AbstractResultDetailComposite {
 	
 	/**
 	 * table column의 index
-	 * 소트를 통해 데이터행의 위치가 바꿀수 있으므로.....	-1 은 행의 넘버가 1부터 시작해서.
+	 * 소트를 통해 데이터행의 위치가 바꿀수 있으므로....
+	 * ps) -1 은 행의 넘버가 1부터 시작해서.
 	 * 
 	 * @param item
 	 * @return
 	 */
 	private int getColumnIndex(TableItem item) {
-		return Integer.parseInt(item.getText()) -1;
+		return Integer.parseInt(StringUtils.remove(item.getText(), ",")) -1;
 	}
 	
 	/**
