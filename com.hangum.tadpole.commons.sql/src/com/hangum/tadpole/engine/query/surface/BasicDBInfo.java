@@ -224,6 +224,7 @@ public abstract class BasicDBInfo implements ConnectionInterfact {
 			logger.error(mapParam.get("table") + " table column", e);
 			throw e;
 		} finally {
+			try { if(rsPrimaryKey != null) rsPrimaryKey.close(); } catch(Exception e) {}
 			try { if(rs != null) rs.close(); } catch(Exception e) {}
 			try { if(javaConn != null) javaConn.close(); } catch(Exception e) {}
 		}

@@ -9,7 +9,9 @@
  ******************************************************************************/
 package com.hangum.tadpole.engine.utils;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
@@ -142,8 +144,8 @@ class SessionLiveChecker implements Runnable {
 //			try { Thread.sleep((60 * 1000) * 1); } catch(Exception e) {};
 			
 			Map<String, Map<String, Object>> allUserSession = HttpSessionCollectorUtil.getInstance().getSessions();
-			Set<String> keys = allUserSession.keySet();
-			for(String id : keys) {
+			final List<String> listIDs = new ArrayList<String>(allUserSession.keySet());
+			for (String id : listIDs) {
 				Map<String, Object> mapUserData = allUserSession.get(id);
 				HttpSession httpSession = (HttpSession)mapUserData.get(HttpSessionCollectorUtil.COLLECT_KEY.SESSION.name());
 				Integer intTimeOut = (Integer)mapUserData.get(HttpSessionCollectorUtil.COLLECT_KEY.TIMEOUT.name());
