@@ -20,6 +20,7 @@ import com.hangum.tadpole.commons.libs.core.define.PublicTadpoleDefine.QUERY_DDL
 import com.hangum.tadpole.commons.libs.core.define.PublicTadpoleDefine.QUERY_DDL_TYPE;
 import com.hangum.tadpole.commons.libs.core.define.PublicTadpoleDefine.QUERY_DML_TYPE;
 import com.hangum.tadpole.commons.libs.core.define.PublicTadpoleDefine.SQL_TYPE;
+import com.hangum.tadpole.engine.manager.TransactionManger;
 import com.hangum.tadpole.engine.query.dao.system.UserDBDAO;
 import com.hangum.tadpole.engine.sql.parser.BasicTDBSQLParser;
 import com.hangum.tadpole.engine.sql.parser.dto.QueryInfoDTO;
@@ -136,7 +137,7 @@ public class RequestQuery implements Cloneable {
 		sqlDMLType = queryInfoDto.getQueryType();
 		
 		if(sqlDMLType.equals(QUERY_DML_TYPE.UNKNOWN)) {
-			if(queryInfoDto.isStatement()) {
+			if(queryInfoDto.isStatement() || TransactionManger.isStartTransaction(sql)) {
 				setSqlType(SQL_TYPE.DML);
 				sqlDMLType = QUERY_DML_TYPE.UNKNOWN;
 				

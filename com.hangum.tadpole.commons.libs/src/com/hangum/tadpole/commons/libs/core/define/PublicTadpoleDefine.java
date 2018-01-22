@@ -151,7 +151,7 @@ public class PublicTadpoleDefine {
 	public enum EXTERNAL_ACCOUNT {AMAZONRDS, DBSAFER};
 	
 	/** user login type */
-	public static enum INPUT_TYPE {NORMAL, GOOGLE_OAUTH, LDAP};
+	public static enum INPUT_TYPE {NORMAL, LDAP};
 	
 	/** yes, no */
 	public static enum YES_NO {YES, NO}; 

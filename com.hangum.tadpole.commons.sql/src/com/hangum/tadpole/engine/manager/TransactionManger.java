@@ -1,9 +1,9 @@
-package com.hangum.tadpole.rdb.core.editors.main.execute;
+package com.hangum.tadpole.engine.manager;
 
 import org.apache.commons.lang.StringUtils;
 
-import com.hangum.tadpole.engine.manager.TadpoleSQLTransactionManager;
 import com.hangum.tadpole.engine.query.dao.system.UserDBDAO;
+import com.hangum.tadpole.engine.sql.util.SQLUtil;
 
 /**
  * SQL의 transaction을 처리합니다.
@@ -30,11 +30,12 @@ public class TransactionManger {
 	 * @return
 	 */
 	public static boolean isTransaction(String query) {
+		final String strTestQuery = SQLUtil.removeComment(query);
 		if(
-				StringUtils.startsWithIgnoreCase(query, BEGIN_STATEMENT) ||
-				StringUtils.startsWithIgnoreCase(query, BEGIN_MYSQL_STATEMENT) ||
-				StringUtils.startsWithIgnoreCase(query, COMMIT_STATEMENT) || 
-				StringUtils.startsWithIgnoreCase(query, ROLLBACK_STATEMENT) 
+				StringUtils.startsWithIgnoreCase(strTestQuery, BEGIN_STATEMENT) ||
+				StringUtils.startsWithIgnoreCase(strTestQuery, BEGIN_MYSQL_STATEMENT) ||
+				StringUtils.startsWithIgnoreCase(strTestQuery, COMMIT_STATEMENT) || 
+				StringUtils.startsWithIgnoreCase(strTestQuery, ROLLBACK_STATEMENT) 
 		) { //$NON-NLS-1$
 			return true;
 		}
@@ -52,10 +53,11 @@ public class TransactionManger {
 	 * @return
 	 */
 	public static boolean calledCommitOrRollback(String query, String connectId, String userEmail, UserDBDAO userDB) {
-		if(StringUtils.startsWithIgnoreCase(query, COMMIT_STATEMENT)) {
+		final String strTestQuery = SQLUtil.removeComment(query);
+		if(StringUtils.startsWithIgnoreCase(strTestQuery, COMMIT_STATEMENT)) {
 			TadpoleSQLTransactionManager.commit(connectId, userEmail, userDB);
 			return true;
-		} else if(StringUtils.startsWithIgnoreCase(query, ROLLBACK_STATEMENT)) {
+		} else if(StringUtils.startsWithIgnoreCase(strTestQuery, ROLLBACK_STATEMENT)) {
 			TadpoleSQLTransactionManager.rollback(connectId, userEmail, userDB);
 			return true;
 		}
@@ -70,8 +72,9 @@ public class TransactionManger {
 	 * @return
 	 */
 	public static boolean isStartTransaction(String query) {
-		if(StringUtils.startsWithIgnoreCase(query, BEGIN_STATEMENT) ||
-				StringUtils.startsWithIgnoreCase(query, BEGIN_MYSQL_STATEMENT)) return true;
+		final String strTestQuery = SQLUtil.removeComment(query);
+		if(StringUtils.startsWithIgnoreCase(strTestQuery, BEGIN_STATEMENT) ||
+				StringUtils.startsWithIgnoreCase(strTestQuery, BEGIN_MYSQL_STATEMENT)) return true;
 		return false;
 	}
 
