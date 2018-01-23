@@ -10,6 +10,7 @@
  ******************************************************************************/
 package com.hangum.tadpole.application.start;
 
+import java.sql.Timestamp;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
@@ -36,6 +37,7 @@ import org.eclipse.ui.application.WorkbenchWindowAdvisor;
 import com.hangum.tadpole.commons.libs.core.define.PublicTadpoleDefine;
 import com.hangum.tadpole.commons.libs.core.define.SystemDefine;
 import com.hangum.tadpole.commons.libs.core.message.CommonMessages;
+import com.hangum.tadpole.commons.util.ApplicationArgumentUtils;
 import com.hangum.tadpole.commons.util.IPUtil;
 import com.hangum.tadpole.commons.util.RequestInfoUtils;
 import com.hangum.tadpole.engine.manager.TadpoleApplicationContextManager;
@@ -107,6 +109,23 @@ public class ApplicationWorkbenchWindowAdvisor extends WorkbenchWindowAdvisor {
      * login 
      */
     private void login() {
+    	// 테스트를 위해서 사용하는 코드.
+    	if(ApplicationArgumentUtils.isTestLogin()) {
+    		// en
+    		RWT.getUISession().setLocale(Locale.ENGLISH);
+    		
+    		UserDAO userDao = new UserDAO();
+    		userDao.setSeq(-1);
+    		userDao.setName("test user");
+    		userDao.setEmail("admin@tadpolehub.com");
+    		userDao.setRole_type("SYSTEM_ADMIN");
+    		userDao.setIs_modify_perference("YES");
+    		userDao.setService_start(new Timestamp(System.currentTimeMillis()-100000));
+    		userDao.setService_end(new Timestamp(System.currentTimeMillis()+100000000));
+    		SessionManager.addSession(userDao, SessionManager.LOGIN_IP_TYPE.BROWSER_IP.name(), "127.0.0.1");
+    		initializeUserSession();
+    	}
+    	
     	// 이미 로그인 되어 있다.
     	if(SessionManager.isLogin()) return;
     	
