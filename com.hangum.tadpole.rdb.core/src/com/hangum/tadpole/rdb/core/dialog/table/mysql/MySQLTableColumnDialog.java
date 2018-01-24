@@ -179,7 +179,7 @@ public class MySQLTableColumnDialog extends TitleAreaDialog {
 		
 		textDefault = new Text(container, SWT.BORDER);
 		textDefault.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
-		textDefault.setText("NULL"); //$NON-NLS-1$
+//		textDefault.setText("NULL"); //$NON-NLS-1$
 		
 		Label lblCollation = new Label(container, SWT.NONE);
 		lblCollation.setText("Collation"); //$NON-NLS-1$
@@ -223,7 +223,7 @@ public class MySQLTableColumnDialog extends TitleAreaDialog {
 				if(strPK.equals(tableColumnDAO.getPk())) isPK = true; 
 			}
 			btnPrimaryKey.setSelection(isPK);
-			btnNotNull.setSelection("YES".equals(tableColumnDAO.getNull())); //$NON-NLS-1$
+			btnNotNull.setSelection(!"YES".equals(tableColumnDAO.getNull())); //$NON-NLS-1$
 			btnAutoIncrement.setSelection("auto_increment".equals(tableColumnDAO.getExtra())); //$NON-NLS-1$
 			comboCollation.setText(StringUtils.trimToEmpty(tableColumnDAO.getCollation_name()));
 			textComment.setText(StringUtils.trimToEmpty(tableColumnDAO.getComment()));
