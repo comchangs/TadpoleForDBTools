@@ -63,7 +63,7 @@ public class QueryUtils {
 	public static enum RESULT_TYPE {JSON, CSV, XML, HTML_TABLE};
 	
 	/**
-	 * columnname to index
+	 * index of column name 
 	 * 
 	 * @param mapColumnLableName
 	 * @return
@@ -217,7 +217,7 @@ public class QueryUtils {
 	 * @throws Exception
 	 */
 	public static String executeDML(final UserDBDAO userDB, final String strQuery, final List<Object> listParam, final String resultType) throws Exception {
-		SqlMapClient client = TadpoleSQLManager.getInstance(userDB);
+//		SqlMapClient client = TadpoleSQLManager.getInstance(userDB);
 		Object effectObject = runSQLOther(userDB, strQuery, listParam);
 		
 		String strReturn = "";
