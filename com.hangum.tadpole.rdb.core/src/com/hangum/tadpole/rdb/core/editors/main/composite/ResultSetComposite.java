@@ -894,6 +894,9 @@ public class ResultSetComposite extends Composite {
 			if(reqQuery.isAutoCommit()) {
 				try { if(javaConn != null) javaConn.close(); } catch(Exception e){}
 			}
+			
+			if(esCheckStop != null) esCheckStop.shutdown();
+			if(execServiceQuery != null) execServiceQuery.shutdown();
 		}
 		
 		return queryResultDAO;

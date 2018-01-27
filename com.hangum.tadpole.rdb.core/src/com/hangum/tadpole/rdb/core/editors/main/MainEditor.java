@@ -848,9 +848,9 @@ public class MainEditor extends EditorExtension {
 		// 요청쿼리가 없다면 무시합니다. 
 		if(StringUtils.isEmpty(reqQuery.getSql())) return;
 		
-		if(logger.isDebugEnabled()) {
-			logger.debug("===> [connection id]" + reqQuery.getConnectId());
-		}
+//		if(logger.isDebugEnabled()) {
+//			logger.debug("===> [connection id]" + reqQuery.getConnectId());
+//		}
 		
 		//
 		//  schema test code start
