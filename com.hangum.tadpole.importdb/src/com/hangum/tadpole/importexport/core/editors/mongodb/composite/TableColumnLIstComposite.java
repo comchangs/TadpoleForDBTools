@@ -141,7 +141,7 @@ public class TableColumnLIstComposite extends Composite {
 		});
 		tableColumnRename.setEditingSupport(new RenameColumnEditingSupport(tableViewer));
 		
-		tableViewer.setContentProvider(new ArrayContentProvider());
+		tableViewer.setContentProvider(ArrayContentProvider.getInstance());
 		tableViewer.setInput(listTables);		
 	}
 	

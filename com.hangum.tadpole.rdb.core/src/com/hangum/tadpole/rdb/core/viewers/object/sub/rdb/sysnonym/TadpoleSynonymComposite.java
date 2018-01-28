@@ -239,7 +239,7 @@ public class TadpoleSynonymComposite extends AbstractObjectComposite {
 
 		ColumnHeaderCreator.createColumnHeader(synonymListViewer, tableColumnDef);
 
-		synonymListViewer.setContentProvider(new ArrayContentProvider());
+		synonymListViewer.setContentProvider(ArrayContentProvider.getInstance());
 		synonymListViewer.setLabelProvider(new DefaultLabelProvider(synonymListViewer));
 
 	}
@@ -256,7 +256,7 @@ public class TadpoleSynonymComposite extends AbstractObjectComposite {
 
 		ColumnHeaderCreator.createColumnHeader(synonymColumnViewer, synonymColumnComparator, tableColumnDef);
 
-		synonymColumnViewer.setContentProvider(new ArrayContentProvider());
+		synonymColumnViewer.setContentProvider(ArrayContentProvider.getInstance());
 		synonymColumnViewer.setLabelProvider(new DefaultLabelProvider(synonymColumnViewer));
 	}
 

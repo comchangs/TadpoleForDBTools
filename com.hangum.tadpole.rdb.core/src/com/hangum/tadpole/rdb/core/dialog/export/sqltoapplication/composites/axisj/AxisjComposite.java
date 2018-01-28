@@ -222,7 +222,7 @@ public class AxisjComposite extends AbstractSQLToComposite {
 
 		createTaleColumn();
 		
-		tableViewer.setContentProvider(new ArrayContentProvider());
+		tableViewer.setContentProvider(ArrayContentProvider.getInstance());
 		tableViewer.setLabelProvider(new AxisJLabelProvider());
 		tableViewer.setInput(listAxisjHeader);
 		

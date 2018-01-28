@@ -33,13 +33,16 @@
  	Ledger list
  -->
 <select id="getMySQLListLedger" resultClass="com.hangum.tadpole.engine.query.dao.system.ledger.LedgerDAO"  parameterClass="java.util.Map">
-<![CDATA[
-	SELECT a.*, b.email AS userID
+	SELECT c.display_name dbInfo, a.*, b.email AS userID
 	FROM historyhub_head a,
-	 	tadpole_user b
+	 	tadpole_user b,
+	 	tadpole_db c
 	WHERE a.user_seq = b.seq
+		AND c.seq = a.db_seq
+		<isNotEqual property="strResult" compareValue="All"> AND a.result_yn = #strResult# </isNotEqual>
 		AND b.email like #strUser#
 		AND a.cp_seq like #crNumber#
+<![CDATA[		
 		AND a.create_time >= #startTime#
 	    AND a.create_time <= #endTime#
 	ORDER BY create_time DESC

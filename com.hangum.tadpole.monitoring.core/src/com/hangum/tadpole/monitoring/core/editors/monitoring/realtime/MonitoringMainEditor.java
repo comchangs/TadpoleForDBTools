@@ -217,7 +217,7 @@ public class MonitoringMainEditor extends EditorPart {
 
 		createTableColumn(tvError);
 
-		tvError.setContentProvider(new ArrayContentProvider());
+		tvError.setContentProvider(ArrayContentProvider.getInstance());
 		tvError.setLabelProvider(new MonitoringErrorLabelprovider());
 
 		sashFormBody.setWeights(new int[] { 7, 3 });

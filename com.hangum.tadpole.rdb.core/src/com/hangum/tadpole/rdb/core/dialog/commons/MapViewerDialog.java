@@ -100,7 +100,7 @@ public class MapViewerDialog extends Dialog {
 		tblclmnValue.setWidth(312);
 		tblclmnValue.setText("Value");
 		
-		tableViewer.setContentProvider(new ArrayContentProvider());
+		tableViewer.setContentProvider(ArrayContentProvider.getInstance());
 		tableViewer.setLabelProvider(new MapLabelProvider());
 		initData();
 

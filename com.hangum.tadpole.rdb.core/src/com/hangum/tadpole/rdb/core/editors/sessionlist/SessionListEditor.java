@@ -304,7 +304,7 @@ public class SessionListEditor extends EditorPart {
 
 		ColumnHeaderCreator.createColumnHeader(tableViewerLocks, tableColumnDef);
 
-		tableViewerLocks.setContentProvider(new ArrayContentProvider());
+		tableViewerLocks.setContentProvider(ArrayContentProvider.getInstance());
 		tableViewerLocks.setLabelProvider(new SessionLocksLabelProvider(tableViewerLocks));
 	}
 	
@@ -352,7 +352,7 @@ public class SessionListEditor extends EditorPart {
 	
 			ColumnHeaderCreator.createColumnHeader(tableViewerBlock, tableColumnDef);
 	
-			tableViewerBlock.setContentProvider(new ArrayContentProvider());
+			tableViewerBlock.setContentProvider(ArrayContentProvider.getInstance());
 			tableViewerBlock.setLabelProvider(new SessionLocksLabelProvider(tableViewerBlock));
 		}
 	}
@@ -554,7 +554,7 @@ public class SessionListEditor extends EditorPart {
 		
 		createColumn();
 		
-		tableViewerSessionList.setContentProvider(new ArrayContentProvider());
+		tableViewerSessionList.setContentProvider(ArrayContentProvider.getInstance());
 		tableViewerSessionList.setLabelProvider(new MySQLSessionListLabelProvider());
 		
 		sashForm.setWeights(new int[] {7, 3});

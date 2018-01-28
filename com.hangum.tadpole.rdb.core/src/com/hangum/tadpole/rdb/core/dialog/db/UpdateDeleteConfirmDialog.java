@@ -181,7 +181,7 @@ public class UpdateDeleteConfirmDialog extends Dialog {
 				TableUtil.createTableColumn(tvQueryResult, rsDAO);
 				
 				tvQueryResult.setLabelProvider(new QueryResultLabelProvider(reqQuery.getMode(), rsDAO));
-				tvQueryResult.setContentProvider(new ArrayContentProvider());
+				tvQueryResult.setContentProvider(ArrayContentProvider.getInstance());
 				final TadpoleResultSet trs = rsDAO.getDataList();
 				tvQueryResult.setInput(trs.getData());
 				TableUtil.packTable(tvQueryResult.getTable());

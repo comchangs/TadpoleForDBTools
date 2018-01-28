@@ -264,7 +264,7 @@ public class TadpoleMongoDBCollectionComposite extends AbstractObjectComposite {
 			}
 		});
 
-		tableListViewer.setContentProvider(new ArrayContentProvider());
+		tableListViewer.setContentProvider(ArrayContentProvider.getInstance());
 		tableListViewer.setInput(showTables);
 
 		createMenu();

@@ -188,12 +188,14 @@ public class QueryUtils {
 			statement = javaConn.createStatement();
 			
 			if(intStartCnt == 0) {
+				if(logger.isDebugEnabled()) logger.debug("[sql called]: " + strSQL);
+				
 				statement.execute(strSQL);
 				resultSet = statement.getResultSet();
 			} else {
 				strSQL = PartQueryUtil.makeSelect(userDB, strSQL, intStartCnt, intSelectLimitCnt);
 				
-				if(logger.isDebugEnabled()) logger.debug("part sql called : " + strSQL);
+				if(logger.isDebugEnabled()) logger.debug("[part sql called]: " + strSQL);
 				statement.execute(strSQL);
 				resultSet = statement.getResultSet();
 			}

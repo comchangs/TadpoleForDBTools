@@ -147,7 +147,7 @@ public class TadpoleMongoDBJavaScriptComposite extends AbstractObjectComposite {
 		createMongoDBIndexesColumn(tableViewer, javascriptComparator);
 
 		tableViewer.setLabelProvider(new ServerSideJavascriptLabelPrivider());
-		tableViewer.setContentProvider(new ArrayContentProvider());
+		tableViewer.setContentProvider(ArrayContentProvider.getInstance());
 
 		javascriptFilter = new MongoJavaScriptViewFilter();
 		tableViewer.addFilter(javascriptFilter);

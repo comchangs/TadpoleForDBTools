@@ -173,7 +173,7 @@ public class TadpoleJavaComposite extends AbstractObjectComposite {
 
 		ColumnHeaderCreator.createColumnHeader(javaListViewer, tableColumnDef);
 
-		javaListViewer.setContentProvider(new ArrayContentProvider());
+		javaListViewer.setContentProvider(ArrayContentProvider.getInstance());
 		javaListViewer.setLabelProvider(new DefaultLabelProvider(javaListViewer));
 
 	}

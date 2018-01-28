@@ -20,11 +20,19 @@ import java.util.List;
 import org.apache.commons.lang.StringUtils;
 
 /**
- * csv loader 
- * 
- * @see original file location is (http://viralpatel.net/blogs/java-load-csv-file-to-database/)
+ * Date utils
  */
 public class DateUtil {
+	
+	/**
+	 * 현재 시간데이터를 yyyymmdd 형태로 넘겨준다. 
+	 * 
+	 * @return
+	 */
+	public static String getPretteYYYMMDDHHMM() {
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMddHHmm");
+		return sdf.format(new Date());
+	}
 	
 	/**
 	 * 

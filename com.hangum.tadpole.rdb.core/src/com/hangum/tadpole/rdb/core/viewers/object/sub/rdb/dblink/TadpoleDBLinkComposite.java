@@ -164,7 +164,7 @@ public class TadpoleDBLinkComposite extends AbstractObjectComposite {
 
 		ColumnHeaderCreator.createColumnHeader(dbLinkListViewer, tableColumnDef);
 
-		dbLinkListViewer.setContentProvider(new ArrayContentProvider());
+		dbLinkListViewer.setContentProvider(ArrayContentProvider.getInstance());
 		dbLinkListViewer.setLabelProvider(new DefaultLabelProvider(dbLinkListViewer));
 
 	}

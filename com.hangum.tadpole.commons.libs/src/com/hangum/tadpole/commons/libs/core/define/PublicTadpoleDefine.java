@@ -29,6 +29,7 @@ public class PublicTadpoleDefine {
 	
 	/** product type */
 	public static enum PRODUCT_TYPE {TadpoleDBHub, TadpoleHistoryHub, TadpoleAPIHub};
+	public static PRODUCT_TYPE ACTIVE_PRODUCT_TYPE = null;
 	
 	/** default search count */
 	public static final int INT_SEARCH_COUNT = 25;

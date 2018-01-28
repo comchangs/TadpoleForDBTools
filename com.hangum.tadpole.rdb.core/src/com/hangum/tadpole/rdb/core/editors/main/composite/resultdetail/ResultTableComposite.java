@@ -685,7 +685,7 @@ public class ResultTableComposite extends AbstractResultDetailComposite {
 		tvQueryResult.getTable().setTopIndex(0);
 		
 		tvQueryResult.setLabelProvider(new QueryResultLabelProvider(reqQuery.getMode(), rsDAO));
-		tvQueryResult.setContentProvider(new ArrayContentProvider());
+		tvQueryResult.setContentProvider(ArrayContentProvider.getInstance());
 		
 		// 쿼리를 설정한 사용자가 설정 한 만큼 보여준다.
 		if(trs.getData().size() > GetPreferenceGeneral.getPageCount()) {

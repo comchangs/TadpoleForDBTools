@@ -145,7 +145,7 @@ public class MySQLExtensionViewDialog extends Dialog {
 		TableUtil.createTableColumn(tvShowProfiller, showProfiles, sqlSorter);
 		
 		tvShowProfiller.setLabelProvider(new QueryResultLabelProvider(reqQuery.getMode(), showProfiles));
-		tvShowProfiller.setContentProvider(new ArrayContentProvider());
+		tvShowProfiller.setContentProvider(ArrayContentProvider.getInstance());
 		
 		// 쿼리를 설정한 사용자가 설정 한 만큼 보여준다.
 		tvShowProfiller.setInput(trs.getData());
@@ -168,7 +168,7 @@ public class MySQLExtensionViewDialog extends Dialog {
 		TableUtil.createTableColumn(tvShowStatus, showStatus, sqlSorter);
 		
 		tvShowStatus.setLabelProvider(new QueryResultLabelProvider(reqQuery.getMode(), showStatus));
-		tvShowStatus.setContentProvider(new ArrayContentProvider());
+		tvShowStatus.setContentProvider(ArrayContentProvider.getInstance());
 		
 		// 쿼리를 설정한 사용자가 설정 한 만큼 보여준다.
 		tvShowStatus.setInput(trs.getData());
@@ -191,7 +191,7 @@ public class MySQLExtensionViewDialog extends Dialog {
 		TableUtil.createTableColumn(tvExecutePlan, showExecutePlan, sqlSorter);
 		
 		tvExecutePlan.setLabelProvider(new QueryResultLabelProvider(reqQuery.getMode(), showExecutePlan));
-		tvExecutePlan.setContentProvider(new ArrayContentProvider());
+		tvExecutePlan.setContentProvider(ArrayContentProvider.getInstance());
 		
 		// 쿼리를 설정한 사용자가 설정 한 만큼 보여준다.
 		tvExecutePlan.setInput(trs.getData());

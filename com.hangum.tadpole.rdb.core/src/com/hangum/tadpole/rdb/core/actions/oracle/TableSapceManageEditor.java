@@ -422,7 +422,7 @@ public class TableSapceManageEditor extends EditorPart {
 		tcPropertyValue.setWidth(300);
 		tcPropertyValue.setText("Value");
 
-		tableViewer_property.setContentProvider(new ArrayContentProvider());
+		tableViewer_property.setContentProvider(ArrayContentProvider.getInstance());
 		tableViewer_property.setLabelProvider(new TablespaceExtInfoLabelProvider());
 		sashForm_1.setWeights(new int[] { 1, 1 });
 
@@ -711,7 +711,7 @@ public class TableSapceManageEditor extends EditorPart {
 
 		ColumnHeaderCreator.createColumnHeader(tableViewer, tableColumnDef);
 
-		tableViewer.setContentProvider(new ArrayContentProvider());
+		tableViewer.setContentProvider(ArrayContentProvider.getInstance());
 		tableViewer.setLabelProvider(new TableSpaceManagerLabelProvider(tableViewer));
 	}
 
@@ -728,7 +728,7 @@ public class TableSapceManageEditor extends EditorPart {
 
 		ColumnHeaderCreator.createColumnHeader(tableViewer_datafiles, tableColumnDef);
 
-		tableViewer_datafiles.setContentProvider(new ArrayContentProvider());
+		tableViewer_datafiles.setContentProvider(ArrayContentProvider.getInstance());
 		tableViewer_datafiles.setLabelProvider(new TableSpaceManagerLabelProvider(tableViewer_datafiles));
 	}
 

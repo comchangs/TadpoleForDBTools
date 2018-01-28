@@ -102,7 +102,7 @@ public class GeneralPlanComposite extends AbstractPlanComposite {
 		TableUtil.createTableColumn(tvQueryPlan, rsDAO, sqlSorter);
 		
 		tvQueryPlan.setLabelProvider(new QueryResultLabelProvider(reqQuery.getMode(), rsDAO));
-		tvQueryPlan.setContentProvider(new ArrayContentProvider());
+		tvQueryPlan.setContentProvider(ArrayContentProvider.getInstance());
 		
 		// 쿼리를 설정한 사용자가 설정 한 만큼 보여준다.
 		if(trs.getData().size() > GetPreferenceGeneral.getPageCount()) {

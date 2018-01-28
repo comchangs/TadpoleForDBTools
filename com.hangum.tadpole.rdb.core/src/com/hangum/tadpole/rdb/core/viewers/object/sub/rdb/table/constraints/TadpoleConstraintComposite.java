@@ -122,7 +122,7 @@ public class TadpoleConstraintComposite extends AbstractObjectComposite {
 		createIndexesColumn(constraintTableViewer, constraintComparator);
 
 		constraintTableViewer.setLabelProvider(new ConstraintLabelProvider());
-		constraintTableViewer.setContentProvider(new ArrayContentProvider());
+		constraintTableViewer.setContentProvider(ArrayContentProvider.getInstance());
 
 		constraintFilter = new ConstraintViewFilter();
 		constraintTableViewer.addFilter(constraintFilter);

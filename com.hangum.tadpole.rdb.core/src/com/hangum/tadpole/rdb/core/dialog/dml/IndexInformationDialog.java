@@ -200,12 +200,12 @@ public class IndexInformationDialog extends Dialog {
 		tcPropertyValue.setWidth(250);
 		tcPropertyValue.setText("Value");
 
-		indexTableViewer.setContentProvider(new ArrayContentProvider());
+		indexTableViewer.setContentProvider(ArrayContentProvider.getInstance());
 		indexTableViewer.setLabelProvider(new IndexInformationLabelProvider());
 
 		initData();
 
-		tableViewer_ext.setContentProvider(new ArrayContentProvider());
+		tableViewer_ext.setContentProvider(ArrayContentProvider.getInstance());
 		tableViewer_ext.setLabelProvider(new TableStatisticsLabelProvider());
 		initExtendedData();
 

@@ -121,7 +121,7 @@ public class TableColumnComposite extends AbstractTableComposite {
 		createTableColumne();
 		createTableColumnMenu();
 
-		tableColumnViewer.setContentProvider(new ArrayContentProvider());
+		tableColumnViewer.setContentProvider(ArrayContentProvider.getInstance());
 		tableColumnViewer.setLabelProvider(new TableColumnLabelprovider(getTableComposite().getTableListViewer(), getTableComposite().getTableDecorationExtension()));
 		
 		sashForm.setWeights(new int[] { 1 });

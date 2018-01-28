@@ -469,7 +469,7 @@ public class MongodbResultComposite extends Composite {
 		tblclmnSql.addSelectionListener(getSelectionAdapter(tableViewerMessage, sorterMessage, tblclmnSql, 1));
 		
 		tableViewerMessage.setLabelProvider(new SQLHistoryLabelProvider());
-		tableViewerMessage.setContentProvider(new ArrayContentProvider());
+		tableViewerMessage.setContentProvider(ArrayContentProvider.getInstance());
 		tableViewerMessage.setInput(listMessage);
 		tableViewerMessage.setComparator(sorterMessage);
 		

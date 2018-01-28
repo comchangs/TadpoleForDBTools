@@ -77,7 +77,7 @@ public class ShortcutKeyComposite extends AbstraceShortcutKeyComposite {
 		tblclmnKey.setWidth(220);
 		tblclmnKey.setText(Messages.get().RDBShortcutHelpDialog_2);
 
-		tableViewer.setContentProvider(new ArrayContentProvider());
+		tableViewer.setContentProvider(ArrayContentProvider.getInstance());
 		tableViewer.setLabelProvider(new ShortcutLabelProvider());
 		tableViewer.setInput(listShortcut);
 		

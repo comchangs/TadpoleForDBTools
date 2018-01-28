@@ -21,7 +21,6 @@ import java.util.Map;
 import org.apache.log4j.Logger;
 
 import com.hangum.tadpole.commons.exception.TadpoleSQLManagerException;
-import com.hangum.tadpole.commons.util.ApplicationArgumentUtils;
 import com.hangum.tadpole.engine.initialize.TadpoleEngineUserDB;
 import com.hangum.tadpole.engine.manager.TadpoleSQLManager;
 import com.hangum.tadpole.engine.query.dao.system.UserDBDAO;
@@ -58,6 +57,7 @@ public class TadpoleSystemLedger {
 	
 	/**
 	 * 
+	 * @param strResult
 	 * @param strUser
 	 * @param crNumber
 	 * @param endTime 
@@ -66,27 +66,18 @@ public class TadpoleSystemLedger {
 	 * @throws TadpoleSQLManagerException
 	 * @throws SQLException
 	 */
-	public static List<LedgerDAO> getMySQLListLedger(String strUser, String crNumber, long startTime, long endTime) throws TadpoleSQLManagerException, SQLException {
+	public static List<LedgerDAO> getMySQLListLedger(String strResult, String strUser, String crNumber, long startTime, long endTime) throws TadpoleSQLManagerException, SQLException {
 		Map<String, Object> mapParam = new HashMap<String, Object>();
+		mapParam.put("strResult", strResult); 
 		mapParam.put("strUser", "%" + strUser + "%");
 		mapParam.put("crNumber", "%" + crNumber + "%");
 		
-		if(ApplicationArgumentUtils.isDBServer()) {
-			Date dateSt = new Date(startTime);
-			DateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss:SSS");
-			mapParam.put("startTime",  formatter.format(dateSt));
-			
-			Date dateEd = new Date(endTime);
-			mapParam.put("endTime", formatter.format(dateEd));			
-		} else {
-			Date dateSt = new Date(startTime);
-			DateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss:SSS");
-			
-			mapParam.put("startTime",  formatter.format(dateSt));
-			
-			Date dateEd = new Date(endTime);
-			mapParam.put("endTime", formatter.format(dateEd));
-		}
+		Date dateSt = new Date(startTime);
+		DateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss:SSS");
+		mapParam.put("startTime",  formatter.format(dateSt));
+		
+		Date dateEd = new Date(endTime);
+		mapParam.put("endTime", formatter.format(dateEd));			
 		
 		SqlMapClient sqlClient = TadpoleSQLManager.getInstance(TadpoleEngineUserDB.getUserDB());
 		return sqlClient.queryForList("getMySQLListLedger", mapParam);

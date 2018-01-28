@@ -288,7 +288,7 @@ public class ColumnsComposite extends DBInfosComposite {
 
 		ColumnHeaderCreator.createColumnHeader(tvColumnInform, tableColumnDef);
 
-		tvColumnInform.setContentProvider(new ArrayContentProvider());
+		tvColumnInform.setContentProvider(ArrayContentProvider.getInstance());
 		tvColumnInform.setLabelProvider(new DefaultLabelProvider(tvColumnInform));
 
 	}

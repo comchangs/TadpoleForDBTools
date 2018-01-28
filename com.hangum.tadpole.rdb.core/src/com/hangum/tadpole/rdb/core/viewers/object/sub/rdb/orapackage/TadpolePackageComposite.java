@@ -197,7 +197,7 @@ public class TadpolePackageComposite extends AbstractObjectComposite {
 		createProcedureFunctionColumn(packageTableViewer, packageComparator);
 
 		packageTableViewer.setLabelProvider(new ProcedureFunctionLabelProvicer());
-		packageTableViewer.setContentProvider(new ArrayContentProvider());
+		packageTableViewer.setContentProvider(ArrayContentProvider.getInstance());
 
 		packageFilter = new ProcedureFunctionViewFilter();
 		packageTableViewer.addFilter(packageFilter);
@@ -213,7 +213,7 @@ public class TadpolePackageComposite extends AbstractObjectComposite {
 
 		createProcedureFunctionListColumne(packageProcFuncViewer);
 
-		packageProcFuncViewer.setContentProvider(new ArrayContentProvider());
+		packageProcFuncViewer.setContentProvider(ArrayContentProvider.getInstance());
 		packageProcFuncViewer.setLabelProvider(new PackageProcFuncLabelprovider());
 
 		

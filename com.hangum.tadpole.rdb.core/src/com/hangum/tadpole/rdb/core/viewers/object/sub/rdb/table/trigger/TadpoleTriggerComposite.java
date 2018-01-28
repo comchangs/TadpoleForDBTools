@@ -123,7 +123,7 @@ public class TadpoleTriggerComposite extends AbstractObjectComposite {
 		createTriggerColumn(triggerTableViewer, triggerComparator);
 
 		triggerTableViewer.setLabelProvider(new TriggerLabelProvicer());
-		triggerTableViewer.setContentProvider(new ArrayContentProvider());
+		triggerTableViewer.setContentProvider(ArrayContentProvider.getInstance());
 
 		triggerFilter = new TriggerViewFilter();
 		triggerTableViewer.addFilter(triggerFilter);

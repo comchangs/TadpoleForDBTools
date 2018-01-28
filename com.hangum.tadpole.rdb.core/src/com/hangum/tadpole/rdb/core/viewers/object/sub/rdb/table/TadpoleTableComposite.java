@@ -378,7 +378,7 @@ public class TadpoleTableComposite extends AbstractObjectComposite {
 		layoutColumnLayout.addColumnData(new ColumnWeightData(200));
 
 		tableListViewer.getTable().setLayout(layoutColumnLayout);
-		tableListViewer.setContentProvider(new ArrayContentProvider());
+		tableListViewer.setContentProvider(ArrayContentProvider.getInstance());
 		tableListViewer.setInput(listTablesDAO);
 				
 		// dnd 기능 추가

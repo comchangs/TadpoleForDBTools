@@ -137,7 +137,7 @@ public class AddMonitoringDialog extends Dialog {
 		
 		createColumns();
 		
-		tvTemplate.setContentProvider(new ArrayContentProvider());
+		tvTemplate.setContentProvider(ArrayContentProvider.getInstance());
 		tvTemplate.setLabelProvider(new MonitoringLabelProvider());
 		
 		Composite compositeMoni = new Composite(sashForm, SWT.NONE);

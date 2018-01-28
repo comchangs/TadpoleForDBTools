@@ -186,7 +186,7 @@ public class TableInformationDialog extends Dialog {
 
 		createInformationColumn();
 		
-		informationTableViewer.setContentProvider(new ArrayContentProvider());
+		informationTableViewer.setContentProvider(ArrayContentProvider.getInstance());
 		informationTableViewer.setLabelProvider(new TableInformationLabelProvider());
 		
 		// add filter
@@ -210,7 +210,7 @@ public class TableInformationDialog extends Dialog {
 		
 		//DefaultViewerSorter sorterMessage = new DefaultViewerSorter();
 		
-		tableViewer_ext.setContentProvider(new ArrayContentProvider());
+		tableViewer_ext.setContentProvider(ArrayContentProvider.getInstance());
 		tableViewer_ext.setLabelProvider(new TableStatisticsLabelProvider());
 
 		sashFormData.setWeights(new int[] {6, 4});
