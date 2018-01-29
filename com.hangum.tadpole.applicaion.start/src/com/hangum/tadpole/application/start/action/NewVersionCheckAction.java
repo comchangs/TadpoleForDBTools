@@ -47,7 +47,7 @@ public class NewVersionCheckAction extends Action {
 	    		dialog.open();
 			} else {
 				MessageDialog.openInformation(null, Messages.get().NewVersionCheckAction_0, 
-						String.format(Messages.get().NewVersionCheckAction_2, SystemDefine.MAJOR_VERSION, SystemDefine.SUB_VERSION, SystemDefine.RELEASE_DATE));
+						String.format(Messages.get().NewVersionCheckAction_2, SystemDefine.DBHUB_MAJOR_VERSION, SystemDefine.DBHUB_SUB_VERSION, SystemDefine.DBHUB_RELEASE_DATE));
 			}
 		}
 	}

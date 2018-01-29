@@ -13,8 +13,6 @@ package com.hangum.tadpole.rdb.core;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.osgi.framework.BundleContext;
 
-import com.hangum.tadpole.commons.libs.core.logs.LogConfiguration;
-
 /**
  * The activator class controls the plug-in life cycle
  */
@@ -38,9 +36,6 @@ public class Activator extends AbstractUIPlugin {
 	public void start(BundleContext context) throws Exception {
 		super.start(context);
 		plugin = this;
-		
-		// log level설정
-		LogConfiguration.getInstance();
 	}
 
 	/*

@@ -12,7 +12,6 @@ package com.hangum.tadpole.commons.libs.core.define;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Properties;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
@@ -24,12 +23,12 @@ import org.apache.commons.io.IOUtils;
  *
  */
 public class PublicTadpoleDefine {
-	/** URL system version information */
-	public static final String URL_SYSTEM_VERION = String.format("?%s%s=%s", SystemDefine.MAJOR_VERSION, SystemDefine.SUB_VERSION, SystemDefine.RELEASE_DATE);
+//	/** URL system version information */
+	public static final String URL_SYSTEM_VERION = String.format("?%s%s=%s", SystemDefine.DBHUB_MAJOR_VERSION, SystemDefine.DBHUB_SUB_VERSION, SystemDefine.DBHUB_RELEASE_DATE);
 	
 	/** product type */
 	public static enum PRODUCT_TYPE {TadpoleDBHub, TadpoleHistoryHub, TadpoleAPIHub};
-	public static PRODUCT_TYPE ACTIVE_PRODUCT_TYPE = null;
+	public static PRODUCT_TYPE ACTIVE_PRODUCT_TYPE = PRODUCT_TYPE.TadpoleDBHub;
 	
 	/** default search count */
 	public static final int INT_SEARCH_COUNT = 25;
@@ -41,8 +40,8 @@ public class PublicTadpoleDefine {
 	public static final String DEFAULT_TIME_ZONE = "Asia/Seoul";
 	
 	/** default log file name*/
-	public static final String DEFAULT_LOG_FILE 		= "./logs/tadpole.log";
-	public static final String DEFAULT_VELOCITY_LOG_FILE = "./logs/tadpoleVelocity.log";
+	public static final String DEFAULT_LOG_FILE 		= String.format("./logs/%s.log", ACTIVE_PRODUCT_TYPE.name());
+	public static final String DEFAULT_VELOCITY_LOG_FILE = String.format("./logs/%sVelocity.log", ACTIVE_PRODUCT_TYPE.name());
 	
 	/**
 	 * 환경 정보 파일
@@ -183,18 +182,18 @@ public class PublicTadpoleDefine {
 	 */
 	public static enum DB_USER_ROLE_TYPE {SYSTEM_ADMIN, ADMIN, DBA, MANAGER, USER, GUEST};
 	
-	/**
-	 * Setting SQL Client Info
-	 * @return
-	 */
-	public static Properties getSQLClientInfo() {
-		Properties prop = new Properties();
-		prop.setProperty("ApplicationName", String.format("%s %s %s", SystemDefine.NAME, SystemDefine.MAJOR_VERSION, SystemDefine.RELEASE_DATE));
-//		prop.setProperty("ClientUser", 		RWT.getRequest().getRemoteHost());
-//		prop.setProperty("ClientHostname", 	RWT.getRequest().getLocalAddr());
-		
-		return prop;
-	}
+//	/**
+//	 * Setting SQL Client Info
+//	 * @return
+//	 */
+//	public static Properties getSQLClientInfo() {
+//		Properties prop = new Properties();
+//		prop.setProperty("ApplicationName", String.format("%s %s %s", SystemDefine.NAME, SystemDefine.MAJOR_VERSION, SystemDefine.RELEASE_DATE));
+////		prop.setProperty("ClientUser", 		RWT.getRequest().getRemoteHost());
+////		prop.setProperty("ClientHostname", 	RWT.getRequest().getLocalAddr());
+//		
+//		return prop;
+//	}
 	
 	/**
 	 * ace editor theme list

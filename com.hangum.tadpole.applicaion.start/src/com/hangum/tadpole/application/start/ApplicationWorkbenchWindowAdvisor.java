@@ -91,7 +91,7 @@ public class ApplicationWorkbenchWindowAdvisor extends WorkbenchWindowAdvisor {
         configurer.setShowStatusLine(false);
         configurer.setShowMenuBar(true);
         configurer.setShowProgressIndicator(false);
-        configurer.setTitle(SystemDefine.NAME + " " + SystemDefine.MAJOR_VERSION + " SR" + SystemDefine.SUB_VERSION); //$NON-NLS-1$ //$NON-NLS-2$
+        configurer.setTitle(SystemDefine.getDBHubSystemInfo()); //$NON-NLS-1$ //$NON-NLS-2$
         
         // fullscreen
         getWindowConfigurer().setShellStyle(SWT.NO_TRIM);

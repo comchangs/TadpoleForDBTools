@@ -55,7 +55,7 @@ public class NewVersionViewDialog extends TitleAreaDialog {
 	@Override
 	public void configureShell(Shell newShell) {
 		super.configureShell(newShell);
-		newShell.setText(SystemDefine.NAME);
+		newShell.setText(SystemDefine.DBHUB_NAME);
 		newShell.setImage(GlobalImageUtils.getTadpoleIcon());
 	}
 
@@ -76,7 +76,7 @@ public class NewVersionViewDialog extends TitleAreaDialog {
 		lblCurrentVersion.setText(Messages.get().NewVersionViewDialog_2); //$NON-NLS-1$
 		
 		Label lblCurrentversionvalue = new Label(container, SWT.NONE);
-		lblCurrentversionvalue.setText(SystemDefine.MAJOR_VERSION + " " + SystemDefine.SUB_VERSION + " - " + SystemDefine.RELEASE_DATE);
+		lblCurrentversionvalue.setText(SystemDefine.getDBHubSystemInfo());
 		new Label(container, SWT.NONE);
 		
 		Label labelRight = new Label(container, SWT.SEPARATOR | SWT.HORIZONTAL);

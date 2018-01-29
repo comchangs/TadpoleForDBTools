@@ -51,7 +51,7 @@ public class TadpoleSystemQuery {
 	 * @throws TadpoleSQLManagerException, SQLException
 	 */
 	public static void updateSystemInformation(String useType) throws TadpoleSQLManagerException, SQLException {
-		TadpoleSystemDAO dao = new TadpoleSystemDAO(SystemDefine.NAME, SystemDefine.MAJOR_VERSION, SystemDefine.SUB_VERSION, SystemDefine.INFORMATION, useType);
+		TadpoleSystemDAO dao = new TadpoleSystemDAO(SystemDefine.getProductName(), SystemDefine.DBHUB_MAJOR_VERSION, SystemDefine.DBHUB_SUB_VERSION, SystemDefine.INFORMATION, useType);
 		
 		SqlMapClient sqlClient = TadpoleSQLManager.getInstance(TadpoleEngineUserDB.getUserDB());
 		sqlClient.update("update_system", dao);
