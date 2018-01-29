@@ -107,4 +107,20 @@ public class TadpoleSystemLedger {
 		sqlClient.update("update_ledger_result", ledgerDAO);
 	}
 	
+	/**
+	 * 참조 번호 중복 오류 검사
+	 * 
+	 * @param cp_seq
+	 * @return
+	 * @throws TadpoleSQLManagerException
+	 * @throws SQLException
+	 */
+	public static boolean isDuplicationRefenceNumber(String cp_seq) throws TadpoleSQLManagerException, SQLException {
+		SqlMapClient sqlClient = TadpoleSQLManager.getInstance(TadpoleEngineUserDB.getUserDB());
+		List listKey = sqlClient.queryForList("isDuplicationRefenceNumber", cp_seq);
+		
+		if(listKey.size() == 0) return false;
+		else return true;
+	}
+	
 }

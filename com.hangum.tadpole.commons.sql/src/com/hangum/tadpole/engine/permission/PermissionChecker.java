@@ -98,7 +98,7 @@ public class PermissionChecker {
 		
 		// 디비권한이 read only connection 옵션이 선택되었으면 statement문만 권한을 허락합니다.
 		if(PublicTadpoleDefine.YES_NO.YES.name().equals(userDB.getIs_readOnlyConnect())) {
-			if(!SQLUtil.isStatement(strSQL)) throw new TadpoleException(TDBResultCodeDefine.UNAUTHENTICATED, CommonMessages.get().ThisIsReadOnlyDatabase);
+			if(!SQLUtil.isStatement(strSQL)) throw new TadpoleException(TDBResultCodeDefine.UNAUTHENTICATED, "This is a read-only database.");
 		}
 		
 //		//

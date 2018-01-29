@@ -724,6 +724,8 @@ public class Messages {
 	public String ConfirmRollback;
 
 	public String TextResultView;
+
+	public String TadpoleHistoryHubDataLocation;
 	
 	
 	

@@ -35,6 +35,7 @@ import com.hangum.tadpole.engine.utils.DBLocaleUtils;
 import com.hangum.tadpole.preference.define.GetAdminPreference;
 import com.hangum.tadpole.rdb.core.Messages;
 import com.hangum.tadpole.rdb.core.dialog.dbconnect.sub.PreConnectionInfoGroup;
+import com.hangum.tadpole.rdb.core.dialog.dbconnect.sub.others.HistoryHubConnectionGroup;
 import com.hangum.tadpole.rdb.core.dialog.dbconnect.sub.others.OthersConnectionRDBGroup;
 
 /**
@@ -179,9 +180,14 @@ public class OracleLoginComposite extends AbstractLoginComposite {
 		}
 		comboLocale.select(0);
 		
-		othersConnectionInfo = new OthersConnectionRDBGroup(this, SWT.NONE, getSelectDB());
+		if(PublicTadpoleDefine.ACTIVE_PRODUCT_TYPE == PublicTadpoleDefine.PRODUCT_TYPE.TadpoleHistoryHub) {
+			othersConnectionInfo = new HistoryHubConnectionGroup(this, SWT.NONE, getSelectDB());
+		} else {
+			othersConnectionInfo = new OthersConnectionRDBGroup(this, SWT.NONE, getSelectDB());
+		}
 		othersConnectionInfo.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
 		othersConnectionInfo.setEnabled(isReadOnly);
+
 
 		init();
 	}

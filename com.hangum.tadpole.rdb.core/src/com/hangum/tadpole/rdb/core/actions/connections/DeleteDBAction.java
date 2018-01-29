@@ -94,7 +94,7 @@ public class DeleteDBAction implements IViewActionDelegate {
 		Display.getCurrent().asyncExec(new Runnable() {
 			@Override
 			public void run() {
-				explorerView.initObjectHead(null);
+				if(null != explorerView) explorerView.initObjectHead(null);
 			}
 		});	// end display
 		

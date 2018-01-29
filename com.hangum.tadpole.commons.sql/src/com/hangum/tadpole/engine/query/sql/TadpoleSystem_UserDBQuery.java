@@ -163,6 +163,7 @@ public class TadpoleSystem_UserDBQuery {
 //		userEncryptDao.setIs_visible(userDb.getIs_visible());
 		userEncryptDao.setIs_summary_report(userDb.getIs_summary_report());
 		userEncryptDao.setIs_monitoring(userDb.getIs_monitoring());
+		userEncryptDao.setIs_history_data_location(userDb.getIs_history_data_location());
 		//
 		
 		userEncryptDao.setExt1(userDb.getExt1());

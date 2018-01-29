@@ -22,6 +22,8 @@ import com.hangum.tadpole.engine.query.dao.system.ExternalBrowserInfoDAO;
  *
  */
 public class OthersConnectionInfoDAO {
+	 /** 히스토리허브에서 원본 위치(yes: tadpole, NO: 원본디비에 위치) */
+	boolean isHistoryHubLocation = true;
 	
 	boolean isReadOnlyConnection = false;
 	boolean isAutoCommit = false;
@@ -44,6 +46,20 @@ public class OthersConnectionInfoDAO {
 	List<ExternalBrowserInfoDAO> listExterBroswer = new ArrayList<ExternalBrowserInfoDAO>();
 
 	public OthersConnectionInfoDAO() {
+	}
+	
+	/**
+	 * @return the isHistoryHubLocation
+	 */
+	public boolean isHistoryHubLocation() {
+		return isHistoryHubLocation;
+	}
+
+	/**
+	 * @param isHistoryHubLocation the isHistoryHubLocation to set
+	 */
+	public void setHistoryHubLocation(boolean isHistoryHubLocation) {
+		this.isHistoryHubLocation = isHistoryHubLocation;
 	}
 
 	/**
