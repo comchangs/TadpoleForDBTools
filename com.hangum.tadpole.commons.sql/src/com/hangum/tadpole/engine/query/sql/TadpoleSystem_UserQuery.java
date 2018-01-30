@@ -31,6 +31,7 @@ import com.hangum.tadpole.commons.libs.core.utils.LicenseValidator;
 import com.hangum.tadpole.commons.libs.core.utils.SHA256Utils;
 import com.hangum.tadpole.commons.util.ApplicationArgumentUtils;
 import com.hangum.tadpole.commons.util.DateUtil;
+import com.hangum.tadpole.commons.util.Utils;
 import com.hangum.tadpole.engine.Messages;
 import com.hangum.tadpole.engine.initialize.TadpoleEngineUserDB;
 import com.hangum.tadpole.engine.manager.TadpoleSQLManager;
@@ -129,7 +130,7 @@ public class TadpoleSystem_UserQuery {
 	 * @throws SQLException
 	 */
 	public static UserDAO newLDAPUser(String userName, String email, String external_id, String useOPT) throws TadpoleSQLManagerException, SQLException, Exception {
-		return newUser(PublicTadpoleDefine.INPUT_TYPE.LDAP.name(), email, "LDAP", "YES", "TadpoleLDAPLogin", PublicTadpoleDefine.USER_ROLE_TYPE.USER.name(),
+		return newUser(PublicTadpoleDefine.INPUT_TYPE.LDAP.name(), email, "LDAP", "YES", Utils.getUniqueDigit(12), PublicTadpoleDefine.USER_ROLE_TYPE.USER.name(),
 				userName, "KO", "Asia/Seoul", "YES", useOPT, "", "*", external_id, new Timestamp(System.currentTimeMillis()));
 	}
 	

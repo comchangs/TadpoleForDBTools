@@ -23,7 +23,7 @@ import org.apache.commons.io.IOUtils;
  *
  */
 public class PublicTadpoleDefine {
-//	/** URL system version information */
+	/** URL system version information */
 	public static final String URL_SYSTEM_VERION = String.format("?%s%s=%s", SystemDefine.DBHUB_MAJOR_VERSION, SystemDefine.DBHUB_SUB_VERSION, SystemDefine.DBHUB_RELEASE_DATE);
 	
 	/** product type */
@@ -40,8 +40,8 @@ public class PublicTadpoleDefine {
 	public static final String DEFAULT_TIME_ZONE = "Asia/Seoul";
 	
 	/** default log file name*/
-	public static final String DEFAULT_LOG_FILE 		= String.format("./logs/%s.log", ACTIVE_PRODUCT_TYPE.name());
-	public static final String DEFAULT_VELOCITY_LOG_FILE = String.format("./logs/%sVelocity.log", ACTIVE_PRODUCT_TYPE.name());
+	public static String DEFAULT_LOG_FILE 		= String.format("./logs/%s.log", ACTIVE_PRODUCT_TYPE.name());
+	public static String DEFAULT_VELOCITY_LOG_FILE = String.format("./logs/%sVelocity.log", ACTIVE_PRODUCT_TYPE.name());
 	
 	/**
 	 * 환경 정보 파일
