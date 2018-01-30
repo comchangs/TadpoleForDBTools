@@ -41,8 +41,8 @@ public class LoadConfigFile {
 				properties.load(new FileInputStream(
 						ApplicationArgumentUtils.getResourcesDir() + PublicTadpoleDefine.TDB_CONFIG_FILE));
 			} catch (Exception e) {
-				logger.error(String.format("Not found config files. %s",
-						ApplicationArgumentUtils.getResourcesDir() + PublicTadpoleDefine.TDB_CONFIG_FILE));
+				// debug 모드 일때만 에러로 출력한다.
+				if(logger.isDebugEnabled()) logger.error(String.format("Not found config files. %s", ApplicationArgumentUtils.getResourcesDir() + PublicTadpoleDefine.TDB_CONFIG_FILE));
 			}
 			_trimPropertie(properties);
 		}
@@ -60,8 +60,8 @@ public class LoadConfigFile {
 				properties.load(new FileInputStream(
 						ApplicationArgumentUtils.getResourcesDir() + PublicTadpoleDefine.TDB_CONFIG_FILE));
 			} catch (Exception e) {
-				logger.error(String.format("Not found config files. %s",
-						ApplicationArgumentUtils.getResourcesDir() + PublicTadpoleDefine.TDB_CONFIG_FILE));
+				// debug 모드 일때만 에러로 출력한다.
+				if(logger.isDebugEnabled()) logger.error(String.format("Not found config files. %s", ApplicationArgumentUtils.getResourcesDir() + PublicTadpoleDefine.TDB_CONFIG_FILE));
 			}
 			
 			_trimPropertie(properties);
