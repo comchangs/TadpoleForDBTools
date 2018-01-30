@@ -53,6 +53,7 @@ import com.hangum.tadpole.commons.exception.dialog.ExceptionDetailsErrorDialog;
 import com.hangum.tadpole.commons.google.analytics.AnalyticCaller;
 import com.hangum.tadpole.commons.libs.core.define.PublicTadpoleDefine;
 import com.hangum.tadpole.commons.libs.core.define.PublicTadpoleDefine.OBJECT_TYPE;
+import com.hangum.tadpole.commons.libs.core.define.PublicTadpoleDefine.PRODUCT_TYPE;
 import com.hangum.tadpole.commons.libs.core.define.PublicTadpoleDefine.RESULT_COMP_TYPE;
 import com.hangum.tadpole.commons.libs.core.message.CommonMessages;
 import com.hangum.tadpole.commons.util.RequestInfoUtils;
@@ -326,21 +327,23 @@ public class MainEditor extends EditorExtension {
 						try { if(conn != null) conn.close(); } catch(Exception ee) {}
 					}
 					
-					//오브젝트 익스플로어가 같은 스키마 일경우 스키마가 변경되도록.
-					getSite().getShell().getDisplay().asyncExec(new Runnable() {
-						@Override
-						public void run() {
-							try {
-//								// 오브젝트 탐색기가 열려 있으면 탐색기의 스키마 이름을 변경해 줍니다.
-								ExplorerViewer ev = (ExplorerViewer)PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().showView(ExplorerViewer.ID);
-								ev.changeSchema(userDB, strSchema);
-								
-							} catch (PartInitException e) {
-								logger.error("ExplorerView show", e); //$NON-NLS-1$
+					if(PublicTadpoleDefine.ACTIVE_PRODUCT_TYPE == PRODUCT_TYPE.TadpoleDBHub) {
+						//오브젝트 익스플로어가 같은 스키마 일경우 스키마가 변경되도록.
+						getSite().getShell().getDisplay().asyncExec(new Runnable() {
+							@Override
+							public void run() {
+								try {
+									// 오브젝트 탐색기가 열려 있으면 탐색기의 스키마 이름을 변경해 줍니다.
+									ExplorerViewer ev = (ExplorerViewer)PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().showView(ExplorerViewer.ID);
+									ev.changeSchema(userDB, strSchema);
+									
+								} catch (PartInitException e) {
+									logger.error("ExplorerView show", e); //$NON-NLS-1$
+								}
 							}
-						}
-						
-					});
+							
+						});
+					}	// end product type
 				}
 			});
 			
