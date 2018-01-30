@@ -200,7 +200,7 @@ public class MongoDBImportEditor extends EditorPart {
 				importData();
 			}
 		});
-		btnImport.setText(Messages.get().MongoDBImportEditor_4);
+		btnImport.setText(CommonMessages.get().Import);
 		
 //		
 //		기능 테스트가 정상적으로 되지 않아서 일단 막아놓습니다. --;;

@@ -183,17 +183,17 @@ public class SQLToDBImportDialog extends Dialog {
 		if(DBGroupDefine.SQLITE_GROUP == userDB.getDBGroup()) {
 			//SQLite 는 BatchExecute작업이 한번에 200건 이상 처리시 database logic에러가 발생하고 있어서 1건마다 executeBatch 및 commit을 하도록 한다.
 			textBatchSize.setEditable(false);
-			textBatchSize.setText(Messages.get().SQLToDBImportDialog_2);
+			textBatchSize.setText("100");
 		}else{
 			textBatchSize.setEditable(true);
-			textBatchSize.setText(Messages.get().SQLToDBImportDialog_BatchSize);
+			textBatchSize.setText("1000");
 		}
 		textBatchSize.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
 		new Label(compositeHead, SWT.NONE);
 		
 		Label lblException = new Label(compositeHead, SWT.NONE);
 		lblException.setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER, false, false, 1, 1));
-		lblException.setText(Messages.get().SQLToDBImportDialog_Exception);
+		lblException.setText(CommonMessages.get().Error);
 		
 		Composite composite = new Composite(compositeHead, SWT.NONE);
 		composite.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, false, false, 1, 1));
@@ -210,7 +210,7 @@ public class SQLToDBImportDialog extends Dialog {
 		GridData gd_btnStop = new GridData(SWT.LEFT, SWT.CENTER, false, false, 1, 1);
 		gd_btnStop.widthHint = 92;
 		btnStop.setLayoutData(gd_btnStop);
-		btnStop.setText(Messages.get().SQLToDBImportDialog_Stop);
+		btnStop.setText(CommonMessages.get().Stop);
 		new Label(compositeHead, SWT.NONE);
 		new Label(compositeHead, SWT.NONE);
 		

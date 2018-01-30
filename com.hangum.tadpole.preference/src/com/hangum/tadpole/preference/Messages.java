@@ -171,17 +171,11 @@ public class Messages {
 
 	public String RESTAPI_Help;
 
-	public String Document;
-	
 	public String Language;
 	
 	public String TimeZone;
 	
 	public String ShowNullCharacters;
-
-	public String MySQLQueryProfiling;
-
-	public String DefaultPreferencePage_3;
 
 	public String EnterYourPasswd;
 

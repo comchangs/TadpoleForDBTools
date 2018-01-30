@@ -99,7 +99,7 @@ public class ApplicationWorkbenchWindowAdvisor extends WorkbenchWindowAdvisor {
     
         // Set system exist message.
         ExitConfirmation service = RWT.getClient().getService( ExitConfirmation.class );
-    	service.setMessage(Messages.get().ApplicationWorkbenchWindowAdvisor_4);
+    	service.setMessage(CommonMessages.get().ExitMessage);
     	
 //    	checkSupportBrowser();
         login();

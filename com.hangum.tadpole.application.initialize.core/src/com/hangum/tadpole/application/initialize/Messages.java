@@ -14,7 +14,6 @@ public class Messages {
 	public String SystemAdminWizardUseType_1;
 	public String SystemAdminWizardUseType_3;
 	public String SystemAdminWizardUseType_4;
-	public String SystemAdminWizardUseType_5;
 	public String SystemAdminWizardUseType_6;
 	public String SystemAdminWizardUseType_7;
 
@@ -26,11 +25,7 @@ public class Messages {
 	public String SystemAdminWizardPage_37;
 	public String SystemAdminWizardPage_39;
 	public String SystemAdminWizardPage_4;
-	public String SystemAdminWizardPage_48;
-	public String SystemAdminWizardPage_5;
 	public String SystemAdminWizardPage_6;
-
-	public String Error;
 
 	public static Messages get() {
 		return RWT.NLS.getISO8859_1Encoded(BUNDLE_NAME, Messages.class);

@@ -51,7 +51,7 @@ public class AboutDialog extends Dialog {
 	@Override
 	public void configureShell(Shell newShell) {
 		super.configureShell(newShell);
-		newShell.setText(Messages.get().AboutDialog_0);
+		newShell.setText(CommonMessages.get().About);
 		newShell.setImage(GlobalImageUtils.getTadpoleIcon());
 	}
 

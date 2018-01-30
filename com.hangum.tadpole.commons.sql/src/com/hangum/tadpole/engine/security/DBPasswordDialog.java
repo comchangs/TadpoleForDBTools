@@ -67,7 +67,7 @@ public class DBPasswordDialog extends PasswordDialog {
 		container.setLayout(new GridLayout(2, false));
 		
 		Label lblDbPassword = new Label(container, SWT.NONE);
-		lblDbPassword.setText(Messages.get().DBLockDialog_1);
+		lblDbPassword.setText(CommonMessages.get().Password);
 		
 		textPassword = new Text(container, SWT.BORDER | SWT.PASSWORD);
 		textPassword.addKeyListener(new KeyAdapter() {

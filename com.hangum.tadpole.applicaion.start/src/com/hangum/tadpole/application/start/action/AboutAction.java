@@ -14,7 +14,6 @@ import org.eclipse.jface.action.Action;
 import org.eclipse.ui.IWorkbenchWindow;
 
 import com.hangum.tadpole.application.start.BrowserActivator;
-import com.hangum.tadpole.application.start.Messages;
 import com.hangum.tadpole.application.start.dialog.about.AboutDialog;
 import com.hangum.tadpole.commons.libs.core.message.CommonMessages;
 import com.swtdesigner.ResourceManager;
@@ -30,7 +29,7 @@ public class AboutAction extends Action {
 		super(CommonMessages.get().AboutTadpoleDBHub);
 		setId(this.getClass().getName());
 		setImageDescriptor( ResourceManager.getPluginImageDescriptor(BrowserActivator.ID, "resources/icons/about.png"));
-		setToolTipText(Messages.get().AboutAction_TDB);
+		setToolTipText(CommonMessages.get().About);
 		
 		this.window = window;
 	}

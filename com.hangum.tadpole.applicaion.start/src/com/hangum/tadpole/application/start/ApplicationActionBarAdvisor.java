@@ -36,6 +36,7 @@ import com.hangum.tadpole.commons.admin.core.actions.AdminUserAction;
 import com.hangum.tadpole.commons.admin.core.actions.JDBCDriverManagerAction;
 import com.hangum.tadpole.commons.admin.core.actions.SendMessageAction;
 import com.hangum.tadpole.commons.libs.core.define.PublicTadpoleDefine;
+import com.hangum.tadpole.commons.libs.core.message.CommonMessages;
 import com.hangum.tadpole.engine.permission.PermissionChecker;
 import com.hangum.tadpole.manager.core.actions.global.AdminTransactionConnectionManagerAction;
 import com.hangum.tadpole.manager.core.actions.global.DBManagerAction;
@@ -205,8 +206,8 @@ public class ApplicationActionBarAdvisor extends ActionBarAdvisor {
      * Comment at 2.1 RC3 has error(https://bugs.eclipse.org/bugs/show_bug.cgi?id=410260) 
      */
     protected void fillMenuBar(IMenuManager menuBar) {
-    	MenuManager fileMenu = new MenuManager(Messages.get().ApplicationActionBarAdvisor_0, IWorkbenchActionConstants.M_FILE);
-    	MenuManager manageMenu = new MenuManager(Messages.get().ApplicationActionBarAdvisor_1, IWorkbenchActionConstants.M_PROJECT);
+    	MenuManager fileMenu = new MenuManager(CommonMessages.get().File, IWorkbenchActionConstants.M_FILE);
+    	MenuManager manageMenu = new MenuManager(CommonMessages.get().Manager, IWorkbenchActionConstants.M_PROJECT);
     	MenuManager adminMenu = null;
     	MenuManager observerMenu = null;
 //    	MenuManager serviceMenu = null;
@@ -214,13 +215,13 @@ public class ApplicationActionBarAdvisor extends ActionBarAdvisor {
     	boolean isAdmin = PermissionChecker.isUserAdmin(SessionManager.getRepresentRole());
     	boolean isObserver = PermissionChecker.isUserObserver(SessionManager.getRepresentRole());
     	if(isAdmin) {
-    		adminMenu = new MenuManager(Messages.get().ApplicationActionBarAdvisor_2, IWorkbenchActionConstants.MENU_PREFIX + Messages.get().ApplicationActionBarAdvisor_3);
+    		adminMenu = new MenuManager(CommonMessages.get().Admin, IWorkbenchActionConstants.MENU_PREFIX + CommonMessages.get().Admin);
         } else if(isObserver) {
-        	observerMenu = new MenuManager(Messages.get().ApplicationActionBarAdvisor_Observer, IWorkbenchActionConstants.MENU_PREFIX + Messages.get().ApplicationActionBarAdvisor_Observer);
+        	observerMenu = new MenuManager(CommonMessages.get().Observer, IWorkbenchActionConstants.MENU_PREFIX + CommonMessages.get().Observer);
         }
     	
-    	MenuManager preferenceMenu = new MenuManager(Messages.get().ApplicationActionBarAdvisor_4, IWorkbenchActionConstants.M_PROJECT_CONFIGURE);
-		MenuManager helpMenu = new MenuManager(Messages.get().ApplicationActionBarAdvisor_5, IWorkbenchActionConstants.M_HELP);
+    	MenuManager preferenceMenu = new MenuManager(CommonMessages.get().Setting, IWorkbenchActionConstants.M_PROJECT_CONFIGURE);
+		MenuManager helpMenu = new MenuManager(CommonMessages.get().Help, IWorkbenchActionConstants.M_HELP);
 		
 		menuBar.add(fileMenu);
 		menuBar.add(new GroupMarker(IWorkbenchActionConstants.MB_ADDITIONS));
@@ -309,7 +310,7 @@ public class ApplicationActionBarAdvisor extends ActionBarAdvisor {
         toolbar.add(new Separator());
         
 //        toolbar.add(monitoringManageAction);
-        if("YES".equals(GetAdminPreference.getSupportMonitoring())) {
+        if(PublicTadpoleDefine.YES_NO.YES.name().equals(GetAdminPreference.getSupportMonitoring())) {
         	toolbar.add(monitoringRealTimeAction);
         }
 //        toolbar.add(deleteResourceAction);

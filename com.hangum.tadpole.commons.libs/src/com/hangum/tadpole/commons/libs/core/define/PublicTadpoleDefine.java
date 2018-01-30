@@ -288,13 +288,14 @@ public class PublicTadpoleDefine {
 	/** 
 	 * executed sql history type - 이름을 정할때 10자가 넘지 않아야한다.
 	 * 
-	 *  EDITOR : 에디터에서 실행
-	 *  EDIT_DOWN : 쿼리 다운로드에서
+	 *  EDITOR 		: 에디터에서 실행
+	 *  EDIT_DOWN 	: 쿼리 다운로드에서
 	 *  API_PROGRAM : API Hub에서 실행
-	 *  API_USER : SHARED HUB 에서 실행
-	 *  REQ_QUERY : 사용자 요청 쿼리(예를 들어 사용자 결제를 받아 실행한 쿼리) 
+	 *  API_USER 	: SHARED HUB 에서 실행
+	 *  REQ_QUERY 	: 사용자 요청 쿼리(예를 들어 사용자 결제를 받아 실행한 쿼리)
+	 *  HISTORY_HUB : 히스토리 허브에서 요청한 쿼리 
 	 */
-	public static enum EXECUTE_SQL_TYPE {EDITOR, EDIT_DOWN, API, API_USER, REQ_QUERY};
+	public static enum EXECUTE_SQL_TYPE {EDITOR, EDIT_DOWN, API, API_USER, REQ_QUERY, HISTORYHUB};
 
 	/** 데이터 수정 상태를 가르킵니다 */
 	public static enum DATA_STATUS {NEW, MODIFY, DEL};

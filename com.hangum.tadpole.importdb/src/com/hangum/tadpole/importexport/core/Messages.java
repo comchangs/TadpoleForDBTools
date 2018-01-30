@@ -19,7 +19,6 @@ public class Messages {
 	public String CsvToRDBImportDialog_10;
 	public String CsvToRDBImportDialog_11;
 	public String CsvToRDBImportDialog_14;
-	public String CsvToRDBImportDialog_15;
 	public String CsvToRDBImportDialog_16;
 	public String CsvToRDBImportDialog_19;
 	public String CsvToRDBImportDialog_2;
@@ -32,13 +31,11 @@ public class Messages {
 	public String CsvToRDBImportDialog_51;
 	public String CsvToRDBImportDialog_6;
 	public String CsvToRDBImportDialog_7;
-	public String CsvToRDBImportDialog_8;
 	public String MongoDBImportEditor_0;
 	public String MongoDBImportEditor_1;
 	public String MongoDBImportEditor_11;
 	public String MongoDBImportEditor_12;
 	public String MongoDBImportEditor_2;
-	public String MongoDBImportEditor_4;
 	public String MongoDBImportEditor_5;
 	public String MongoDBImportEditor_6;
 	public String MongoDBImportEditor_8;
@@ -47,10 +44,7 @@ public class Messages {
 	public String TableColumnLIstComposite_1;
 	public String SQLToDBImportDialog_0;
 	public String SQLToDBImportDialog_1;
-	public String SQLToDBImportDialog_2;
-	public String SQLToDBImportDialog_BatchSize;
 	public String SQLToDBImportDialog_lblSeprator_text;
-	public String SQLToDBImportDialog_Exception;
 	public String SQLToDBImportDialog_Ignore;
 	public String SQLToDBImportDialog_ImportException;
 	public String SQLToDBImportDialog_Insert;
@@ -58,7 +52,6 @@ public class Messages {
 	public String SQLToDBImportDialog_LogEmpty;
 	public String SQLToDBImportDialog_ReadError;
 	public String SQLToDBImportDialog_SaveLog;
-	public String SQLToDBImportDialog_Stop;
 	public String SQLToDBImportDialog_StoreData;
 	public String SQLToDBImportDialog_UploadQuestion;
 	public String CsvToRDBImportDialog_btnCopyNew_text;
@@ -76,7 +69,6 @@ public class Messages {
 	public String CsvToRDBImportDialog_btnUpdate_text;
 	public String CsvToRDBImportDialog_btnDelete_text;
 	public String CsvToRDBImportDialog_lblBatchSize_text;
-	public String CsvToRDBImportDialog_text_1_text_1;
 	public String CsvToRDBImportDialog_lblException_text;
 	public String CsvToRDBImportDialog_btnIgnore_text;
 	public String CsvToRDBImportDialog_btnStop_text;

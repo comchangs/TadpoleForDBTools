@@ -21,7 +21,6 @@ public class Messages {
 	public String TadpoleEditor_1;
 	public String TadpoleEditor_3;
 	public String TadpoleModelUtils_2;
-	public String Gullim;
 
 	public static Messages get() {
 		return RWT.NLS.getISO8859_1Encoded(BUNDLE_NAME, Messages.class);
