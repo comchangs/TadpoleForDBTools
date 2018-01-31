@@ -97,7 +97,7 @@ public class DateUtil {
 	public static String getYearMonthDay(long longTimeMills) {
 		Calendar _cal = Calendar.getInstance();
 		_cal.setTimeInMillis(longTimeMills);
-		return _cal.get(Calendar.YEAR) + "" + StringUtils.leftPad(""+(_cal.get(Calendar.MONTH) + 1), 2, "0")  + "" + StringUtils.leftPad(""+(_cal.get(Calendar.DAY_OF_MONTH) + 1), 2, "0"); 
+		return _cal.get(Calendar.YEAR) + "" + StringUtils.leftPad(""+(_cal.get(Calendar.MONTH) + 1), 2, "0")  + "" + StringUtils.leftPad(""+(_cal.get(Calendar.DAY_OF_MONTH)), 2, "0"); 
 	}
 	
 	/**
