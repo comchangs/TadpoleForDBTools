@@ -365,7 +365,11 @@ public class ManagerViewer extends ViewPart {
 				managerTV.refresh(userDB, true);
 				managerTV.expandToLevel(userDB, 1);
 			} catch (SQLException sqle) {
-				Status status = new Status(IStatus.ERROR, Activator.PLUGIN_ID, sqle.getCause().toString(), sqle);
+				String strErrMsg = "";
+				if(sqle.getCause() == null) strErrMsg = "";
+				else strErrMsg = sqle.getCause().toString();
+				
+				Status status = new Status(IStatus.ERROR, Activator.PLUGIN_ID, strErrMsg, sqle);
 				ExceptionDetailsErrorDialog.openError( getSite().getShell(), 
 						                               CommonMessages.get().Error, 
 						                               Messages.get().ManagerViewer_4, 

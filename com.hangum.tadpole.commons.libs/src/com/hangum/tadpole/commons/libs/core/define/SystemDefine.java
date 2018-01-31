@@ -24,13 +24,13 @@ public class SystemDefine {
 	public static final String DBHUB_NAME = "Tadpole DB Hub";
 	public static final String DBHUB_MAJOR_VERSION = "1.8.0";
 	public static final String DBHUB_SUB_VERSION = "Build (B0)";
-	public static final String DBHUB_RELEASE_DATE = "2018.01.29";
+	public static final String DBHUB_RELEASE_DATE = "2018.01.31";
 	
 	// History Hub
 	public static final String HISTORYHUB_NAME = "Tadpole History Hub";
-	public static final String HISTORYHUB_MAJOR_VERSION = "1.0.0";
+	public static final String HISTORYHUB_MAJOR_VERSION = "1.0.1";
 	public static final String HISTORYHUB_SUB_VERSION = "Build (B0)";
-	public static final String HISTORYHUB_RELEASE_DATE = "2018.01.29";
+	public static final String HISTORYHUB_RELEASE_DATE = "2018.01.31";
 	
 	
 	public static final String INFORMATION = "http://tadpolehub.com/";

@@ -46,6 +46,7 @@ import com.hangum.tadpole.engine.query.dao.system.UserInfoDataDAO;
 import com.hangum.tadpole.engine.query.sql.TadpoleSystem_UserInfoData;
 import com.hangum.tadpole.engine.query.sql.TadpoleSystem_UserQuery;
 import com.hangum.tadpole.engine.utils.HttpSessionCollectorUtil;
+import com.hangum.tadpole.engine.utils.RCTPPTest;
 import com.hangum.tadpole.login.core.dialog.LoginDialog;
 import com.hangum.tadpole.preference.get.GetPreferenceGeneral;
 import com.hangum.tadpole.session.manager.SessionManager;
@@ -109,22 +110,8 @@ public class ApplicationWorkbenchWindowAdvisor extends WorkbenchWindowAdvisor {
      * login 
      */
     private void login() {
-    	// 테스트를 위해서 사용하는 코드.
-    	if(ApplicationArgumentUtils.isTestLogin()) {
-    		// en
-    		RWT.getUISession().setLocale(Locale.ENGLISH);
-    		
-    		UserDAO userDao = new UserDAO();
-    		userDao.setSeq(-1);
-    		userDao.setName("test user");
-    		userDao.setEmail("admin@tadpolehub.com");
-    		userDao.setRole_type("SYSTEM_ADMIN");
-    		userDao.setIs_modify_perference("YES");
-    		userDao.setService_start(new Timestamp(System.currentTimeMillis()-100000));
-    		userDao.setService_end(new Timestamp(System.currentTimeMillis()+100000000));
-    		SessionManager.addSession(userDao, SessionManager.LOGIN_IP_TYPE.BROWSER_IP.name(), "127.0.0.1");
-    		initializeUserSession();
-    	}
+    	// 테스트 옵션일 경우
+    	RCTPPTest.initializeTest();
     	
     	// 이미 로그인 되어 있다.
     	if(SessionManager.isLogin()) return;
@@ -199,31 +186,6 @@ public class ApplicationWorkbenchWindowAdvisor extends WorkbenchWindowAdvisor {
 				mapUserInfoData.put(userInfoDataDAO.getName(), userInfoDataDAO);
 			}
 			SessionManager.setUserAllPreferenceData(mapUserInfoData);
-			
-//			final String strRepresentRole = SessionManager.getRepresentRole();
-//			if(strRepresentRole.equals(PublicTadpoleDefine.USER_ROLE_TYPE.API_USER.name())) {
-//				SessionManager.setPerspective(Perspective.APIUSER);
-//			} else {
-//				SessionManager.setPerspective(Perspective.DEFAULT);
-//			}
-//			if ("".equals(SessionManager.getPerspective())) { //$NON-NLS-1$
-//				SessionManager.setPerspective(Perspective.DEFAULT);
-			
-//					// user 사용자는 default perspective를 사용합니다.
-//					if(PublicTadpoleDefine.USER_TYPE.USER.toString().equals(SessionManager.getRepresentRole())) {
-//						SessionManager.setPerspective(Perspective.DEFAULT);
-//					} else {
-//							String persp;
-//							SelectPerspectiveDialog dialog = new SelectPerspectiveDialog(Display.getCurrent().getActiveShell());
-//							
-//							if (Dialog.OK == dialog.open()) {
-//								persp = dialog.getResult();
-//							} else {
-//								persp = Perspective.DEFAULT;
-//							}
-//							SessionManager.setPerspective(persp);
-//					}
-//			}
 			
 			initSession();
 			
