@@ -21,6 +21,7 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 
 import com.hangum.tadpole.engine.define.DBGroupDefine;
+import com.hangum.tadpole.engine.define.DBVariableDefine;
 import com.hangum.tadpole.engine.query.dao.system.UserDBDAO;
 import com.hangum.tadpole.engine.sql.util.SQLConvertCharUtil;
 
@@ -76,6 +77,7 @@ public class ResultSetUtils {
 				final int intColIndex = i+1;
 				final int intShowColIndex = i + intStartIndex;
 				final int colType = rs.getMetaData().getColumnType(intColIndex); 
+				if(logger.isDebugEnabled()) logger.debug("[column type] --> " + colType);
 				
 				try {
 					if (java.sql.Types.LONGVARCHAR == colType || 
@@ -94,11 +96,23 @@ public class ResultSetUtils {
 					} else if(java.sql.Types.BLOB == colType || java.sql.Types.STRUCT == colType) {
 						tmpRow.put(intShowColIndex, rs.getObject(intColIndex));
 						
-					} else if(java.sql.Types.FLOAT == colType) {
-						tmpRow.put(intShowColIndex, rs.getFloat(intColIndex));
-						
 					} else if(java.sql.Types.DOUBLE == colType) {
+						// 숫자가 클 경우 오류가 납니다. 
+						// 하여서 소숫점이 없다면 long으로 받아 처리해야하고, 소숫점이 있다면 
+//						double dblValue = rs.getDouble(intColIndex);
 						tmpRow.put(intShowColIndex, rs.getDouble(intColIndex));
+						
+					} else if(java.sql.Types.BIGINT == colType) {
+						tmpRow.put(intShowColIndex, rs.getLong(intColIndex));
+
+					} else if(java.sql.Types.DECIMAL == colType || java.sql.Types.NUMERIC == colType) {
+						tmpRow.put(intShowColIndex, rs.getBigDecimal(intColIndex));
+					
+					} else if(java.sql.Types.INTEGER == colType) {
+						tmpRow.put(intShowColIndex, rs.getInt(intColIndex));
+						
+					} else if(java.sql.Types.FLOAT == colType || java.sql.Types.REAL == colType) {
+						tmpRow.put(intShowColIndex, rs.getFloat(intColIndex));
 						
 					} else {
 						tmpRow.put(intShowColIndex, SQLConvertCharUtil.toClient(userDB, rs.getString(intColIndex)));

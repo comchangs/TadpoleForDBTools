@@ -295,9 +295,9 @@ public class InstanceInformationComposite extends Composite {
 	    DataItem[] dataItems = new DataItem[] {
 	    	      new DataItem( fBits, 				"In (" + NumberFormatUtils.kbMbFormat(bits) + ")", 			ColorsSWTUtils.CAT10_COLORS[ 0 ] ),
 	    	      new DataItem( fResident, 			"Out (" + NumberFormatUtils.kbMbFormat(resident) + ")", 	ColorsSWTUtils.CAT10_COLORS[ 1 ] ),
-	    	      new DataItem( fVirtual, 			"Vitrual (" + NumberFormatUtils.commaFormat(virtual) + ")", ColorsSWTUtils.CAT10_COLORS[ 2 ] ),
-	    	      new DataItem( fMapped, 			"Mapped (" + NumberFormatUtils.commaFormat(mapped) + ")", 	ColorsSWTUtils.CAT10_COLORS[ 3 ] ),
-	    	      new DataItem( fMappedWithJournal, "Mapped With Journal (" + NumberFormatUtils.commaFormat(mappedWithJournal) + ")", ColorsSWTUtils.CAT10_COLORS[ 4 ] )
+	    	      new DataItem( fVirtual, 			"Vitrual (" + NumberFormatUtils.addComma(virtual) + ")", ColorsSWTUtils.CAT10_COLORS[ 2 ] ),
+	    	      new DataItem( fMapped, 			"Mapped (" + NumberFormatUtils.addComma(mapped) + ")", 	ColorsSWTUtils.CAT10_COLORS[ 3 ] ),
+	    	      new DataItem( fMappedWithJournal, "Mapped With Journal (" + NumberFormatUtils.addComma(mappedWithJournal) + ")", ColorsSWTUtils.CAT10_COLORS[ 4 ] )
 	    	    };
 	
 		barChartMemory.setItems(dataItems);
@@ -331,7 +331,7 @@ public class InstanceInformationComposite extends Composite {
 	    DataItem[] dataItems = new DataItem[] {
 	    	      new DataItem( floatBI, "In (" + NumberFormatUtils.kbMbFormat(bytesIn) + ")", 			ColorsSWTUtils.CAT10_COLORS[ 0 ] ),
 	    	      new DataItem( floatBO, "Out (" + NumberFormatUtils.kbMbFormat(bytesOut) + ")", 		ColorsSWTUtils.CAT10_COLORS[ 1 ] ),
-	    	      new DataItem( floatNf, "Requests (" + NumberFormatUtils.commaFormat(numRequests) + ")", ColorsSWTUtils.CAT10_COLORS[ 2 ] ),
+	    	      new DataItem( floatNf, "Requests (" + NumberFormatUtils.addComma(numRequests) + ")", ColorsSWTUtils.CAT10_COLORS[ 2 ] ),
 	    	    };
 	
 	    barChartNetwork.setItems(dataItems);
@@ -349,8 +349,8 @@ public class InstanceInformationComposite extends Composite {
 	    float floatCurrent 	= available==0?0:(float)current / (float)available;
 	    
 	    DataItem[] dataItems = new DataItem[] {
-	    	      new DataItem( 0.80f, 		 "Available (" + NumberFormatUtils.commaFormat(available) + ")", ColorsSWTUtils.CAT10_COLORS[ 0 ] ),
-	    	      new DataItem( floatCurrent, "Available (" + NumberFormatUtils.commaFormat(available) + ")", ColorsSWTUtils.CAT10_COLORS[ 1 ] ),
+	    	      new DataItem( 0.80f, 		 "Available (" + NumberFormatUtils.addComma(available) + ")", ColorsSWTUtils.CAT10_COLORS[ 0 ] ),
+	    	      new DataItem( floatCurrent, "Available (" + NumberFormatUtils.addComma(available) + ")", ColorsSWTUtils.CAT10_COLORS[ 1 ] ),
 	    	    };
 	    
 	    barChartConnection.setItems(dataItems);
@@ -473,9 +473,9 @@ public class InstanceInformationComposite extends Composite {
 	    DataItem[] dataItems = new DataItem[] {
 	    	      new DataItem( fBits, 				"In (" + NumberFormatUtils.kbMbFormat(bits) + ")", 			ColorsSWTUtils.CAT10_COLORS[ 0 ] ),
 	    	      new DataItem( fResident, 			"Out (" + NumberFormatUtils.kbMbFormat(resident) + ")", 	ColorsSWTUtils.CAT10_COLORS[ 1 ] ),
-	    	      new DataItem( fVirtual, 			"Vitrual (" + NumberFormatUtils.commaFormat(virtual) + ")", ColorsSWTUtils.CAT10_COLORS[ 2 ] ),
-	    	      new DataItem( fMapped, 			"Mapped (" + NumberFormatUtils.commaFormat(mapped) + ")", 	ColorsSWTUtils.CAT10_COLORS[ 3 ] ),
-	    	      new DataItem( fMappedWithJournal, "Mapped With Journal (" + NumberFormatUtils.commaFormat(mappedWithJournal) + ")", ColorsSWTUtils.CAT10_COLORS[ 4 ] )
+	    	      new DataItem( fVirtual, 			"Vitrual (" + NumberFormatUtils.addComma(virtual) + ")", ColorsSWTUtils.CAT10_COLORS[ 2 ] ),
+	    	      new DataItem( fMapped, 			"Mapped (" + NumberFormatUtils.addComma(mapped) + ")", 	ColorsSWTUtils.CAT10_COLORS[ 3 ] ),
+	    	      new DataItem( fMappedWithJournal, "Mapped With Journal (" + NumberFormatUtils.addComma(mappedWithJournal) + ")", ColorsSWTUtils.CAT10_COLORS[ 4 ] )
 	    	    };
 	    barChartMemory.setItems(dataItems);
 	}
@@ -517,7 +517,7 @@ public class InstanceInformationComposite extends Composite {
 		    DataItem[] dataItems = new DataItem[] {
 		    	      new DataItem( floatBI, "In (" + NumberFormatUtils.kbMbFormat(bytesIn) + ")", 			ColorsSWTUtils.CAT10_COLORS[ 0 ] ),
 		    	      new DataItem( floatBO, "Out (" + NumberFormatUtils.kbMbFormat(bytesOut) + ")", 		ColorsSWTUtils.CAT10_COLORS[ 1 ] ),
-		    	      new DataItem( floatNf, "Requests (" + NumberFormatUtils.commaFormat(numRequests) + ")", ColorsSWTUtils.CAT10_COLORS[ 2 ] ),
+		    	      new DataItem( floatNf, "Requests (" + NumberFormatUtils.addComma(numRequests) + ")", ColorsSWTUtils.CAT10_COLORS[ 2 ] ),
 		    	    };
 		
 		    barChartNetwork.setItems(dataItems);

@@ -428,13 +428,13 @@ class MongoInfoLabelProvider extends LabelProvider implements ITableLabelProvide
 			
 			switch(columnIndex) {
 			case 0: return info.getName();
-			case 1: return NumberFormatUtils.commaFormat(info.getCount());
+			case 1: return NumberFormatUtils.addComma(info.getCount());
 			case 2: return NumberFormatUtils.kbMbFormat(info.getSize());
 			case 3: return NumberFormatUtils.kbMbFormat(info.getStorage());
 			case 4: return NumberFormatUtils.kbMbFormat(info.getIndex());
-			case 5: return NumberFormatUtils.commaFormat(info.getLastExtentSize());
-			case 6: return NumberFormatUtils.commaFormat(info.getAvgObj());
-			case 7: return NumberFormatUtils.commaFormat(info.getPadding());
+			case 5: return NumberFormatUtils.addComma(info.getLastExtentSize());
+			case 6: return NumberFormatUtils.addComma(info.getAvgObj());
+			case 7: return NumberFormatUtils.addComma(info.getPadding());
 			}
 			return "*** not set column ***"; //$NON-NLS-1$
 		} else {

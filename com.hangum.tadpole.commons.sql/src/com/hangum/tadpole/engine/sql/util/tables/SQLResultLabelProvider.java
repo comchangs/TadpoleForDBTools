@@ -77,10 +77,9 @@ public class SQLResultLabelProvider extends LabelProvider implements ITableLabel
 	@SuppressWarnings("unchecked")
 	public String getColumnText(Object element, int columnIndex) {
 		HashMap<Integer, Object> rsResult = (HashMap<Integer, Object>)element;
-		
 		Object obj = rsResult.get(columnIndex);
 		if(rsDAO != null) {
-			if(isPretty & RDBTypeToJavaTypeUtils.isNumberType(rsDAO.getColumnType().get(columnIndex))) return NumberFormatUtils.addComma(obj);
+			if(isPretty & RDBTypeToJavaTypeUtils.isNumberType(rsDAO.getColumnType().get(columnIndex))) return NumberFormatUtils.addCommaLong(obj);
 		}
 		String showValue = "";
 		try {

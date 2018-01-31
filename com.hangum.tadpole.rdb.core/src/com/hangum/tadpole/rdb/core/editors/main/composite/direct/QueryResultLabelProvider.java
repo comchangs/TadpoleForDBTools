@@ -90,11 +90,10 @@ public class QueryResultLabelProvider extends LabelProvider implements ITableLab
 		HashMap<Integer, Object> rsResult = (HashMap<Integer, Object>)element;
 		
 		Object obj = rsResult.get(columnIndex);
-		
 		if(obj == null) {
 			return GetPreferenceGeneral.getResultNull();
 		} else if(GetPreferenceGeneral.getISRDBNumberIsComma() && RDBTypeToJavaTypeUtils.isNumberType(rsDAO.getColumnType().get(columnIndex))) {
-			return NumberFormatUtils.addComma(obj);
+			return NumberFormatUtils.addCommaLong(obj);
 		} else {
 			if(GetPreferenceGeneral.getRDBShowInTheColumn() == -1) {
 				return obj.toString();
@@ -104,5 +103,4 @@ public class QueryResultLabelProvider extends LabelProvider implements ITableLab
 					obj.toString();
 		}
 	}
-	
 }

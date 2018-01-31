@@ -23,7 +23,6 @@ import org.eclipse.swt.widgets.Table;
 import com.hangum.tadpole.commons.libs.core.define.PublicTadpoleDefine;
 import com.hangum.tadpole.engine.query.dao.mysql.TableColumnDAO;
 import com.hangum.tadpole.engine.sql.util.RDBTypeToJavaTypeUtils;
-import com.hangum.tadpole.engine.sql.util.SQLUtil;
 import com.hangum.tadpole.engine.sql.util.resultset.TadpoleResultSet;
 import com.hangum.tadpole.preference.get.GetPreferenceGeneral;
 
