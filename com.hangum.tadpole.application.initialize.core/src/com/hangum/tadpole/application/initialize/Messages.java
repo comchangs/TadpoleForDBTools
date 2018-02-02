@@ -24,7 +24,6 @@ public class Messages {
 	public String SystemAdminWizardPage_35;
 	public String SystemAdminWizardPage_37;
 	public String SystemAdminWizardPage_39;
-	public String SystemAdminWizardPage_4;
 	public String SystemAdminWizardPage_6;
 
 	public static Messages get() {

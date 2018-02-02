@@ -73,7 +73,7 @@ public class SystemAdminWizardDefaultUserPage extends WizardPage {
 		GridData gd_lblEmail = new GridData(SWT.LEFT, SWT.CENTER, false, false, 1, 1);
 		gd_lblEmail.widthHint = 120;
 		lblEmail.setLayoutData(gd_lblEmail);
-		lblEmail.setText(Messages.get().SystemAdminWizardPage_4);
+		lblEmail.setText(CommonMessages.get().Email);
 		
 		textEmail = new Text(grpAdministratorUserInformation, SWT.BORDER);
 		textEmail.addKeyListener(new KeyAdapter() {
