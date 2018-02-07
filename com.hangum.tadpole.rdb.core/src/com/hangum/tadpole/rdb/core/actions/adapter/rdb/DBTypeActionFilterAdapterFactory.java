@@ -14,6 +14,9 @@ import org.apache.log4j.Logger;
 import org.eclipse.core.runtime.IAdapterFactory;
 import org.eclipse.ui.IActionFilter;
 
+import com.hangum.tadpole.commons.libs.core.define.PublicTadpoleDefine;
+import com.hangum.tadpole.commons.libs.core.utils.LicenseValidator;
+
 /**
  * action filter 
  * 
@@ -25,11 +28,16 @@ public class DBTypeActionFilterAdapterFactory implements IAdapterFactory {
 	 * Logger for this class
 	 */
 	private static final Logger logger = Logger.getLogger(DBTypeActionFilterAdapterFactory.class);
+	
+	/** munu 는 history hub는 보이지 않도록 합니다. */
+	private static final String strProduct = LicenseValidator.getLicense().getProductType();
 
 	@Override
 	public Object getAdapter(Object adaptableObject, Class adapterType) {
 		if(adapterType == IActionFilter.class) {
-			return new DBTypeActionFilterAdapter();
+			if(!PublicTadpoleDefine.PRODUCT_TYPE.TadpoleHistoryHub.name().equals(strProduct)) {
+				return new DBTypeActionFilterAdapter();
+			}
 		}
 		
 		return null;

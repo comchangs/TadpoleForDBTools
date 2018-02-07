@@ -240,7 +240,7 @@ public class TadpoleViewerComposite extends AbstractObjectComposite {
 			}
 		});
 
-		viewListViewer.setContentProvider(new ArrayContentProvider());
+		viewListViewer.setContentProvider(ArrayContentProvider.getInstance());
 		viewListViewer.setInput(showViews);
 		
 		viewFilter = new TableFilter(userDB);
@@ -269,7 +269,7 @@ public class TadpoleViewerComposite extends AbstractObjectComposite {
 
 		createViewColumne();
 
-		viewColumnViewer.setContentProvider(new ArrayContentProvider());
+		viewColumnViewer.setContentProvider(ArrayContentProvider.getInstance());
 		viewColumnViewer.setLabelProvider(new TableColumnLabelprovider());
 		
 //		createTableColumnMenu();

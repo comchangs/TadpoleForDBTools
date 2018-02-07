@@ -279,7 +279,7 @@ public class MonitoringManagerEditor extends EditorPart {
 		createMonitoringColumn();
 		
 		tableVMonitoringList.setLabelProvider(new MonitoringIndexLabelProvider());
-		tableVMonitoringList.setContentProvider(new ArrayContentProvider());
+		tableVMonitoringList.setContentProvider(ArrayContentProvider.getInstance());
 		
 		sashFormTerm.setWeights(new int[] {3, 7});
 		
@@ -363,7 +363,7 @@ public class MonitoringManagerEditor extends EditorPart {
 		
 		createTableColumn(tvResult);
 
-		tvResult.setContentProvider(new ArrayContentProvider());
+		tvResult.setContentProvider(ArrayContentProvider.getInstance());
 		tvResult.setLabelProvider(new MonitoringResultLabelprovider());
 		
 		sashFormMain.setWeights(new int[] {3, 7});

@@ -180,7 +180,7 @@ public class TadpoleIndexesComposite extends AbstractObjectComposite {
 		createIndexesColumn(indexTableViewer, indexComparator);
 
 		indexTableViewer.setLabelProvider(new IndexesLabelProvicer());
-		indexTableViewer.setContentProvider(new ArrayContentProvider());
+		indexTableViewer.setContentProvider(ArrayContentProvider.getInstance());
 
 		indexFilter = new IndexesViewFilter();
 		indexTableViewer.addFilter(indexFilter);
@@ -197,7 +197,7 @@ public class TadpoleIndexesComposite extends AbstractObjectComposite {
 
 		createIndexColumne(indexColumnViewer);
 
-		indexColumnViewer.setContentProvider(new ArrayContentProvider());
+		indexColumnViewer.setContentProvider(ArrayContentProvider.getInstance());
 		indexColumnViewer.setLabelProvider(new IndexColumnLabelprovider());
 		
 		createMenu();

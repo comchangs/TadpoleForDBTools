@@ -39,7 +39,6 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.Tree;
-import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IEditorReference;
 import org.eclipse.ui.IWorkbenchActionConstants;
 import org.eclipse.ui.IWorkbenchPage;
@@ -126,20 +125,20 @@ public class ManagerViewer extends ViewPart {
 					// 리소스 가져온다.
 					addManagerResouceData(userDB, false);
 					
-					if(userDB.is_isUseEnable()) {
-						// 싱글 클릭일때 에디터에 오픈된 화면이 없으면 에디터 화면이 열리도록 수정.
-						IEditorPart editor = EditorUtils.findSQLEditor(userDB);
-						if(editor == null) {
-							QueryEditorAction qea = new QueryEditorAction();
-							qea.run(userDB);
-						}
-					}
+//					if(userDB.is_isUseEnable()) {
+//						// 싱글 클릭일때 에디터에 오픈된 화면이 없으면 에디터 화면이 열리도록 수정.
+//						IEditorPart editor = EditorUtils.findSQLEditor(userDB);
+//						if(editor == null) {
+//							QueryEditorAction qea = new QueryEditorAction();
+//							qea.run(userDB);
+//						}
+//					}
 					
 					// Rice lock icode change event
 					managerTV.refresh(userDB, true);
 					
 					AnalyticCaller.track(ManagerViewer.ID, userDB.getDbms_type());
-					managerTV.getControl().setFocus();
+					
 				} else if(objSelect instanceof ManagerListDTO) {
 					ManagerListDTO managerDTO = (ManagerListDTO)objSelect;
 					if(managerDTO.getManagerList().isEmpty()) {
@@ -366,7 +365,11 @@ public class ManagerViewer extends ViewPart {
 				managerTV.refresh(userDB, true);
 				managerTV.expandToLevel(userDB, 1);
 			} catch (SQLException sqle) {
-				Status status = new Status(IStatus.ERROR, Activator.PLUGIN_ID, sqle.getCause().toString(), sqle);
+				String strErrMsg = "";
+				if(sqle.getCause() == null) strErrMsg = "";
+				else strErrMsg = sqle.getCause().toString();
+				
+				Status status = new Status(IStatus.ERROR, Activator.PLUGIN_ID, strErrMsg, sqle);
 				ExceptionDetailsErrorDialog.openError( getSite().getShell(), 
 						                               CommonMessages.get().Error, 
 						                               Messages.get().ManagerViewer_4, 

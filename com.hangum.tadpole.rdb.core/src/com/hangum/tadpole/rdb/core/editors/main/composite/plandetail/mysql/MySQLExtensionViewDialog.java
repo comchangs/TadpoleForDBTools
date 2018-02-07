@@ -35,7 +35,7 @@ import com.hangum.tadpole.engine.sql.util.resultset.TadpoleResultSet;
 import com.hangum.tadpole.engine.sql.util.tables.SQLResultSorter;
 import com.hangum.tadpole.engine.sql.util.tables.TableUtil;
 import com.hangum.tadpole.engine.utils.RequestQuery;
-import com.hangum.tadpole.rdb.core.editors.main.composite.direct.SQLResultLabelProvider;
+import com.hangum.tadpole.rdb.core.editors.main.composite.direct.QueryResultLabelProvider;
 import com.swtdesigner.SWTResourceManager;
 
 /**
@@ -142,10 +142,10 @@ public class MySQLExtensionViewDialog extends Dialog {
 		final TadpoleResultSet trs = showProfiles.getDataList();
 		final SQLResultSorter sqlSorter = new SQLResultSorter(-999);
 		
-		SQLResultLabelProvider.createTableColumn(reqQuery, tvShowProfiller, showProfiles, sqlSorter, false);
+		TableUtil.createTableColumn(tvShowProfiller, showProfiles, sqlSorter);
 		
-		tvShowProfiller.setLabelProvider(new SQLResultLabelProvider(reqQuery.getMode(), showProfiles));
-		tvShowProfiller.setContentProvider(new ArrayContentProvider());
+		tvShowProfiller.setLabelProvider(new QueryResultLabelProvider(reqQuery.getMode(), showProfiles));
+		tvShowProfiller.setContentProvider(ArrayContentProvider.getInstance());
 		
 		// 쿼리를 설정한 사용자가 설정 한 만큼 보여준다.
 		tvShowProfiller.setInput(trs.getData());
@@ -165,10 +165,10 @@ public class MySQLExtensionViewDialog extends Dialog {
 		final TadpoleResultSet trs = showStatus.getDataList();
 		final SQLResultSorter sqlSorter = new SQLResultSorter(-999);
 		
-		SQLResultLabelProvider.createTableColumn(reqQuery, tvShowStatus, showStatus, sqlSorter, false);
+		TableUtil.createTableColumn(tvShowStatus, showStatus, sqlSorter);
 		
-		tvShowStatus.setLabelProvider(new SQLResultLabelProvider(reqQuery.getMode(), showStatus));
-		tvShowStatus.setContentProvider(new ArrayContentProvider());
+		tvShowStatus.setLabelProvider(new QueryResultLabelProvider(reqQuery.getMode(), showStatus));
+		tvShowStatus.setContentProvider(ArrayContentProvider.getInstance());
 		
 		// 쿼리를 설정한 사용자가 설정 한 만큼 보여준다.
 		tvShowStatus.setInput(trs.getData());
@@ -188,10 +188,10 @@ public class MySQLExtensionViewDialog extends Dialog {
 		final TadpoleResultSet trs = showExecutePlan.getDataList();
 		final SQLResultSorter sqlSorter = new SQLResultSorter(-999);
 		
-		SQLResultLabelProvider.createTableColumn(reqQuery, tvExecutePlan, showExecutePlan, sqlSorter, false);
+		TableUtil.createTableColumn(tvExecutePlan, showExecutePlan, sqlSorter);
 		
-		tvExecutePlan.setLabelProvider(new SQLResultLabelProvider(reqQuery.getMode(), showExecutePlan));
-		tvExecutePlan.setContentProvider(new ArrayContentProvider());
+		tvExecutePlan.setLabelProvider(new QueryResultLabelProvider(reqQuery.getMode(), showExecutePlan));
+		tvExecutePlan.setContentProvider(ArrayContentProvider.getInstance());
 		
 		// 쿼리를 설정한 사용자가 설정 한 만큼 보여준다.
 		tvExecutePlan.setInput(trs.getData());

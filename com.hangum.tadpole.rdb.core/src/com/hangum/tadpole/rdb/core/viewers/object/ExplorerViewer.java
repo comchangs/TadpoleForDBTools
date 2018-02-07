@@ -286,8 +286,6 @@ public class ExplorerViewer extends ViewPart {
 	 *  change schema name
 	 */
 	public void changeSchema(String strSchemaName) {
-//		if(strSchemaName.equals(comboSchema.getText())) return;
-		
 		comboSchema.setText(strSchemaName);
 		userDB.setSchema(strSchemaName);
 		if(logger.isDebugEnabled()) logger.debug("*** Change schema name is " + strSchemaName);
@@ -371,6 +369,9 @@ public class ExplorerViewer extends ViewPart {
 			}
 		} else {
 			userDB = null;
+			
+			// schema 이름을 초기화한다.
+			comboSchema.removeAll();
 
 			// 존재하는 tadfolder를 삭제한다.
 			for (CTabItem tabItem : tabFolderObject.getItems()) tabItem.dispose();
@@ -736,7 +737,7 @@ public class ExplorerViewer extends ViewPart {
 		} else if (strSelectItemText.equalsIgnoreCase(OBJECT_TYPE.JAVA.name())) {
 			refreshJava(isRefresh, strObjectName);
 		}
-		filterText();
+		if(isRefresh) filterText();
 		
 		// google analytic
 		AnalyticCaller.track(ExplorerViewer.ID, strSelectItemText);

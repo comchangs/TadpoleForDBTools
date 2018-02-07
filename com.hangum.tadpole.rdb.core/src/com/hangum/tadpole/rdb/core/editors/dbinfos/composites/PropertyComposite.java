@@ -128,7 +128,7 @@ public class PropertyComposite extends DBInfosComposite {
 		
 		createColumn();
 		
-		propertyViewer.setContentProvider(new ArrayContentProvider());
+		propertyViewer.setContentProvider(ArrayContentProvider.getInstance());
 		propertyViewer.setLabelProvider(new PropertyInformLabelProvider(userDB));
 		
 		propertyFilter = new PropertyFilter();

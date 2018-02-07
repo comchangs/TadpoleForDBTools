@@ -128,7 +128,7 @@ public class TadpoleFunctionComposite extends AbstractObjectComposite {
 		createProcedureFunctionColumn(functionTableViewer, functionComparator);
 
 		functionTableViewer.setLabelProvider(new ProcedureFunctionLabelProvicer());
-		functionTableViewer.setContentProvider(new ArrayContentProvider());
+		functionTableViewer.setContentProvider(ArrayContentProvider.getInstance());
 		
 		functionTableViewer.addDoubleClickListener(new IDoubleClickListener() {
 			public void doubleClick(DoubleClickEvent event) {

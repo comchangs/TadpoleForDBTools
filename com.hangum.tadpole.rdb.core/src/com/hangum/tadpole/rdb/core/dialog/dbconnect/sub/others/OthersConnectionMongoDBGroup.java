@@ -26,6 +26,7 @@ import org.eclipse.ui.PlatformUI;
 import com.hangum.tadpole.commons.libs.core.define.PublicTadpoleDefine;
 import com.hangum.tadpole.engine.define.DBDefine;
 import com.hangum.tadpole.engine.query.dao.system.ExternalBrowserInfoDAO;
+import com.hangum.tadpole.engine.query.dao.system.UserDBDAO;
 import com.hangum.tadpole.rdb.core.Messages;
 import com.hangum.tadpole.rdb.core.dialog.dbconnect.dialog.ExtensionBrowserURLDialog;
 import com.hangum.tadpole.rdb.core.dialog.dbconnect.sub.others.dao.OthersConnectionInfoDAO;
@@ -43,7 +44,6 @@ public class OthersConnectionMongoDBGroup extends AbstractOthersConnection {
 	private static final Logger logger = Logger.getLogger(OthersConnectionMongoDBGroup.class);
 	
 	private String strIp = "", strPort = "";
-	private OthersConnectionInfoDAO otherConnectionDAO = new OthersConnectionInfoDAO();
 	
 //	private Button btnTableFilters;
 	private Button btnReadOnlyConnection;
@@ -224,5 +224,11 @@ public class OthersConnectionMongoDBGroup extends AbstractOthersConnection {
 	 */
 	public void setStrPort(String strPort) {
 		this.strPort = strPort;
+	}
+
+	@Override
+	public void setUserData(UserDBDAO oldUserDB) {
+		// TODO Auto-generated method stub
+		
 	}
 }

@@ -10,9 +10,11 @@
  ******************************************************************************/
 package com.hangum.tadpole.commons.util;
 
+import java.math.BigDecimal;
 import java.text.DecimalFormat;
 
 import org.apache.commons.lang.StringUtils;
+import org.apache.log4j.Logger;
 
 /**
  * number format util
@@ -21,7 +23,7 @@ import org.apache.commons.lang.StringUtils;
  *
  */
 public class NumberFormatUtils {
-	
+	private static final Logger logger = Logger.getLogger(NumberFormatUtils.class);
 	/**
 	 * to currency format
 	 * @param value
@@ -70,20 +72,18 @@ public class NumberFormatUtils {
 		if(null == value) return "";
 		
 		try {
-			return commaFormat(new Double(value));
+			return addComma(new Double(value));
 		} catch(NumberFormatException nfe) {
 			return value;
 		}
 	}
-	
 	
 	/**
 	 * ,로만 찍도로.
 	 * @param value
 	 * @return
 	 */
-	public static String commaFormat(double value) {
-//		String tmpVal = String.format("%.2f", value);
+	public static String addComma(double value) {
 		DecimalFormat df = new DecimalFormat("#,###.##");    
 		String tmpVal = df.format(value).toString();
 		
@@ -92,6 +92,29 @@ public class NumberFormatUtils {
 		} else {
 			return StringUtils.replaceOnce(tmpVal, ".00", "");
 		}				
+	}
+	
+	/**
+	 * 숫자일 경우 ,를 찍어보여줍니다.
+	 * 
+	 * @param value
+	 * @return
+	 */
+	public static String addCommaLong(Object value) {
+		if(value==null) return null;
+		
+		try{
+			DecimalFormat nf = new DecimalFormat("###,###.##########################");
+			nf.setDecimalSeparatorAlwaysShown(false);
+			
+			BigDecimal biNum = new BigDecimal(value.toString());
+			return nf.format(biNum);
+		} catch(Exception e){
+			// nothing 
+			if(logger.isDebugEnabled()) logger.error(e);
+		}
+
+		return value.toString();
 	}
 	
 	/**
@@ -105,15 +128,15 @@ public class NumberFormatUtils {
 		if(value < 1024) {
 			double val = value;
 			
-			return commaFormat(val) + " bytes";			
+			return addComma(val) + " bytes";			
 		// kb
 		} else if(value < 1024*1024) {
 			double val = value / (1024);
-			return commaFormat(val) + " KB";			
+			return addComma(val) + " KB";			
 		// mb
 		} else {
 			double val = value / (1024 * 1024);
-			return commaFormat(val) + " MB";
+			return addComma(val) + " MB";
 		}
 	}
 

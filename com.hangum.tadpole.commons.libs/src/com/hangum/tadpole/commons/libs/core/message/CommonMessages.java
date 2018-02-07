@@ -20,6 +20,17 @@ import org.eclipse.rap.rwt.RWT;
  */
 public class CommonMessages {
 	private static final String BUNDLE_NAME = "com.hangum.tadpole.commons.libs.core.message.messages"; //$NON-NLS-1$
+	
+	// 메뉴
+	public String File;
+	public String Manager;
+	public String Admin;
+	public String Observer;
+	public String Setting;
+	public String Help;
+	public String About;
+	
+	public String ExitMessage;
 
 	public String TimeLeft;
 	public String DaysLeft;
@@ -126,8 +137,6 @@ public class CommonMessages {
 
 	public String DownloadIsComplete;
 
-	public String UserRequestQuery;
-	
 	public String TermExpired;
 	
 	public String TermExpiredMsg;
@@ -209,7 +218,10 @@ public class CommonMessages {
 	public String All;
 	
 	public String ResultNotFound;
+	
+	public String Import;
 
+	public String Gullim;
 	
 	public static CommonMessages get() {
 		return RWT.NLS.getISO8859_1Encoded(BUNDLE_NAME, CommonMessages.class);

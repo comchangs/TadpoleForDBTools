@@ -25,7 +25,7 @@ import com.hangum.tadpole.engine.sql.util.tables.SQLResultSorter;
 import com.hangum.tadpole.engine.sql.util.tables.TableUtil;
 import com.hangum.tadpole.engine.utils.RequestQuery;
 import com.hangum.tadpole.preference.get.GetPreferenceGeneral;
-import com.hangum.tadpole.rdb.core.editors.main.composite.direct.SQLResultLabelProvider;
+import com.hangum.tadpole.rdb.core.editors.main.composite.direct.QueryResultLabelProvider;
 import com.hangum.tadpole.rdb.core.editors.main.composite.tail.PlanTailComposite;
 
 /**
@@ -99,10 +99,10 @@ public class GeneralPlanComposite extends AbstractPlanComposite {
 		
 		boolean isEditable = true;
 		if("".equals(rsDAO.getColumnTableName().get(1))) isEditable = false; //$NON-NLS-1$
-		SQLResultLabelProvider.createTableColumn(reqQuery, tvQueryPlan, rsDAO, sqlSorter, isEditable);
+		TableUtil.createTableColumn(tvQueryPlan, rsDAO, sqlSorter);
 		
-		tvQueryPlan.setLabelProvider(new SQLResultLabelProvider(reqQuery.getMode(), rsDAO));
-		tvQueryPlan.setContentProvider(new ArrayContentProvider());
+		tvQueryPlan.setLabelProvider(new QueryResultLabelProvider(reqQuery.getMode(), rsDAO));
+		tvQueryPlan.setContentProvider(ArrayContentProvider.getInstance());
 		
 		// 쿼리를 설정한 사용자가 설정 한 만큼 보여준다.
 		if(trs.getData().size() > GetPreferenceGeneral.getPageCount()) {

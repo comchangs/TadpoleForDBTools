@@ -40,9 +40,6 @@ public class TadpoleEngineActivator extends Plugin {
 		super.start(context);
 		plugin = this;
 		
-//		LogConfiguration.getInstance();//.setLevel(Level.DEBUG.toString());
-		// jdbc driver loading
-		
 		// eclipse 로그도 log4j에 넣어주도록 수정 ... (해야할지 살짝 의문이고 삭제해야할지도....) -hangum, 11.09
 		listener = new LogListener();
 		Platform.addLogListener(listener);	

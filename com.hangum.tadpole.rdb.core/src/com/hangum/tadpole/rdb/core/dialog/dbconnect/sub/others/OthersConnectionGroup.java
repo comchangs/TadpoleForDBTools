@@ -39,8 +39,6 @@ import com.hangum.tadpole.rdb.core.dialog.dbconnect.sub.others.dao.OthersConnect
  */
 public abstract class OthersConnectionGroup extends AbstractOthersConnection {
 	
-	protected OthersConnectionInfoDAO otherConnectionDAO = new OthersConnectionInfoDAO();
-	
 	/** read only connection */
 	protected Button btnReadOnlyConnection;
 	/** auto commit */

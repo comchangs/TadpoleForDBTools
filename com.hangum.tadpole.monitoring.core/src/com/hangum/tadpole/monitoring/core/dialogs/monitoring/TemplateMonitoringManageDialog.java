@@ -160,7 +160,7 @@ public class TemplateMonitoringManageDialog extends Dialog {
 		
 		createColumns();
 		
-		tvTemplate.setContentProvider(new ArrayContentProvider());
+		tvTemplate.setContentProvider(ArrayContentProvider.getInstance());
 		tvTemplate.setLabelProvider(new MonitoringTemplateLabelProvider());
 		
 		Composite compositeMoni = new Composite(sashForm, SWT.NONE);

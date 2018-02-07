@@ -145,7 +145,7 @@ public class TDBClipboardDialog extends TitleAreaDialog {
 		if(strSep.equals("\\t")) {
 			strSep = "	";
 		}
-		String strMsg = StringUtils.replace(strResultData, PublicTadpoleDefine.DELIMITER_DBL, strSep) + PublicTadpoleDefine.LINE_SEPARATOR;
+		String strMsg = StringUtils.replace(strResultData, PublicTadpoleDefine.DELIMITER, strSep) + PublicTadpoleDefine.LINE_SEPARATOR;
 		
 		//
 		if(strSep.equals(",")) {

@@ -246,7 +246,7 @@ public class TadpoleMongoDBCollectionComposite extends AbstractObjectComposite {
 			@Override
 			public String getText(Object element) {
 				TableDAO table = (TableDAO) element;
-				return NumberFormatUtils.commaFormat(table.getRows());
+				return NumberFormatUtils.addComma(table.getRows());
 			}
 		});
 //		tvColRows.setEditingSupport(new TableCommentEditorSupport(tableListViewer, userDB, 1));
@@ -264,7 +264,7 @@ public class TadpoleMongoDBCollectionComposite extends AbstractObjectComposite {
 			}
 		});
 
-		tableListViewer.setContentProvider(new ArrayContentProvider());
+		tableListViewer.setContentProvider(ArrayContentProvider.getInstance());
 		tableListViewer.setInput(showTables);
 
 		createMenu();

@@ -24,15 +24,11 @@ public class Messages {
 
 	public String NewUserMailTitle;
 
-	public String MailBodyTempAdmin;
-
 	public String HomePage;
 
 	public String Thanks;
 
 	public String SendTemporaryPassword;
-
-	public String TadpoleHub;
 
 	public String operationResult;
 

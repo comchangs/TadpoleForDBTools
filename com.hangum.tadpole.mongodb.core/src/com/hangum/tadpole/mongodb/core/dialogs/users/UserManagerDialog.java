@@ -150,7 +150,7 @@ public class UserManagerDialog extends Dialog {
 		tblclmnReadOnly.setWidth(100);
 		tblclmnReadOnly.setText(Messages.get().UserManagerDialog_3);
 		
-		tableViewerUser.setContentProvider(new ArrayContentProvider());
+		tableViewerUser.setContentProvider(ArrayContentProvider.getInstance());
 		tableViewerUser.setLabelProvider(new UserListLabelProvider());
 		tableViewerUser.setInput(listUser);
 		

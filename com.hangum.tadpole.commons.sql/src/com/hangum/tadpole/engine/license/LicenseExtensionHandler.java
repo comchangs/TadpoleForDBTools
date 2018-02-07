@@ -19,6 +19,9 @@ import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.ISafeRunnable;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.SafeRunner;
+import org.eclipse.jface.dialogs.MessageDialog;
+
+import com.hangum.tadpole.commons.libs.core.message.CommonMessages;
 
 /**
  * License extension handler
@@ -126,6 +129,8 @@ public class LicenseExtensionHandler {
 						public void run() throws Exception {
 							ILicenseExtension compositeExt = (ILicenseExtension) licenseExtension;
 							compositeExt.liveChage(strLicense);
+							
+							MessageDialog.openInformation(null, CommonMessages.get().Confirm, CommonMessages.get().ChangingValue);
 						}
 					};
 					SafeRunner.run(runnable);

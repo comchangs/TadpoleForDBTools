@@ -32,6 +32,7 @@ import com.hangum.tadpole.commons.libs.core.message.CommonMessages;
 import com.hangum.tadpole.commons.libs.core.utils.ValidChecker;
 import com.hangum.tadpole.engine.define.DBDefine;
 import com.hangum.tadpole.engine.define.DBGroupDefine;
+import com.hangum.tadpole.engine.initialize.historyhub.HistoryHubInitialize;
 import com.hangum.tadpole.engine.manager.TadpoleSQLExtManager;
 import com.hangum.tadpole.engine.manager.TadpoleSQLManager;
 import com.hangum.tadpole.engine.query.dao.ManagerListDTO;
@@ -41,7 +42,7 @@ import com.hangum.tadpole.mongodb.core.connection.MongoConnectionManager;
 import com.hangum.tadpole.rdb.core.Activator;
 import com.hangum.tadpole.rdb.core.Messages;
 import com.hangum.tadpole.rdb.core.dialog.dbconnect.sub.PreConnectionInfoGroup;
-import com.hangum.tadpole.rdb.core.dialog.dbconnect.sub.others.OthersConnectionGroup;
+import com.hangum.tadpole.rdb.core.dialog.dbconnect.sub.others.AbstractOthersConnection;
 import com.hangum.tadpole.rdb.core.dialog.dbconnect.sub.others.dao.OthersConnectionInfoDAO;
 import com.hangum.tadpole.rdb.core.dialog.msg.TDBErroDialog;
 import com.hangum.tadpole.rdb.core.dialog.msg.TDBYesNoErroDialog;
@@ -70,7 +71,7 @@ public abstract class AbstractLoginComposite extends Composite {
 	protected String displayName = ""; //$NON-NLS-1$
 	
 	protected PreConnectionInfoGroup preDBInfo;
-	protected OthersConnectionGroup othersConnectionInfo;
+	protected AbstractOthersConnection othersConnectionInfo;
 	
 	protected String strOtherGroupName = CommonMessages.get().Others;
 	protected String selGroupName = ""; //$NON-NLS-1$
@@ -206,6 +207,9 @@ public abstract class AbstractLoginComposite extends Composite {
 				return false;
 			}
 		}
+		
+		//히스토리허브에서 원본 위치(yes: tadpole, NO: 원본디비에 위치)
+		HistoryHubInitialize.getInstance().initialize(userDB);
 
 		return true;
 	}
@@ -449,7 +453,7 @@ public abstract class AbstractLoginComposite extends Composite {
 		return selGroupName;
 	}
 	
-	public OthersConnectionGroup getOthersConnectionInfo() {
+	public AbstractOthersConnection getOthersConnectionInfo() {
 		return othersConnectionInfo;
 	}
 	
@@ -476,6 +480,7 @@ public abstract class AbstractLoginComposite extends Composite {
 	 */
 	protected void setOtherConnectionInfo() {
 		OthersConnectionInfoDAO otherConnectionDAO =  othersConnectionInfo.getOthersConnectionInfo();
+		userDB.setIs_history_data_location(otherConnectionDAO.isHistoryHubLocation()?PublicTadpoleDefine.YES_NO.YES.name():PublicTadpoleDefine.YES_NO.NO.name());
 		userDB.setIs_readOnlyConnect(otherConnectionDAO.isReadOnlyConnection()?PublicTadpoleDefine.YES_NO.YES.name():PublicTadpoleDefine.YES_NO.NO.name());
 		userDB.setIs_autocommit(otherConnectionDAO.isAutoCommit()?PublicTadpoleDefine.YES_NO.YES.name():PublicTadpoleDefine.YES_NO.NO.name());
 		userDB.setIs_showtables(otherConnectionDAO.isShowTables()?PublicTadpoleDefine.YES_NO.YES.name():PublicTadpoleDefine.YES_NO.NO.name());

@@ -20,6 +20,8 @@ import java.sql.Timestamp;
  */
 public class LedgerDAO {
 	int seq;
+	int db_seq;
+	String dbInfo;
 	int user_seq;
 	String userID="";
 	String cp_seq="";
@@ -31,7 +33,33 @@ public class LedgerDAO {
 	
 	public LedgerDAO() {
 	}
-	
+
+	/**
+	 * @return the db_seq
+	 */
+	public int getDb_seq() {
+		return db_seq;
+	}
+	/**
+	 * @return the dbInfo
+	 */
+	public String getDbInfo() {
+		return dbInfo;
+	}
+
+	/**
+	 * @param dbInfo the dbInfo to set
+	 */
+	public void setDbInfo(String dbInfo) {
+		this.dbInfo = dbInfo;
+	}
+
+	/**
+	 * @param db_seq the db_seq to set
+	 */
+	public void setDb_seq(int db_seq) {
+		this.db_seq = db_seq;
+	}
 
 	/**
 	 * @return the userID

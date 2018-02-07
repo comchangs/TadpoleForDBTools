@@ -53,6 +53,7 @@ import com.hangum.tadpole.commons.libs.core.define.PublicTadpoleDefine;
 import com.hangum.tadpole.commons.libs.core.define.PublicTadpoleDefine.OBJECT_TYPE;
 import com.hangum.tadpole.commons.libs.core.message.CommonMessages;
 import com.hangum.tadpole.commons.util.GlobalImageUtils;
+import com.hangum.tadpole.commons.util.Utils;
 import com.hangum.tadpole.engine.define.DBGroupDefine;
 import com.hangum.tadpole.engine.manager.TadpoleSQLManager;
 import com.hangum.tadpole.engine.query.dao.mysql.TableColumnDAO;
@@ -591,7 +592,7 @@ public class TableDirectEditorComposite extends Composite {
 		
 		querys = SQLTextUtil.delLineChar(changedSQL).split(";"); //$NON-NLS-1$
 		try {
-			RequestQuery reqQuery = new RequestQuery(userDB, changedSQL, OBJECT_TYPE.TABLES, QUERY_MODE.QUERY, EXECUTE_TYPE.ALL, true);
+			RequestQuery reqQuery = new RequestQuery(Utils.getUniqueID(), userDB, changedSQL, OBJECT_TYPE.TABLES, QUERY_MODE.QUERY, EXECUTE_TYPE.ALL, true);
 			ExecuteBatchSQL.runSQLExecuteBatch(Messages.get().MainEditor_21, Arrays.asList(querys), reqQuery, userDB, userDB.getRole_id(), 1000, SessionManager.getEMAIL());
 			
 			// 정상적으로 모든 결과 처리 완료.

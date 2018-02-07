@@ -281,7 +281,7 @@ public class ResourceDetailDialog extends Dialog {
 		tblclmnSql.setWidth(500);
 		tblclmnSql.setText(Messages.get().SQL);
 		
-		tvHistory.setContentProvider(new ArrayContentProvider());
+		tvHistory.setContentProvider(ArrayContentProvider.getInstance());
 		tvHistory.setLabelProvider(new ResourceHistoryLabelProvider());
 		
 		compareWidget = new TadpoleCompareWidget(sashForm, SWT.BORDER);

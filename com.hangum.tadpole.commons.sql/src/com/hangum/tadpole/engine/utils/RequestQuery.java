@@ -20,6 +20,7 @@ import com.hangum.tadpole.commons.libs.core.define.PublicTadpoleDefine.QUERY_DDL
 import com.hangum.tadpole.commons.libs.core.define.PublicTadpoleDefine.QUERY_DDL_TYPE;
 import com.hangum.tadpole.commons.libs.core.define.PublicTadpoleDefine.QUERY_DML_TYPE;
 import com.hangum.tadpole.commons.libs.core.define.PublicTadpoleDefine.SQL_TYPE;
+import com.hangum.tadpole.engine.manager.TransactionManger;
 import com.hangum.tadpole.engine.query.dao.system.UserDBDAO;
 import com.hangum.tadpole.engine.sql.parser.BasicTDBSQLParser;
 import com.hangum.tadpole.engine.sql.parser.dto.QueryInfoDTO;
@@ -35,6 +36,9 @@ import com.hangum.tadpole.session.manager.SessionManager;
 public class RequestQuery implements Cloneable {
 	/**  Logger for this class. */
 	private static final Logger logger = Logger.getLogger(RequestQuery.class);
+	
+	/** 현재 커넥션 id */
+	private String connectId;
 	
 	/** 쿼리 실행자 ip */	
 	private String userIp = ""; 
@@ -91,7 +95,8 @@ public class RequestQuery implements Cloneable {
 	 * @param type 쿼리, 실행 계획인지 {@code EditorDefine.EXECUTE_TYPE}
 	 * @param isAutoCommit autocommit
 	 */
-	public RequestQuery(UserDBDAO userDB, String originalSql, OBJECT_TYPE dbAction, EditorDefine.QUERY_MODE mode, EditorDefine.EXECUTE_TYPE type, boolean isAutoCommit) {
+	public RequestQuery(String connectId, UserDBDAO userDB, String originalSql, OBJECT_TYPE dbAction, EditorDefine.QUERY_MODE mode, EditorDefine.EXECUTE_TYPE type, boolean isAutoCommit) {
+		this.connectId = connectId;
 		//
 		// 사용자가 네트웍을 바꾸어서 사용하면 어떻게 되지???
 		//
@@ -132,7 +137,7 @@ public class RequestQuery implements Cloneable {
 		sqlDMLType = queryInfoDto.getQueryType();
 		
 		if(sqlDMLType.equals(QUERY_DML_TYPE.UNKNOWN)) {
-			if(queryInfoDto.isStatement()) {
+			if(queryInfoDto.isStatement() || TransactionManger.isStartTransaction(sql)) {
 				setSqlType(SQL_TYPE.DML);
 				sqlDMLType = QUERY_DML_TYPE.UNKNOWN;
 				
@@ -388,6 +393,20 @@ public class RequestQuery implements Cloneable {
 	 */
 	public void setSqlAddParameter(String sqlAddParameter) {
 		this.sqlAddParameter = sqlAddParameter;
+	}
+	
+	/**
+	 * @return the connectId
+	 */
+	public String getConnectId() {
+		return connectId;
+	}
+
+	/**
+	 * @param connectId the connectId to set
+	 */
+	public void setConnectId(String connectId) {
+		this.connectId = connectId;
 	}
 
 	/* (non-Javadoc)

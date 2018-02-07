@@ -155,7 +155,7 @@ public class ParameterDialog extends Dialog {
 
 		createTableColumn(tableViewer, tcl_compositeBody);
 
-		tableViewer.setContentProvider(new ArrayContentProvider());
+		tableViewer.setContentProvider(ArrayContentProvider.getInstance());
 		tableViewer.setLabelProvider(new ParamLabelProvider());
 		tableViewer.setInput(parameters);
 		

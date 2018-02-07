@@ -187,7 +187,7 @@ public class MonitoringDetailStatusDialog extends Dialog {
 		
 		createTableColumn();
 		
-		tvList.setContentProvider(new ArrayContentProvider());
+		tvList.setContentProvider(ArrayContentProvider.getInstance());
 		tvList.setLabelProvider(new MonitoringResultLabelprovider());
 		
 		initUI();

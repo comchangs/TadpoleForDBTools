@@ -262,7 +262,7 @@ public class GenerateStatmentDMLDialog extends Dialog {
 		gd_textQuery.minimumHeight = 120;
 		textQuery.setLayoutData(gd_textQuery);
 
-		tableViewer.setContentProvider(new ArrayContentProvider());
+		tableViewer.setContentProvider(ArrayContentProvider.getInstance());
 		tableViewer.setLabelProvider(new GenerateLabelProvider());
 
 		initData();

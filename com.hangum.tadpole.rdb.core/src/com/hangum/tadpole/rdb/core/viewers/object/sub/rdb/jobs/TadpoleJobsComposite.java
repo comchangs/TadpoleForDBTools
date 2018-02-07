@@ -166,7 +166,7 @@ public class TadpoleJobsComposite extends AbstractObjectComposite {
 
 		ColumnHeaderCreator.createColumnHeader(jobsListViewer, tableColumnDef);
 
-		jobsListViewer.setContentProvider(new ArrayContentProvider());
+		jobsListViewer.setContentProvider(ArrayContentProvider.getInstance());
 		jobsListViewer.setLabelProvider(new DefaultLabelProvider(jobsListViewer));
 
 	}

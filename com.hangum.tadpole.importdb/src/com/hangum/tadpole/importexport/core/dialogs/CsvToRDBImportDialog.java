@@ -232,10 +232,10 @@ public class CsvToRDBImportDialog extends Dialog {
 		if(DBGroupDefine.SQLITE_GROUP == userDB.getDBGroup()) {
 			//SQLite 는 BatchExecute작업이 한번에 200건 이상 처리시 database logic에러가 발생하고 있어서 1건마다 executeBatch 및 commit을 하도록 한다.
 			textBatchSize.setEditable(false);
-			textBatchSize.setText("1"); //$NON-NLS-1$
+			textBatchSize.setText("100"); //$NON-NLS-1$
 		}else{
 			textBatchSize.setEditable(true);
-			textBatchSize.setText(Messages.get().CsvToRDBImportDialog_text_1_text_1);
+			textBatchSize.setText("1000");
 		}
 		textBatchSize.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
 		new Label(compositeHead, SWT.NONE);
@@ -775,7 +775,7 @@ public class CsvToRDBImportDialog extends Dialog {
 	 */
 	@Override
 	protected void createButtonsForButtonBar(Composite parent) {
-		createButton(parent, ID_BTN_INSERT, Messages.get().CsvToRDBImportDialog_8, false);
+		createButton(parent, ID_BTN_INSERT, CommonMessages.get().Import, false);
 		createButton(parent, IDialogConstants.CANCEL_ID, CommonMessages.get().Close, false);
 	}
 

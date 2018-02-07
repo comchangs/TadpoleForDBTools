@@ -56,6 +56,7 @@ import com.hangum.tadpole.commons.exception.dialog.ExceptionDetailsErrorDialog;
 import com.hangum.tadpole.commons.libs.core.define.PublicTadpoleDefine;
 import com.hangum.tadpole.commons.libs.core.message.CommonMessages;
 import com.hangum.tadpole.commons.util.GlobalImageUtils;
+import com.hangum.tadpole.commons.util.Utils;
 import com.hangum.tadpole.engine.define.DBDefine;
 import com.hangum.tadpole.engine.define.DBGroupDefine;
 import com.hangum.tadpole.engine.manager.TadpoleSQLManager;
@@ -303,7 +304,7 @@ public class SessionListEditor extends EditorPart {
 
 		ColumnHeaderCreator.createColumnHeader(tableViewerLocks, tableColumnDef);
 
-		tableViewerLocks.setContentProvider(new ArrayContentProvider());
+		tableViewerLocks.setContentProvider(ArrayContentProvider.getInstance());
 		tableViewerLocks.setLabelProvider(new SessionLocksLabelProvider(tableViewerLocks));
 	}
 	
@@ -351,7 +352,7 @@ public class SessionListEditor extends EditorPart {
 	
 			ColumnHeaderCreator.createColumnHeader(tableViewerBlock, tableColumnDef);
 	
-			tableViewerBlock.setContentProvider(new ArrayContentProvider());
+			tableViewerBlock.setContentProvider(ArrayContentProvider.getInstance());
 			tableViewerBlock.setLabelProvider(new SessionLocksLabelProvider(tableViewerBlock));
 		}
 	}
@@ -553,7 +554,7 @@ public class SessionListEditor extends EditorPart {
 		
 		createColumn();
 		
-		tableViewerSessionList.setContentProvider(new ArrayContentProvider());
+		tableViewerSessionList.setContentProvider(ArrayContentProvider.getInstance());
 		tableViewerSessionList.setLabelProvider(new MySQLSessionListLabelProvider());
 		
 		sashForm.setWeights(new int[] {7, 3});
@@ -634,7 +635,7 @@ public class SessionListEditor extends EditorPart {
 //				 
 //				 client.queryForObject("killProcess", parameters);
 				
-				RequestQuery reqQuery = new RequestQuery(userDB, String.format("ALTER DATABASE %s SESSION CLOSE %s", sl.getDb(), sl.getId()), PublicTadpoleDefine.OBJECT_TYPE.TABLES, 
+				RequestQuery reqQuery = new RequestQuery(Utils.getUniqueID(), userDB, String.format("ALTER DATABASE %s SESSION CLOSE %s", sl.getDb(), sl.getId()), PublicTadpoleDefine.OBJECT_TYPE.TABLES, 
 						EditorDefine.QUERY_MODE.QUERY, EditorDefine.EXECUTE_TYPE.BLOCK, true);
 				ExecuteOtherSQL.runSQLOther(reqQuery, userDB, SessionManager.getRepresentRole(), SessionManager.getEMAIL());
 			} else {

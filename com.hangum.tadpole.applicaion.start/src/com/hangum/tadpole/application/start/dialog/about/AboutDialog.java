@@ -51,7 +51,7 @@ public class AboutDialog extends Dialog {
 	@Override
 	public void configureShell(Shell newShell) {
 		super.configureShell(newShell);
-		newShell.setText(Messages.get().AboutDialog_0);
+		newShell.setText(CommonMessages.get().About);
 		newShell.setImage(GlobalImageUtils.getTadpoleIcon());
 	}
 
@@ -94,9 +94,7 @@ public class AboutDialog extends Dialog {
 		
 		/* Software Version */
 		Text txtVersion = new Text(composite_1, SWT.NONE) ;
-		txtVersion.setText(CommonMessages.get().Version + ": v" 
-		                  + SystemDefine.MAJOR_VERSION + " " + SystemDefine.SUB_VERSION 
-		                  + " (r" + SystemDefine.RELEASE_DATE + ")" ); 
+		txtVersion.setText(CommonMessages.get().Version + ": " + SystemDefine.getDBHubSystemInfo()); 
 		txtVersion.setEditable(false);
 		
 		/* License Type */

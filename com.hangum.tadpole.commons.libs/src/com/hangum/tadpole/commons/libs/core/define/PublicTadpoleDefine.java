@@ -12,7 +12,6 @@ package com.hangum.tadpole.commons.libs.core.define;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Properties;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
@@ -25,7 +24,11 @@ import org.apache.commons.io.IOUtils;
  */
 public class PublicTadpoleDefine {
 	/** URL system version information */
-	public static final String URL_SYSTEM_VERION = String.format("?%s%s=%s", SystemDefine.MAJOR_VERSION, SystemDefine.SUB_VERSION, SystemDefine.RELEASE_DATE);
+	public static final String URL_SYSTEM_VERION = String.format("?%s%s=%s", SystemDefine.DBHUB_MAJOR_VERSION, SystemDefine.DBHUB_SUB_VERSION, SystemDefine.DBHUB_RELEASE_DATE);
+	
+	/** product type */
+	public static enum PRODUCT_TYPE {TadpoleDBHub, TadpoleHistoryHub, TadpoleAPIHub};
+	public static PRODUCT_TYPE ACTIVE_PRODUCT_TYPE = PRODUCT_TYPE.TadpoleDBHub;
 	
 	/** default search count */
 	public static final int INT_SEARCH_COUNT = 25;
@@ -37,8 +40,8 @@ public class PublicTadpoleDefine {
 	public static final String DEFAULT_TIME_ZONE = "Asia/Seoul";
 	
 	/** default log file name*/
-	public static final String DEFAULT_LOG_FILE 		= "./logs/tadpole.log";
-	public static final String DEFAULT_VELOCITY_LOG_FILE = "./logs/tadpoleVelocity.log";
+	public static String DEFAULT_LOG_FILE 		= String.format("./logs/%s.log", ACTIVE_PRODUCT_TYPE.name());
+	public static String DEFAULT_VELOCITY_LOG_FILE = String.format("./logs/%sVelocity.log", ACTIVE_PRODUCT_TYPE.name());
 	
 	/**
 	 * 환경 정보 파일
@@ -108,8 +111,8 @@ public class PublicTadpoleDefine {
 	/**
 	 * 분리자
 	 */
-	public static final String DELIMITER = "||DEL||"; //$NON-NLS-1$
-	public static final String DELIMITER_DBL = "||DEL-DBL||"; //$NON-NLS-1$
+	public static final String DELIMITER = "||_D_||"; //$NON-NLS-1$
+	public static final String DELIMITER_DBL = "||_D_D_||"; //$NON-NLS-1$
 	
 	/** 라인분리자 */
 	public static final String LINE_SEPARATOR = "\n";//System.getProperty("line.separator"); //$NON-NLS-1$
@@ -148,7 +151,7 @@ public class PublicTadpoleDefine {
 	public enum EXTERNAL_ACCOUNT {AMAZONRDS, DBSAFER};
 	
 	/** user login type */
-	public static enum INPUT_TYPE {NORMAL, GOOGLE_OAUTH, LDAP};
+	public static enum INPUT_TYPE {NORMAL, LDAP};
 	
 	/** yes, no */
 	public static enum YES_NO {YES, NO}; 
@@ -162,8 +165,8 @@ public class PublicTadpoleDefine {
 	/** erd - select table */
 	public static final String SELECT_ERD_TABLE = "SELECT_ERD_TABLE_RESOURE"; //$NON-NLS-1$
 	
-	/** auto commit 사용여부를 가립니다. */
-	public static final String AUTOCOMMIT_USE = "_AUTOCOMMIT_USE"; //$NON-NLS-1$
+//	/** auto commit 사용여부를 가립니다. */
+//	public static final String AUTOCOMMIT_USE = "_AUTOCOMMIT_USE"; //$NON-NLS-1$
 	
 	/** Tadpole support browser list  */
 	public static enum TADPOLE_SUPPORT_BROWSER {EDGE, FIREFOX, CHROME, SAFARI, IE, OPERA};
@@ -179,18 +182,18 @@ public class PublicTadpoleDefine {
 	 */
 	public static enum DB_USER_ROLE_TYPE {SYSTEM_ADMIN, ADMIN, DBA, MANAGER, USER, GUEST};
 	
-	/**
-	 * Setting SQL Client Info
-	 * @return
-	 */
-	public static Properties getSQLClientInfo() {
-		Properties prop = new Properties();
-		prop.setProperty("ApplicationName", String.format("%s %s %s", SystemDefine.NAME, SystemDefine.MAJOR_VERSION, SystemDefine.RELEASE_DATE));
-//		prop.setProperty("ClientUser", 		RWT.getRequest().getRemoteHost());
-//		prop.setProperty("ClientHostname", 	RWT.getRequest().getLocalAddr());
-		
-		return prop;
-	}
+//	/**
+//	 * Setting SQL Client Info
+//	 * @return
+//	 */
+//	public static Properties getSQLClientInfo() {
+//		Properties prop = new Properties();
+//		prop.setProperty("ApplicationName", String.format("%s %s %s", SystemDefine.NAME, SystemDefine.MAJOR_VERSION, SystemDefine.RELEASE_DATE));
+////		prop.setProperty("ClientUser", 		RWT.getRequest().getRemoteHost());
+////		prop.setProperty("ClientHostname", 	RWT.getRequest().getLocalAddr());
+//		
+//		return prop;
+//	}
 	
 	/**
 	 * ace editor theme list
@@ -285,13 +288,14 @@ public class PublicTadpoleDefine {
 	/** 
 	 * executed sql history type - 이름을 정할때 10자가 넘지 않아야한다.
 	 * 
-	 *  EDITOR : 에디터에서 실행
-	 *  EDIT_DOWN : 쿼리 다운로드에서
+	 *  EDITOR 		: 에디터에서 실행
+	 *  EDIT_DOWN 	: 쿼리 다운로드에서
 	 *  API_PROGRAM : API Hub에서 실행
-	 *  API_USER : SHARED HUB 에서 실행
-	 *  REQ_QUERY : 사용자 요청 쿼리(예를 들어 사용자 결제를 받아 실행한 쿼리) 
+	 *  API_USER 	: SHARED HUB 에서 실행
+	 *  REQ_QUERY 	: 사용자 요청 쿼리(예를 들어 사용자 결제를 받아 실행한 쿼리)
+	 *  HISTORY_HUB : 히스토리 허브에서 요청한 쿼리 
 	 */
-	public static enum EXECUTE_SQL_TYPE {EDITOR, EDIT_DOWN, API, API_USER, REQ_QUERY};
+	public static enum EXECUTE_SQL_TYPE {EDITOR, EDIT_DOWN, API, API_USER, REQ_QUERY, HISTORYHUB};
 
 	/** 데이터 수정 상태를 가르킵니다 */
 	public static enum DATA_STATUS {NEW, MODIFY, DEL};

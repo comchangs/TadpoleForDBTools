@@ -125,7 +125,7 @@ public class TablesComposite extends DBInfosComposite {
 		
 		createColumn();
 		
-		tvTableInform.setContentProvider(new ArrayContentProvider());
+		tvTableInform.setContentProvider(ArrayContentProvider.getInstance());
 		tvTableInform.setLabelProvider(new TableInformLabelProvider(userDB));
 		
 		tableFilter = new TableInfoFilter();

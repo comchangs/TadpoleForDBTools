@@ -43,7 +43,7 @@ public class RDBTypeToJavaTypeUtils {
 		mapTypes.put("INTEGER", java.sql.Types.INTEGER);
 		mapTypes.put("INT24", java.sql.Types.INTEGER);
 		mapTypes.put("BIGINT", java.sql.Types.BIGINT);
-		mapTypes.put("REAL", java.sql.Types.DOUBLE);
+		mapTypes.put("REAL", java.sql.Types.REAL);
 		mapTypes.put("FLOAT", java.sql.Types.FLOAT);
 		mapTypes.put("DECIMAL", java.sql.Types.DECIMAL);
 		mapTypes.put("NUMERIC", java.sql.Types.DECIMAL);
@@ -123,9 +123,9 @@ public class RDBTypeToJavaTypeUtils {
 		case Types.FLOAT:
 		case Types.INTEGER:
 		case Types.NUMERIC:
-		case Types.BIT:
 		case Types.SMALLINT:
 		case Types.TINYINT:
+		case Types.REAL:
 			return true;
 		}
 

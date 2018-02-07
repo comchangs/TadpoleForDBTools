@@ -164,7 +164,7 @@
 //		
 //		createColumns();
 //		
-//		tvRDS.setContentProvider(new ArrayContentProvider());
+//		tvRDS.setContentProvider(ArrayContentProvider.getInstance());
 //		tvRDS.setLabelProvider(new RDSInfoLabelProvider());
 //		tvRDS.setInput(listAmazonRDS);
 //		

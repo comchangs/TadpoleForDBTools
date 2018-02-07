@@ -601,12 +601,12 @@ public class ResultSetDownloadDialog extends Dialog {
 	protected ExportResultDTO downloadFile(final String fileName, final ExportResultDTO exportDto, final String encoding) throws Exception {
 		final File file = new File(exportDto.getFileFullName());
 		String strExt = StringUtils.substringAfterLast(exportDto.getFileFullName(), ".");
-		if(logger.isInfoEnabled()) {
-			logger.info("#####[start]#####################[resource download]");
-			logger.info("\tfile ext : " + strExt);
-			logger.info("\tfile size : " + file.length());
-			logger.info("#####[end]#####################[resource download]");
-		}
+//		if(logger.isInfoEnabled()) {
+//			logger.info("#####[start]#####################[resource download]");
+//			logger.info("\tfile ext : " + strExt);
+//			logger.info("\tfile size : " + file.length());
+//			logger.info("#####[end]#####################[resource download]");
+//		}
 		final byte[] bytesDatas = FileUtils.readFileToByteArray(file);
 		
 		// excel 파일의 경우 바이너리가 저장 되므로... 파일의 위치를 %user_home%/res/파일명 으로 남기도록 합니다.

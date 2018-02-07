@@ -41,11 +41,10 @@ public class ApplicationWorkbenchAdvisor extends WorkbenchAdvisor {
 	
 	@Override
 	public void postStartup() {
-		if(Boolean.parseBoolean(GetPreferenceGeneral.getDefaultHomePageUse())) {
+		if(GetPreferenceGeneral.getDefaultHomePageUse()) {
 			IWorkbenchPage page = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage();
 			try {
-				IntroEditorInput mei = new IntroEditorInput();
-				page.openEditor(mei, IntroEditor.ID);
+				page.openEditor(new IntroEditorInput(), IntroEditor.ID);
 			} catch (PartInitException e) {
 				logger.error("Default home page", e);
 			};

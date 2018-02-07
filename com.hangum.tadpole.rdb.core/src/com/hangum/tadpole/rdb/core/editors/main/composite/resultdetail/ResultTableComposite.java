@@ -70,10 +70,11 @@ import com.hangum.tadpole.rdb.core.actions.resultView.SelectColumnToEditorAction
 import com.hangum.tadpole.rdb.core.actions.resultView.SelectRowToEditorAction;
 import com.hangum.tadpole.rdb.core.dialog.msg.TDBClipboardDialog;
 import com.hangum.tadpole.rdb.core.editors.main.composite.ResultSetComposite;
-import com.hangum.tadpole.rdb.core.editors.main.composite.direct.SQLResultLabelProvider;
+import com.hangum.tadpole.rdb.core.editors.main.composite.direct.QueryResultLabelProvider;
 import com.hangum.tadpole.rdb.core.editors.main.composite.plandetail.mysql.MySQLExtensionViewDialog;
 import com.hangum.tadpole.rdb.core.editors.main.composite.plandetail.mysql.MySQLExtensionViewDialog.MYSQL_EXTENSION_VIEW;
 import com.hangum.tadpole.rdb.core.editors.main.composite.tail.ResultTailComposite;
+import com.hangum.tadpole.rdb.core.editors.main.utils.SQLResultTableUtil;
 import com.hangum.tadpole.rdb.core.editors.main.utils.TableToDataUtils;
 import com.hangum.tadpole.rdb.core.extensionpoint.definition.IMainEditorExtension;
 import com.hangum.tadpole.session.manager.SessionManager;
@@ -354,7 +355,7 @@ public class ResultTableComposite extends AbstractResultDetailComposite {
 			return;
 		}
 		
-		appendTextAtPosition(StringUtils.replace(""+columnDao.getCol_value(), PublicTadpoleDefine.DELIMITER_DBL, ",")); //$NON-NLS-1$
+		appendTextAtPosition(StringUtils.replace(""+columnDao.getCol_value(), PublicTadpoleDefine.DELIMITER, ",")); //$NON-NLS-1$
 	}
 	
 	/**
@@ -367,7 +368,7 @@ public class ResultTableComposite extends AbstractResultDetailComposite {
 			return;
 		}
 		
-		String strData = StringUtils.replace(""+columnDao.getCol_value(), PublicTadpoleDefine.DELIMITER_DBL, ",");
+		String strData = StringUtils.replace(""+columnDao.getCol_value(), PublicTadpoleDefine.DELIMITER, ",");
 		if(!"".equals(columnDao.getCol_value())) { //$NON-NLS-1$
 			if(PublicTadpoleDefine.DEFINE_TABLE_COLUMN_BASE_ZERO.equals(columnDao.getName())) {
 				appendTextAtPosition(strData); //$NON-NLS-1$
@@ -391,13 +392,14 @@ public class ResultTableComposite extends AbstractResultDetailComposite {
 	
 	/**
 	 * table column의 index
-	 * 소트를 통해 데이터행의 위치가 바꿀수 있으므로.....	-1 은 행의 넘버가 1부터 시작해서.
+	 * 소트를 통해 데이터행의 위치가 바꿀수 있으므로....
+	 * ps) -1 은 행의 넘버가 1부터 시작해서.
 	 * 
 	 * @param item
 	 * @return
 	 */
 	private int getColumnIndex(TableItem item) {
-		return Integer.parseInt(item.getText()) -1;
+		return Integer.parseInt(StringUtils.remove(item.getText(), ",")) -1;
 	}
 	
 	/**
@@ -499,7 +501,7 @@ public class ResultTableComposite extends AbstractResultDetailComposite {
 		}
 		
 		String strType = columnDao.getType();
-		String strData = StringUtils.replace(""+columnDao.getCol_value(), PublicTadpoleDefine.DELIMITER_DBL, ","); //$NON-NLS-1$
+		String strData = StringUtils.replace(""+columnDao.getCol_value(), PublicTadpoleDefine.DELIMITER, ","); //$NON-NLS-1$
 		if("JSON".equalsIgnoreCase(strType)) { //$NON-NLS-1$
 			TadpoleSimpleMessageDialog dialog = new TadpoleSimpleMessageDialog(getShell(), Messages.get().ResultSetComposite_16, strData);
 			dialog.open();
@@ -677,13 +679,13 @@ public class ResultTableComposite extends AbstractResultDetailComposite {
 		
 		boolean isEditable = true;
 		if("".equals(rsDAO.getColumnTableName().get(1))) isEditable = false; //$NON-NLS-1$
-		SQLResultLabelProvider.createTableColumn(this, reqQuery, tvQueryResult, rsDAO, sqlSorter, strResultSetHeadClicks, isEditable);
+		SQLResultTableUtil.createTableColumn(this, reqQuery, tvQueryResult, rsDAO, sqlSorter, strResultSetHeadClicks, isEditable);
 
 		// 연속 쿼리 실행시 쿼리 스크롤이 최 상위로 가도록 테이블 인덱스를 수정.  이렇게 하지 않으면 쿼리 결과가 많을 경우 제일 하단으로 가서 쿼리를 여러번 호출할 여지가 있습니다.  
 		tvQueryResult.getTable().setTopIndex(0);
 		
-		tvQueryResult.setLabelProvider(new SQLResultLabelProvider(reqQuery.getMode(), rsDAO));
-		tvQueryResult.setContentProvider(new ArrayContentProvider());
+		tvQueryResult.setLabelProvider(new QueryResultLabelProvider(reqQuery.getMode(), rsDAO));
+		tvQueryResult.setContentProvider(ArrayContentProvider.getInstance());
 		
 		// 쿼리를 설정한 사용자가 설정 한 만큼 보여준다.
 		if(trs.getData().size() > GetPreferenceGeneral.getPageCount()) {

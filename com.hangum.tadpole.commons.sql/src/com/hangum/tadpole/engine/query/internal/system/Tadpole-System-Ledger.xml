@@ -18,7 +18,6 @@
 
 <sqlMap namespace="Tadpole-System-Ledger">
 
-
 <!-- 
  	Ledger list
  -->
@@ -33,13 +32,16 @@
  	Ledger list
  -->
 <select id="getMySQLListLedger" resultClass="com.hangum.tadpole.engine.query.dao.system.ledger.LedgerDAO"  parameterClass="java.util.Map">
-<![CDATA[
-	SELECT a.*, b.email AS userID
-	FROM ledger_head a,
-	 	tadpole_user b
+	SELECT c.display_name dbInfo, a.*, b.email AS userID
+	FROM historyhub_head a,
+	 	tadpole_user b,
+	 	tadpole_db c
 	WHERE a.user_seq = b.seq
+		AND c.seq = a.db_seq
+		<isNotEqual property="strResult" compareValue="All"> AND a.result_yn = #strResult# </isNotEqual>
 		AND b.email like #strUser#
 		AND a.cp_seq like #crNumber#
+<![CDATA[		
 		AND a.create_time >= #startTime#
 	    AND a.create_time <= #endTime#
 	ORDER BY create_time DESC
@@ -51,19 +53,19 @@
 	template insert
  -->
 <insert id="insert_ledger" parameterClass="com.hangum.tadpole.engine.query.dao.system.ledger.LedgerDAO">
-	INSERT INTO ledger_head (user_seq, cp_seq, comment, request_query) 
-	VALUES (#user_seq#, #cp_seq#, #comment#, #request_query#);
+	INSERT INTO historyhub_head (db_seq, user_seq, cp_seq, comment, request_query) 
+	VALUES (#db_seq#, #user_seq#, #cp_seq#, #comment#, #request_query#);
 	
 	<selectKey resultClass="java.lang.Integer">
 		SELECT max(seq) seq
-		FROM ledger_head 
+		FROM historyhub_head 
 		WHERE user_seq = #user_seq# 
 	</selectKey>
 </insert>
 
 <!-- 사용처를 수정합니다. -->
 <update id="update_ledger_result" parameterClass="com.hangum.tadpole.engine.query.dao.system.ledger.LedgerDAO">
-	UPDATE ledger_head
+	UPDATE historyhub_head
 	SET 
 		 result_yn 		= #result_yn#
 		,result_msg 	= #result_msg#
@@ -71,5 +73,15 @@
 		seq = #seq#
 </update>
 
+<!-- 
+	작업번호를 중복으로 입력하였는지 여부
+ -->
+<select id="isDuplicationRefenceNumber" resultClass="com.hangum.tadpole.engine.query.dao.system.ledger.LedgerDAO"  parameterClass="java.lang.String">
+	SELECT * 
+	FROM historyhub_head
+	WHERE 
+			result_yn = 'YES' 
+		AND cp_seq = #cp_seq#
+</select>
 
 </sqlMap>

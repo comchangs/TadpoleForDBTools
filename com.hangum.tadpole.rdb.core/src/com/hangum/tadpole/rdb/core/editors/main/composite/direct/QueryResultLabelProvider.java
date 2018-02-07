@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 hangum.
+ * Copyright (c) 2013 hangum.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the GNU Lesser Public License v2.1
  * which accompanies this distribution, and is available at
@@ -11,7 +11,6 @@
 package com.hangum.tadpole.rdb.core.editors.main.composite.direct;
 
 import java.util.HashMap;
-import java.util.Map;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
@@ -22,48 +21,62 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Image;
 
+import com.hangum.tadpole.commons.util.NumberFormatUtils;
+import com.hangum.tadpole.engine.sql.util.RDBTypeToJavaTypeUtils;
 import com.hangum.tadpole.engine.sql.util.resultset.ResultSetUtilDTO;
 import com.hangum.tadpole.engine.utils.EditorDefine;
 import com.hangum.tadpole.engine.utils.EditorDefine.QUERY_MODE;
+import com.hangum.tadpole.preference.get.GetPreferenceGeneral;
 import com.swtdesigner.SWTResourceManager;
 
 /**
- * Ledger SQLResult의 LabelProvider
+ * SQLResult의 LabelProvider
  * 
  * @author hangum
  *
  */
-public class LedgerSQLResultLabelProvider extends LabelProvider implements ITableLabelProvider, ITableColorProvider {
+public class QueryResultLabelProvider extends LabelProvider implements ITableLabelProvider, ITableColorProvider {
 	/**
 	 * Logger for this class
 	 */
-	private static final Logger logger = Logger.getLogger(LedgerSQLResultLabelProvider.class);
-	public static final String STR_NEW_LABEL_COLUMN = "(변경후)"; //Messages.LEDGER_AFTER_LABEL
+	private static final Logger logger = Logger.getLogger(QueryResultLabelProvider.class);
+	
 	private EditorDefine.QUERY_MODE queryMode = QUERY_MODE.QUERY;
 	private ResultSetUtilDTO rsDAO;
-	private Map<Integer, Integer> _showColumnIndex;
 	
-	public LedgerSQLResultLabelProvider() {
+	public QueryResultLabelProvider() {
 	}
 
-	public LedgerSQLResultLabelProvider(EditorDefine.QUERY_MODE queryMode, final ResultSetUtilDTO rsDAO, Map<Integer, Integer> _showColumnIndex) {
+	public QueryResultLabelProvider(EditorDefine.QUERY_MODE queryMode, final ResultSetUtilDTO rsDAO) {
 		this.queryMode = queryMode;
 		this.rsDAO = rsDAO;
-		this._showColumnIndex = _showColumnIndex;
 	}
 
 	@Override
 	public Color getForeground(Object element, int columnIndex) {
+		HashMap<Integer, Object> rsResult = (HashMap<Integer, Object>)element;
+		Object obj = rsResult.get(columnIndex);
+		if(obj == null) {
+			return SWTResourceManager.getColor(152, 118, 137);
+		} else {
+			String objValue = obj.toString();
+			
+			if(queryMode == QUERY_MODE.QUERY) {
+				if(GetPreferenceGeneral.getRDBShowInTheColumn() != -1 
+						&& objValue.length() > GetPreferenceGeneral.getRDBShowInTheColumn()
+						&& !RDBTypeToJavaTypeUtils.isNumberType(rsDAO.getColumnType().get(columnIndex))
+				) {
+					return SWTResourceManager.getColor(152, 118, 137);
+				}
+			}
+		}
+		
 		return null;
 	}
 
 	@Override
 	public Color getBackground(Object element, int columnIndex) {
-		int realColumnIndex = _showColumnIndex.get(columnIndex);
-		String strColumnName = rsDAO.getColumnLabelName().get(realColumnIndex);
-		if(StringUtils.startsWithIgnoreCase(strColumnName, STR_NEW_LABEL_COLUMN)) {
-			return SWTResourceManager.getColor(SWT.COLOR_GRAY);
-		}
+		if(columnIndex == 0) return SWTResourceManager.getColor(SWT.COLOR_GRAY);
 		
 		return null;
 	}
@@ -71,18 +84,23 @@ public class LedgerSQLResultLabelProvider extends LabelProvider implements ITabl
 	public Image getColumnImage(Object element, int columnIndex) {
 		return null;
 	}
-	
 
 	@SuppressWarnings("unchecked")
 	public String getColumnText(Object element, int columnIndex) {
 		HashMap<Integer, Object> rsResult = (HashMap<Integer, Object>)element;
-		int realColumnIndex = _showColumnIndex.get(columnIndex);
-		Object obj = rsResult.get(realColumnIndex);
+		
+		Object obj = rsResult.get(columnIndex);
 		if(obj == null) {
-			return "";
+			return GetPreferenceGeneral.getResultNull();
+		} else if(GetPreferenceGeneral.getISRDBNumberIsComma() && RDBTypeToJavaTypeUtils.isNumberType(rsDAO.getColumnType().get(columnIndex))) {
+			return NumberFormatUtils.addCommaLong(obj);
 		} else {
-			return obj.toString();
+			if(GetPreferenceGeneral.getRDBShowInTheColumn() == -1) {
+				return obj.toString();
+			} 
+			return queryMode == QUERY_MODE.QUERY ? 
+					StringUtils.abbreviate(obj.toString(), 0, GetPreferenceGeneral.getRDBShowInTheColumn()) :
+					obj.toString();
 		}
 	}
-
 }

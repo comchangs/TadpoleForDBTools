@@ -10,13 +10,12 @@
  ******************************************************************************/
 package com.hangum.tadpole.application;
 
-import org.eclipse.core.runtime.ILogListener;
-import org.eclipse.core.runtime.Platform;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.osgi.framework.BundleContext;
 
-import com.hangum.tadpole.commons.libs.core.logs.LogListener;
+import com.hangum.tadpole.commons.libs.core.define.PublicTadpoleDefine;
+import com.hangum.tadpole.commons.libs.core.logs.LogConfiguration;
 
 /**
  * The activator class controls the plug-in life cycle
@@ -25,10 +24,13 @@ public class Activator extends AbstractUIPlugin {
 
 	// The plug-in ID
 	public static final String PLUGIN_ID = "com.hangum.tadpole.application"; //$NON-NLS-1$
+	
+	static {
+		PublicTadpoleDefine.ACTIVE_PRODUCT_TYPE = PublicTadpoleDefine.PRODUCT_TYPE.TadpoleDBHub;
+	}
 
 	// The shared instance
 	private static Activator plugin;
-	private ILogListener listener;
 	
 	/**
 	 * The constructor
@@ -44,9 +46,7 @@ public class Activator extends AbstractUIPlugin {
 		super.start(context);
 		plugin = this;
 
-		// Add eclipse log to log4j log
-		listener = new LogListener();
-		Platform.addLogListener(listener);
+		LogConfiguration.getInstance();
 	}
 
 	/*
@@ -56,8 +56,6 @@ public class Activator extends AbstractUIPlugin {
 	public void stop(BundleContext context) throws Exception {
 		plugin = null;
 		super.stop(context);
-		
-		Platform.removeLogListener(listener);
 	}
 
 	/**

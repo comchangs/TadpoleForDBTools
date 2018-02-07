@@ -61,9 +61,9 @@ public class GetPreferenceGeneral extends AbstractPreference {
 	 * default home page use
 	 * @return
 	 */
-	public static String getDefaultHomePageUse() {
+	public static boolean getDefaultHomePageUse() {
 		UserInfoDataDAO userInfo = SessionManager.getUserInfo(PreferenceDefine.DEFAULT_HOME_PAGE_USE, PreferenceDefine.DEFAULT_HOME_PAGE_USE_VALUE);
-		return userInfo.getValue0();
+		return Boolean.valueOf(userInfo.getValue0()).booleanValue();
 	}
 	
 	////////////////// rdb 설정 ////////////////////////////////////////////////////////////////////////////
@@ -128,9 +128,9 @@ public class GetPreferenceGeneral extends AbstractPreference {
 	 * RDB Character shown in the column
 	 * @return
 	 */
-	public static String getRDBShowInTheColumn() {
+	public static int getRDBShowInTheColumn() {
 		UserInfoDataDAO userInfo = SessionManager.getUserInfo(PreferenceDefine.RDB_CHARACTER_SHOW_IN_THE_COLUMN, PreferenceDefine.RDB_CHARACTER_SHOW_IN_THE_COLUMN_VALUE);
-		return userInfo.getValue0();
+		return Integer.parseInt(userInfo.getValue0());
 	}
 	
 	/**

@@ -16,6 +16,8 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.eclipse.jface.dialogs.MessageDialog;
 
+import com.hangum.tadpole.commons.libs.core.define.PublicTadpoleDefine;
+import com.hangum.tadpole.commons.libs.core.define.PublicTadpoleDefine.PRODUCT_TYPE;
 import com.hangum.tadpole.commons.util.ApplicationArgumentUtils;
 import com.hangum.tadpole.engine.license.LicenseExtensionHandler;
 
@@ -27,8 +29,26 @@ import com.hangum.tadpole.engine.license.LicenseExtensionHandler;
  */
 public class ApplicationLicenseInitialize {
 	private static final Logger logger = Logger.getLogger(ApplicationLicenseInitialize.class);
-	public static String TDB_License_FILE = ApplicationArgumentUtils.getResourcesDir() + "TadpoleHub.lic";
 	
+	/**
+	 * get license file location
+	 * 
+	 * @return
+	 */
+	public static String getLicenseFileLocation() {
+		String strActiveProductType = "";
+		if(PublicTadpoleDefine.ACTIVE_PRODUCT_TYPE == PRODUCT_TYPE.TadpoleDBHub) {
+			strActiveProductType = "TadpoleHub";
+		} else {
+			strActiveProductType = PublicTadpoleDefine.ACTIVE_PRODUCT_TYPE.name();
+		}
+		
+		return String.format("%s%s.lic", ApplicationArgumentUtils.getResourcesDir(), strActiveProductType);
+	}
+	
+	/**
+	 * license load
+	 */
 	public static void load() {
 		LicenseExtensionHandler linceseHandler = new LicenseExtensionHandler();
 		try {
@@ -37,7 +57,7 @@ public class ApplicationLicenseInitialize {
 				logger.info("******** [0] Start enterprise version ");
 				linceseHandler.license(strLicenseInfo);
 			} else {
-				File fileExist = new File(TDB_License_FILE);
+				File fileExist = new File(getLicenseFileLocation());
 				if(fileExist.isFile()) {
 					logger.info("******** [1] Start enterprise version ");
 					linceseHandler.license(fileExist);

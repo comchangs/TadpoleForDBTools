@@ -84,7 +84,7 @@ public class NewVersionChecker {
 			newVersionObj = gson.fromJson(strJson, NewVersionObject.class);
 			if(newVersionObj == null) return false;
 			
-			String[] arryCurVer = StringUtils.split(SystemDefine.MAJOR_VERSION, ".");
+			String[] arryCurVer = StringUtils.split(SystemDefine.DBHUB_MAJOR_VERSION, ".");
 			String[] arryNewVer = StringUtils.split(newVersionObj.getMajorVer(), ".");
 			for (int i=0; i<arryCurVer.length; i++) {
 				if(Integer.parseInt(arryNewVer[i]) > Integer.parseInt(arryCurVer[i])) {

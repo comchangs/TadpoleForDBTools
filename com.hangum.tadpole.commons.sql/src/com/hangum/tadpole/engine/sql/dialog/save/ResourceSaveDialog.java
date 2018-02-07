@@ -234,7 +234,7 @@ public class ResourceSaveDialog extends Dialog {
 			}
 			
 			String strURL = RESTfulAPIUtils.makeURL(strContentData, textAPIURI.getText());
-			TadpoleSimpleMessageDialog dialog = new TadpoleSimpleMessageDialog(getShell(), Messages.get().ResourceSaveDialog_11, strURL);
+			TadpoleSimpleMessageDialog dialog = new TadpoleSimpleMessageDialog(getShell(), Messages.get().APIURL, strURL);
 			dialog.open();
 		} else {
 			super.buttonPressed(buttonId);

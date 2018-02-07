@@ -25,6 +25,7 @@ import com.hangum.tadpole.application.initialize.Messages;
 import com.hangum.tadpole.application.initialize.core.Activator;
 import com.hangum.tadpole.commons.google.analytics.AnalyticCaller;
 import com.hangum.tadpole.commons.libs.core.define.PublicTadpoleDefine;
+import com.hangum.tadpole.commons.libs.core.message.CommonMessages;
 import com.swtdesigner.ResourceManager;
 
 /**
@@ -36,7 +37,7 @@ import com.swtdesigner.ResourceManager;
 public class SystemAdminWizardUseTypePage extends WizardPage {
 	private static final Logger logger = Logger.getLogger(SystemAdminWizardUseTypePage.class);
 	
-	private String[] USER_GROUP = {Messages.get().SystemAdminWizardUseType_3, Messages.get().SystemAdminWizardUseType_4};
+	private String[] USER_GROUP = {Messages.get().SystemAdminWizardUseType_3, CommonMessages.get().Email};
 	private String[] USER_INFO = {Messages.get().SystemAdminWizardUseType_6, Messages.get().SystemAdminWizardUseType_7};
 	private String[] USER_IMAGE= {"resources/icons/user.png", "resources/icons/user_group.png"}; //$NON-NLS-1$ //$NON-NLS-1$
 	
@@ -64,7 +65,7 @@ public class SystemAdminWizardUseTypePage extends WizardPage {
 		
 		Label lblNewLabel = new Label(container, SWT.NONE);
 		lblNewLabel.setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER, false, false, 1, 1));
-		lblNewLabel.setText(Messages.get().SystemAdminWizardUseType_5);
+		lblNewLabel.setText(CommonMessages.get().Type);
 		
 		comboUserGroup = new Combo(container, SWT.READ_ONLY);
 		comboUserGroup.addSelectionListener(new SelectionAdapter() {

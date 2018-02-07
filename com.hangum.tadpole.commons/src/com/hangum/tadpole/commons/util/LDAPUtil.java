@@ -33,8 +33,8 @@ public class LDAPUtil {
 	private static final Logger logger = Logger.getLogger(LDAPUtil.class);
 	
 	public static LDAPUtil instance = null;
-	private static String ldapHost;		 // LDAP 호스트
-	private static String principal;	 // LDAP 쿼리
+	private static String _ldapHost;		 // LDAP 호스트
+	private static String _principal;	 // LDAP 쿼리
 	
 	private LDAPUtil() {}
 	
@@ -42,8 +42,8 @@ public class LDAPUtil {
 		if(instance == null) {
 			Properties prop = LoadConfigFile.getConfigFile();
 			
-			ldapHost	= StringUtils.trim(prop.getProperty("LDAP.HOST.URL"));
-			principal	= StringUtils.trim(prop.getProperty("LDAP.PRINCIPAL"));
+			_ldapHost	= StringUtils.trim(prop.getProperty("LDAP.HOST.URL"));
+			_principal	= StringUtils.trim(prop.getProperty("LDAP.SEARCHBASE"));
 			
 			instance = new LDAPUtil();
 		}
@@ -60,9 +60,9 @@ public class LDAPUtil {
 	public static void ldapLogin(String strEmail, String strPass) throws TadpoleAuthorityException {
 		Hashtable<String, String> properties = new Hashtable<String, String>();
 		properties.put(Context.INITIAL_CONTEXT_FACTORY, "com.sun.jndi.ldap.LdapCtxFactory");
-		properties.put(Context.PROVIDER_URL, ldapHost);
+		properties.put(Context.PROVIDER_URL, _ldapHost);
 		properties.put(Context.SECURITY_AUTHENTICATION, "simple");
-		properties.put(Context.SECURITY_PRINCIPAL, String.format(principal, strEmail));
+		properties.put(Context.SECURITY_PRINCIPAL, String.format(_principal, strEmail));
 		properties.put(Context.SECURITY_CREDENTIALS, strPass);
 		
 		DirContext con = null;

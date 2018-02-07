@@ -26,12 +26,12 @@ import com.hangum.tadpole.engine.define.TDBResultCodeDefine;
 import com.hangum.tadpole.engine.manager.TadpoleSQLExtManager;
 import com.hangum.tadpole.engine.manager.TadpoleSQLManager;
 import com.hangum.tadpole.engine.manager.TadpoleSQLTransactionManager;
+import com.hangum.tadpole.engine.manager.TransactionManger;
 import com.hangum.tadpole.engine.permission.PermissionChecker;
 import com.hangum.tadpole.engine.query.dao.system.UserDBDAO;
 import com.hangum.tadpole.engine.restful.TadpoleException;
 import com.hangum.tadpole.engine.sql.util.SQLConvertCharUtil;
 import com.hangum.tadpole.engine.utils.RequestQuery;
-import com.hangum.tadpole.rdb.core.editors.main.execute.TransactionManger;
 
 /**
  * Execute ddl, insert, update, delete etc..
@@ -54,7 +54,9 @@ public class ExecuteOtherSQL {
 	 * @throws SQLException
 	 * @throws Exception
 	 */
-	public static int runPermissionSQLExecution(String errMsg, final RequestQuery reqQuery, 
+	public static int runPermissionSQLExecution(
+			String errMsg, 
+			final RequestQuery reqQuery, 
 			final UserDBDAO userDB,
 			final String userType,
 			final String userEmail) throws TadpoleSQLManagerException, SQLException, TadpoleException 
@@ -102,7 +104,7 @@ public class ExecuteOtherSQL {
 		int intEChangeCnt = -1;
 		
 		// commit나 rollback 명령을 만나면 수행하고 리턴합니다.
-		if(TransactionManger.calledCommitOrRollback(reqQuery.getSql(), userEmail, userDB)) return intEChangeCnt;
+		if(TransactionManger.calledCommitOrRollback(reqQuery.getConnectId(), reqQuery.getSql(), userEmail, userDB)) return intEChangeCnt;
 		
 		java.sql.Connection javaConn = null;
 		Statement statement = null;
@@ -114,7 +116,7 @@ public class ExecuteOtherSQL {
 				if(reqQuery.isAutoCommit()) {
 					javaConn = TadpoleSQLManager.getConnection(userDB);
 				} else {
-					javaConn = TadpoleSQLTransactionManager.getInstance(userEmail, userDB);
+					javaConn = TadpoleSQLTransactionManager.getInstance(reqQuery.getConnectId(), userEmail, userDB);
 				}
 			}
 			

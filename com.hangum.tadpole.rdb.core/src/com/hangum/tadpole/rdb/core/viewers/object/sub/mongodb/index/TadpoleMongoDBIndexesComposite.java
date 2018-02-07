@@ -139,7 +139,7 @@ public class TadpoleMongoDBIndexesComposite extends AbstractObjectComposite {
 		createMongoDBIndexesColumn(tableViewer, indexComparator);
 
 		tableViewer.setLabelProvider(new MongoDBIndexesLabelProvicer());
-		tableViewer.setContentProvider(new ArrayContentProvider());
+		tableViewer.setContentProvider(ArrayContentProvider.getInstance());
 
 		indexFilter = new MongoDBIndexesViewFilter();
 		tableViewer.addFilter(indexFilter);
@@ -176,7 +176,7 @@ public class TadpoleMongoDBIndexesComposite extends AbstractObjectComposite {
 			}
 		});
 
-		tableColumnViewer.setContentProvider(new ArrayContentProvider());
+		tableColumnViewer.setContentProvider(ArrayContentProvider.getInstance());
 
 		sashForm.setWeights(new int[] {7, 3});
 	}

@@ -23,6 +23,7 @@ import com.hangum.tadpole.engine.query.dao.system.UserDBDAO;
  */
 public class TransactionDAO {
 	
+	private String connectId;
 	private String userId;
 	private UserDBDAO userDB;
 	private Timestamp startTransaction;
@@ -32,6 +33,20 @@ public class TransactionDAO {
 	private boolean isTransaction;
 	
 	public TransactionDAO() {
+	}
+	
+	/**
+	 * @return the connectId
+	 */
+	public String getConnectId() {
+		return connectId;
+	}
+
+	/**
+	 * @param connectId the connectId to set
+	 */
+	public void setConnectId(String connectId) {
+		this.connectId = connectId;
 	}
 
 	public String getUserId() {

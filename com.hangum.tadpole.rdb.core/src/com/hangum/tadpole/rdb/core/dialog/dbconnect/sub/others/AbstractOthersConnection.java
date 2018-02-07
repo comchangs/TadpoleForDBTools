@@ -17,6 +17,8 @@ import org.eclipse.swt.widgets.Group;
 
 import com.hangum.tadpole.engine.define.DBDefine;
 import com.hangum.tadpole.engine.query.dao.system.ExternalBrowserInfoDAO;
+import com.hangum.tadpole.engine.query.dao.system.UserDBDAO;
+import com.hangum.tadpole.rdb.core.dialog.dbconnect.sub.others.dao.OthersConnectionInfoDAO;
 
 /**
  * Other connection group
@@ -25,6 +27,8 @@ import com.hangum.tadpole.engine.query.dao.system.ExternalBrowserInfoDAO;
  *
  */
 public abstract class AbstractOthersConnection extends Group {
+	protected OthersConnectionInfoDAO otherConnectionDAO = new OthersConnectionInfoDAO();
+	
 	/**
 	 * select database
 	 */
@@ -45,6 +49,18 @@ public abstract class AbstractOthersConnection extends Group {
 	public DBDefine getSelectDB() {
 		return selectDB;
 	}
+
+	/**
+	 * 기존 데이터가 있다면 설정한다.
+	 * @param oldUserDB
+	 */
+	public abstract void setUserData(UserDBDAO oldUserDB);
+	
+	/**
+	 * 
+	 * @return
+	 */
+	public abstract OthersConnectionInfoDAO getOthersConnectionInfo();
 	
 	/**
 	 * get Default external browser 

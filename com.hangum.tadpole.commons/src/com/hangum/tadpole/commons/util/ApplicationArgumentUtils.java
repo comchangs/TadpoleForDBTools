@@ -168,6 +168,15 @@ public class ApplicationArgumentUtils {
 	}
 	
 	/**
+	 * test login
+	 * 
+	 * @return
+	 */
+	public static boolean isTestLogin() {
+		return checkString("-testLogin");
+	}
+	
+	/**
 	 * testDB 모드이면
 	 * 
 	 * @return

@@ -23,7 +23,6 @@ import org.eclipse.swt.widgets.Table;
 import com.hangum.tadpole.commons.libs.core.define.PublicTadpoleDefine;
 import com.hangum.tadpole.engine.query.dao.mysql.TableColumnDAO;
 import com.hangum.tadpole.engine.sql.util.RDBTypeToJavaTypeUtils;
-import com.hangum.tadpole.engine.sql.util.SQLUtil;
 import com.hangum.tadpole.engine.sql.util.resultset.TadpoleResultSet;
 import com.hangum.tadpole.preference.get.GetPreferenceGeneral;
 
@@ -101,24 +100,19 @@ public class TableToDataUtils {
 				// if select value is null can 
 				if(columnObject == null) strText = strNullValue;
 				else strText = columnObject.toString();
-				columnDao.setCol_value(columnDao.getCol_value() + strText + PublicTadpoleDefine.DELIMITER_DBL);
+				columnDao.setCol_value(columnDao.getCol_value() + strText + PublicTadpoleDefine.DELIMITER);
 			} else if("BLOB".equalsIgnoreCase(columnDao.getData_type())) { //$NON-NLS-1$
 				// ignore blob type
 			} else {
 				String strText = ""; //$NON-NLS-1$
 				
 				// if select value is null can 
-				if(columnObject == null) {
-					strText = strNullValue;
-					columnDao.setCol_value(columnDao.getCol_value() + strText + PublicTadpoleDefine.DELIMITER_DBL);
-				} else {
-					strText = columnObject.toString();
-					columnDao.setCol_value(columnDao.getCol_value() + SQLUtil.makeQuote(strText) + PublicTadpoleDefine.DELIMITER_DBL);
-				}
-				
+				if(columnObject == null) strText = strNullValue;
+				else strText = columnObject.toString();
+				columnDao.setCol_value(columnDao.getCol_value() + strText + PublicTadpoleDefine.DELIMITER);
 			}
 		}
-		columnDao.setCol_value(StringUtils.removeEnd(""+columnDao.getCol_value(), PublicTadpoleDefine.DELIMITER_DBL));
+		columnDao.setCol_value(StringUtils.removeEnd(""+columnDao.getCol_value(), PublicTadpoleDefine.DELIMITER));
 		
 		return columnDao;
 	}

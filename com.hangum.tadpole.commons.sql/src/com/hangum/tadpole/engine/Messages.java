@@ -15,14 +15,10 @@ import org.eclipse.rap.rwt.RWT;
 public class Messages {
 	private static final String BUNDLE_NAME = "com.hangum.tadpole.engine.messages"; //$NON-NLS-1$
 
-	public String DoesNotGetDBScript;
-	
 	public String Gullim;
 	public String overflowUseService;
 	public String AlreadyUseService;
 	public String DBLockDialog_0;
-	public String DBLockDialog_1;
-	public String DBLockDialog_3;
 	public String OracleObjectCompileUtils_0;
 	public String ProcedureExecuterManager_0;
 	public String ProcedureExecuterManager_4;
@@ -30,11 +26,9 @@ public class Messages {
 
 	public String SharedType;
 	public String ResourceSaveDialog_10;
-	public String ResourceSaveDialog_11;
 	public String ShowURL;
 	public String ResourceSaveDialog_16;
 	public String ResourceSaveDialog_19;
-	public String Description;
 	public String ResourceSaveDialog_21;
 	public String ResourceSaveDialog_3;
 	public String ResourceSaveDialog_8;
@@ -48,10 +42,6 @@ public class Messages {
 	public String IsUseAPI;
 	public String ServiceBill;
 	public String doesNotAutority;
-
-	public String OTP;
-
-	public String OTPLoginDialog_0;
 
 	public String OTPEmpty;
 	

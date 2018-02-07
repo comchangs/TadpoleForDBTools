@@ -17,7 +17,7 @@ import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.FontData;
 import org.eclipse.swt.widgets.Display;
 
-import com.hangum.tadpole.mongodb.erd.core.Messages;
+import com.hangum.tadpole.commons.libs.core.message.CommonMessages;
 import com.hangum.tadpole.session.manager.SessionManager;
 
 /**
@@ -31,7 +31,7 @@ public class ColumnDetailFigure extends Figure {
 	public ColumnDetailFigure() {
 		if("Asia/Seoul".equals(SessionManager.getTimezone())) {
 			try{
-				super.setFont(new Font(Display.getCurrent(), new FontData(Messages.get().Gullim, 12, SWT.NONE)));
+				super.setFont(new Font(Display.getCurrent(), new FontData(CommonMessages.get().Gullim, 12, SWT.NONE)));
 			} catch(Exception e) {
 				//
 			}

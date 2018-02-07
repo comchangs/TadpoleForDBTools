@@ -80,7 +80,7 @@ public class RDBInformationComposite extends DBInfosComposite {
 		tblclmnValue.setWidth(300);
 		tblclmnValue.setText(Messages.get().Value);
 		
-		tvInformation.setContentProvider(new ArrayContentProvider());
+		tvInformation.setContentProvider(ArrayContentProvider.getInstance());
 		tvInformation.setLabelProvider(new RDBInformationLabelProvider());
 		initUI(true);
 	}

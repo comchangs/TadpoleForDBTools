@@ -34,7 +34,6 @@ import org.eclipse.swt.widgets.ToolBar;
 import org.eclipse.swt.widgets.ToolItem;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorSite;
-import org.eclipse.ui.IViewReference;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
 
@@ -185,7 +184,7 @@ public class ObjectEditor extends MainEditor {
 					executeType = EditorDefine.EXECUTE_TYPE.BLOCK;
 				}
 				
-				RequestQuery reqQuery = new RequestQuery(userDB, strQuery, dbAction, EditorDefine.QUERY_MODE.QUERY, executeType, isAutoCommit());
+				RequestQuery reqQuery = new RequestQuery(getConnectionid(), userDB, strQuery, dbAction, EditorDefine.QUERY_MODE.QUERY, executeType, isAutoCommit());
 				executeCommand(reqQuery);
 			}
 		});
@@ -223,15 +222,8 @@ public class ObjectEditor extends MainEditor {
 						public void run() {
 							try {
 								// 오브젝트 탐색기가 열려 있으면 탐색기의 스키마 이름을 변경해 줍니다.
-								IViewReference[] iViewReferences = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().getViewReferences();
-								for (IViewReference iViewReference : iViewReferences) {
-									if(ExplorerViewer.ID.equals(iViewReference.getId())) {
-										ExplorerViewer ev = (ExplorerViewer)PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().showView(ExplorerViewer.ID);
-										ev.changeSchema(userDB, strSchema);
-										
-										break;
-									}
-								}
+								ExplorerViewer ev = (ExplorerViewer)PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().showView(ExplorerViewer.ID);
+								ev.changeSchema(userDB, strSchema);
 							} catch (PartInitException e) {
 								logger.error("ExplorerView show", e); //$NON-NLS-1$
 							}

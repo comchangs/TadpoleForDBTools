@@ -46,111 +46,6 @@ public class UserDBDAO extends TDBDBDAO implements Cloneable {
 	 */
 	protected String schema = "";
 	
-	// TadpoleUserDbRoleDAO start ======================================
-	protected int role_seq;
-	protected String role_id;
-	protected String access_ip;
-	protected String is_resource_download;
-	// default value is 00:00
-	protected Timestamp terms_of_use_starttime 	= new Timestamp(System.currentTimeMillis());
-
-	// default value is 100 years after
-	protected  Timestamp terms_of_use_endtime  	= new Timestamp(DateUtil.afterMonthToMillsMonth(24));
-	// user db role description
-	protected String description = "";
-	
-	/**
-	 * @return the role_seq
-	 */
-	public int getRole_seq() {
-		return role_seq;
-	}
-
-	/**
-	 * @param role_seq the role_seq to set
-	 */
-	public void setRole_seq(int role_seq) {
-		this.role_seq = role_seq;
-	}
-
-	/**
-	 * @return the role_id
-	 */
-	public String getRole_id() {
-		return role_id;
-	}
-
-	/**
-	 * @param role_id the role_id to set
-	 */
-	public void setRole_id(String role_id) {
-		this.role_id = role_id;
-	}
-	
-	/**
-	 * @return the access_ip
-	 */
-	public String getAccess_ip() {
-		return access_ip;
-	}
-
-	/**
-	 * @param access_ip the access_ip to set
-	 */
-	public void setAccess_ip(String access_ip) {
-		this.access_ip = access_ip;
-	}
-
-	/**
-	 * @return the is_resource_download
-	 */
-	public String getIs_resource_download() {
-		return is_resource_download;
-	}
-	
-	/**
-	 * @return the terms_of_use_starttime
-	 */
-	public Timestamp getTerms_of_use_starttime() {
-		return terms_of_use_starttime;
-	}
-
-	/**
-	 * @param terms_of_use_starttime the terms_of_use_starttime to set
-	 */
-	public void setTerms_of_use_starttime(Timestamp terms_of_use_starttime) {
-		this.terms_of_use_starttime = terms_of_use_starttime;
-	}
-
-	/**
-	 * @return the terms_of_use_endtime
-	 */
-	public Timestamp getTerms_of_use_endtime() {
-		return terms_of_use_endtime;
-	}
-
-	/**
-	 * @param terms_of_use_endtime the terms_of_use_endtime to set
-	 */
-	public void setTerms_of_use_endtime(Timestamp terms_of_use_endtime) {
-		this.terms_of_use_endtime = terms_of_use_endtime;
-	}
-
-	/**
-	 * @param is_resource_download the is_resource_download to set
-	 */
-	public void setIs_resource_download(String is_resource_download) {
-		this.is_resource_download = is_resource_download;
-	}	
-	
-	public void setDescription(String description) {
-		this.description = description;
-	}
-	
-	public String getDescription() {
-		return description;
-	}
-	// ====================================== end
 	/** -999 is temp id. */
 	protected int seq = -999;
 	protected int user_seq = -1;
@@ -245,6 +140,9 @@ public class UserDBDAO extends TDBDBDAO implements Cloneable {
     protected String is_convert_data	= PublicTadpoleDefine.YES_NO.NO.name();
     protected String char_source	= "";
     protected String char_target	= "";
+    
+    /** 히스토리허브에서 원본 위치(yes: tadpole, NO: 원본디비에 위치) */
+    protected String is_history_data_location = PublicTadpoleDefine.YES_NO.YES.name();
     
     /** db access control */
     protected DBAccessControlDAO dbAccessCtl = new DBAccessControlDAO();
@@ -833,6 +731,20 @@ public class UserDBDAO extends TDBDBDAO implements Cloneable {
 	 */
 	public void setChar_target(String char_target) {
 		this.char_target = char_target;
+	}
+
+	/**
+	 * @return the is_history_data_location
+	 */
+	public String getIs_history_data_location() {
+		return is_history_data_location;
+	}
+
+	/**
+	 * @param is_history_data_location the is_history_data_location to set
+	 */
+	public void setIs_history_data_location(String is_history_data_location) {
+		this.is_history_data_location = is_history_data_location;
 	}
 	
 }

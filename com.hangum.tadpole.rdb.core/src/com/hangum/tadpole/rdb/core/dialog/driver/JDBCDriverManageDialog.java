@@ -131,7 +131,7 @@ public class JDBCDriverManageDialog extends Dialog {
 		List list = lvDB.getList();
 		list.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
 		
-		lvDB.setContentProvider(new ArrayContentProvider());
+		lvDB.setContentProvider(ArrayContentProvider.getInstance());
 		lvDB.setLabelProvider(new LabelProvider() {
 			@Override
 			public String getText(Object element) {
@@ -164,7 +164,7 @@ public class JDBCDriverManageDialog extends Dialog {
 				btnDelete.setEnabled(true);
 			}
 		});
-		lvDriverFile.setContentProvider(new ArrayContentProvider());
+		lvDriverFile.setContentProvider(ArrayContentProvider.getInstance());
 		lvDriverFile.setLabelProvider(new LabelProvider() {
 			@Override
 			public String getText(Object element) {

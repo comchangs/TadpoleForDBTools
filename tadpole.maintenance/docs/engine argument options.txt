@@ -45,6 +45,7 @@ Program Argument
   				: ex : -defaultDB MySQL
  -test			: 테스트 데이터를 로드할것인지 (ex: 로그인시 관리자, 개발자 계정 보이기, 예제 데이터 베이스 정보 노출)
  -testDB		:  예제 데이터 베이스 정보 노출
+ -testLogin		: RCPTT 로 테스트하기위해 사용하는 옵션.
  
  				
 VM Argument

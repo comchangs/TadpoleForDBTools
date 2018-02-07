@@ -29,13 +29,13 @@ public class LogListener implements ILogListener {
 			if (status.getException() == null) {
 				logger.warn(status.getMessage());
 			} else {
-				logger.warn(status.getMessage() + status.getException());
+				logger.warn(status.getMessage(), status.getException());
 			}
 		} else if (status.getSeverity() == IStatus.ERROR) {
 			if (status.getException() == null) {
 				logger.error(status.getMessage());
 			} else {
-				logger.error(status.getMessage() + status.getException());
+				logger.error(status.getMessage(), status.getException());
 			}
 		}
 	}

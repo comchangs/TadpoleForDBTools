@@ -10,26 +10,19 @@
  ******************************************************************************/
 package com.hangum.tadpole.rdb.core;
 
-import org.apache.log4j.Logger;
-import org.eclipse.core.runtime.ILogListener;
-import org.eclipse.core.runtime.Platform;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.osgi.framework.BundleContext;
-
-import com.hangum.tadpole.commons.libs.core.logs.LogConfiguration;
-import com.hangum.tadpole.commons.libs.core.logs.LogListener;
 
 /**
  * The activator class controls the plug-in life cycle
  */
 public class Activator extends AbstractUIPlugin {
-	private static final Logger logger = Logger.getLogger(Activator.class);
+//	private static final Logger logger = Logger.getLogger(Activator.class);
 	// The plug-in ID
 	public static final String PLUGIN_ID = "com.hangum.tadpole.rdb.core"; //$NON-NLS-1$
 
 	// The shared instance
 	private static Activator plugin;
-	private ILogListener listener;
 	/**
 	 * The constructor
 	 */
@@ -43,16 +36,6 @@ public class Activator extends AbstractUIPlugin {
 	public void start(BundleContext context) throws Exception {
 		super.start(context);
 		plugin = this;
-		
-		// log level설정
-		LogConfiguration.getInstance();
-		
-		// eclipse 로그 설정
-		listener = new LogListener();
-		Platform.addLogListener(listener);
-		
-		// tadpole system 이 시작시 해야하는 부분 설정.  war 타입은 없음.
-//		TadpoleSystem.startInit();
 	}
 
 	/*
@@ -62,8 +45,6 @@ public class Activator extends AbstractUIPlugin {
 	public void stop(BundleContext context) throws Exception {
 		plugin = null;
 		super.stop(context);
-		
-		Platform.removeLogListener(listener);
 	}
 
 	/**

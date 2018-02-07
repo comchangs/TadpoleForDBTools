@@ -117,7 +117,7 @@ public class CSVDataViewDialog extends Dialog {
 		createTableColumn();
 		
 		tableViewer.setLabelProvider(new CSViewerLabelProvider());
-		tableViewer.setContentProvider(new ArrayContentProvider());
+		tableViewer.setContentProvider(ArrayContentProvider.getInstance());
 		
 		listData.remove(0);
 		tableViewer.setInput(listData);

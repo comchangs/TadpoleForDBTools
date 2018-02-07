@@ -43,10 +43,10 @@ public class GrantCheckerUtils {
 	 * @return
 	 * @throws Exception
 	 */
-	public static boolean ifExecuteQuery(UserDBDAO userDB) throws Exception {
+	public static boolean ifExecuteQuery(UserDBDAO userDB) throws TadpoleException {
 		// security check.
 		if(!TadpoleSecurityManager.getInstance().isLock(userDB)) {
-			throw new Exception(Messages.get().ResultMainComposite_1);
+			throw new TadpoleException(TDBResultCodeDefine.UNAUTHENTICATED, "The database is locked.");
 		}
 		
 		if(PublicTadpoleDefine.YES_NO.YES.name().equals(userDB.getQuestion_dml())
@@ -83,40 +83,42 @@ public class GrantCheckerUtils {
 			logger.debug("==[end]====================================================");
 		}
 		
-		// 실행해도 되는지 묻는다.
-		if(PublicTadpoleDefine.YES_NO.YES.name().equals(userDB.getQuestion_dml())
-				|| PermissionChecker.isProductBackup(userDB)
-		) {
-			boolean isDDLQuestion = !reqQuery.isStatement();
-			// all 이면 
-			if(reqQuery.getExecuteType() == EditorDefine.EXECUTE_TYPE.ALL) {						
-				for (String strSQL : reqQuery.getOriginalSql().split(PublicTadpoleDefine.SQL_DELIMITER)) {							
-					if(!SQLUtil.isStatement(strSQL)) {
-						isDDLQuestion = true;
-						break;
+		if(reqQuery.getMode() != EditorDefine.QUERY_MODE.EXPLAIN_PLAN) {
+			// 실행해도 되는지 묻는다.
+			if(PublicTadpoleDefine.YES_NO.YES.name().equals(userDB.getQuestion_dml())
+					|| PermissionChecker.isProductBackup(userDB)
+			) {
+				boolean isDDLQuestion = !reqQuery.isStatement();
+				// all 이면 
+				if(reqQuery.getExecuteType() == EditorDefine.EXECUTE_TYPE.ALL) {						
+					for (String strSQL : reqQuery.getOriginalSql().split(PublicTadpoleDefine.SQL_DELIMITER)) {							
+						if(!SQLUtil.isStatement(strSQL)) {
+							isDDLQuestion = true;
+							break;
+						}
 					}
-				}
-				
-				if(isDDLQuestion) {
-					MessageDialog dialog = new MessageDialog(null, Messages.get().Execute, null, Messages.get().GrantCheckerUtils_0, MessageDialog.QUESTION, new String[] {CommonMessages.get().Yes, CommonMessages.get().No}, 1);
-					if(dialog.open() != MessageDialog.OK) return false;
-				}
-			} else {
-				
-				// 단일 select update 이면. 
-				if(isDDLQuestion) {
-					PublicTadpoleDefine.QUERY_DML_TYPE dmlType = reqQuery.getSqlDMLType();
-					if(PublicTadpoleDefine.QUERY_DML_TYPE.UPDATE == dmlType || PublicTadpoleDefine.QUERY_DML_TYPE.DELETE == dmlType) {
-						UpdateDeleteConfirmDialog dialog = new UpdateDeleteConfirmDialog(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(), userDB, reqQuery);
-						if(dialog.open() != Dialog.OK) return false;
-					} else {
+					
+					if(isDDLQuestion) {
 						MessageDialog dialog = new MessageDialog(null, Messages.get().Execute, null, Messages.get().GrantCheckerUtils_0, MessageDialog.QUESTION, new String[] {CommonMessages.get().Yes, CommonMessages.get().No}, 1);
 						if(dialog.open() != MessageDialog.OK) return false;
 					}
+				} else {
 					
+					// 단일 select update 이면. 
+					if(isDDLQuestion) {
+						PublicTadpoleDefine.QUERY_DML_TYPE dmlType = reqQuery.getSqlDMLType();
+						if(PublicTadpoleDefine.QUERY_DML_TYPE.UPDATE == dmlType || PublicTadpoleDefine.QUERY_DML_TYPE.DELETE == dmlType) {
+							UpdateDeleteConfirmDialog dialog = new UpdateDeleteConfirmDialog(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(), reqQuery.getConnectId(), userDB, reqQuery);
+							if(dialog.open() != Dialog.OK) return false;
+						} else {
+							MessageDialog dialog = new MessageDialog(null, Messages.get().Execute, null, Messages.get().GrantCheckerUtils_0, MessageDialog.QUESTION, new String[] {CommonMessages.get().Yes, CommonMessages.get().No}, 1);
+							if(dialog.open() != MessageDialog.OK) return false;
+						}
+						
+					}
 				}
 			}
-		}
+		}	// if end explain_plan
 
 		return true;
 	}

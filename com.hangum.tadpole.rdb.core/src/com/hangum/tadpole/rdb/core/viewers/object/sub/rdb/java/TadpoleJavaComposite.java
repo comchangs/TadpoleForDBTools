@@ -173,7 +173,7 @@ public class TadpoleJavaComposite extends AbstractObjectComposite {
 
 		ColumnHeaderCreator.createColumnHeader(javaListViewer, tableColumnDef);
 
-		javaListViewer.setContentProvider(new ArrayContentProvider());
+		javaListViewer.setContentProvider(ArrayContentProvider.getInstance());
 		javaListViewer.setLabelProvider(new DefaultLabelProvider(javaListViewer));
 
 	}
@@ -224,7 +224,7 @@ public class TadpoleJavaComposite extends AbstractObjectComposite {
 			isSupportJavaObject = true;
 		} catch (Exception e) {
 			isSupportJavaObject = false;
-			MessageDialog.openInformation(getShell(), CommonMessages.get().Information, Messages.get().doesnotSupportJavaObject);
+			MessageDialog.openInformation(null, CommonMessages.get().Information, Messages.get().doesnotSupportJavaObject);
 		}
 		
 		return isSupportJavaObject;

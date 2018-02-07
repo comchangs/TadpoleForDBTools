@@ -25,9 +25,6 @@ public class Messages {
 	public String AbstractShortCutDialog_44;
 	public String AbstractShortCutDialog_6;
 	public String AbstractShortCutDialog_8;
-	public String MongoDBShortcutHelpDialog_0;
-	public String MongoDBShortcutHelpDialog_2;
-	public String RDBShortcutHelpDialog_0;
 	public String RDBShortcutHelpDialog_1;
 	public String RDBShortcutHelpDialog_11;
 	public String RDBShortcutHelpDialog_13;

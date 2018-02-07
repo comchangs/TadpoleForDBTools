@@ -148,7 +148,7 @@ public class SelectObjectDialog extends Dialog {
 		GridData gd_textQuery = new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1);
 		gd_textQuery.minimumHeight = 120;
 
-		tableViewer.setContentProvider(new ArrayContentProvider());
+		tableViewer.setContentProvider(ArrayContentProvider.getInstance());
 		tableViewer.setLabelProvider(new ObjectSelectorLabelProvider());
 
 		tableViewer.addDoubleClickListener(new IDoubleClickListener() {

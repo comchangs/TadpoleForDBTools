@@ -10,6 +10,7 @@
  ******************************************************************************/
 package com.hangum.tadpole.application.start;
 
+import java.sql.Timestamp;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
@@ -36,6 +37,7 @@ import org.eclipse.ui.application.WorkbenchWindowAdvisor;
 import com.hangum.tadpole.commons.libs.core.define.PublicTadpoleDefine;
 import com.hangum.tadpole.commons.libs.core.define.SystemDefine;
 import com.hangum.tadpole.commons.libs.core.message.CommonMessages;
+import com.hangum.tadpole.commons.util.ApplicationArgumentUtils;
 import com.hangum.tadpole.commons.util.IPUtil;
 import com.hangum.tadpole.commons.util.RequestInfoUtils;
 import com.hangum.tadpole.engine.manager.TadpoleApplicationContextManager;
@@ -44,6 +46,7 @@ import com.hangum.tadpole.engine.query.dao.system.UserInfoDataDAO;
 import com.hangum.tadpole.engine.query.sql.TadpoleSystem_UserInfoData;
 import com.hangum.tadpole.engine.query.sql.TadpoleSystem_UserQuery;
 import com.hangum.tadpole.engine.utils.HttpSessionCollectorUtil;
+import com.hangum.tadpole.engine.utils.RCTPPTest;
 import com.hangum.tadpole.login.core.dialog.LoginDialog;
 import com.hangum.tadpole.preference.get.GetPreferenceGeneral;
 import com.hangum.tadpole.session.manager.SessionManager;
@@ -89,7 +92,7 @@ public class ApplicationWorkbenchWindowAdvisor extends WorkbenchWindowAdvisor {
         configurer.setShowStatusLine(false);
         configurer.setShowMenuBar(true);
         configurer.setShowProgressIndicator(false);
-        configurer.setTitle(SystemDefine.NAME + " " + SystemDefine.MAJOR_VERSION + " SR" + SystemDefine.SUB_VERSION); //$NON-NLS-1$ //$NON-NLS-2$
+        configurer.setTitle(SystemDefine.getDBHubSystemInfo()); //$NON-NLS-1$ //$NON-NLS-2$
         
         // fullscreen
         getWindowConfigurer().setShellStyle(SWT.NO_TRIM);
@@ -97,7 +100,7 @@ public class ApplicationWorkbenchWindowAdvisor extends WorkbenchWindowAdvisor {
     
         // Set system exist message.
         ExitConfirmation service = RWT.getClient().getService( ExitConfirmation.class );
-    	service.setMessage(Messages.get().ApplicationWorkbenchWindowAdvisor_4);
+    	service.setMessage(CommonMessages.get().ExitMessage);
     	
 //    	checkSupportBrowser();
         login();
@@ -107,6 +110,9 @@ public class ApplicationWorkbenchWindowAdvisor extends WorkbenchWindowAdvisor {
      * login 
      */
     private void login() {
+    	// 테스트 옵션일 경우
+    	RCTPPTest.initializeTest();
+    	
     	// 이미 로그인 되어 있다.
     	if(SessionManager.isLogin()) return;
     	
@@ -180,31 +186,6 @@ public class ApplicationWorkbenchWindowAdvisor extends WorkbenchWindowAdvisor {
 				mapUserInfoData.put(userInfoDataDAO.getName(), userInfoDataDAO);
 			}
 			SessionManager.setUserAllPreferenceData(mapUserInfoData);
-			
-//			final String strRepresentRole = SessionManager.getRepresentRole();
-//			if(strRepresentRole.equals(PublicTadpoleDefine.USER_ROLE_TYPE.API_USER.name())) {
-//				SessionManager.setPerspective(Perspective.APIUSER);
-//			} else {
-//				SessionManager.setPerspective(Perspective.DEFAULT);
-//			}
-//			if ("".equals(SessionManager.getPerspective())) { //$NON-NLS-1$
-//				SessionManager.setPerspective(Perspective.DEFAULT);
-			
-//					// user 사용자는 default perspective를 사용합니다.
-//					if(PublicTadpoleDefine.USER_TYPE.USER.toString().equals(SessionManager.getRepresentRole())) {
-//						SessionManager.setPerspective(Perspective.DEFAULT);
-//					} else {
-//							String persp;
-//							SelectPerspectiveDialog dialog = new SelectPerspectiveDialog(Display.getCurrent().getActiveShell());
-//							
-//							if (Dialog.OK == dialog.open()) {
-//								persp = dialog.getResult();
-//							} else {
-//								persp = Perspective.DEFAULT;
-//							}
-//							SessionManager.setPerspective(persp);
-//					}
-//			}
 			
 			initSession();
 			

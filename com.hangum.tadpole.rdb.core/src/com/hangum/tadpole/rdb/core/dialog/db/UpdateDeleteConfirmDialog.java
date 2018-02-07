@@ -17,7 +17,6 @@ import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.ArrayContentProvider;
 import org.eclipse.jface.viewers.TableViewer;
-import org.eclipse.jface.viewers.TableViewerColumn;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.layout.GridData;
@@ -28,7 +27,6 @@ import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Table;
-import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.swt.widgets.Text;
 
 import com.hangum.tadpole.commons.libs.core.dao.SQLStatementStruct;
@@ -37,15 +35,13 @@ import com.hangum.tadpole.commons.libs.core.message.CommonMessages;
 import com.hangum.tadpole.commons.util.GlobalImageUtils;
 import com.hangum.tadpole.engine.query.dao.system.UserDBDAO;
 import com.hangum.tadpole.engine.sql.util.QueryUtils;
-import com.hangum.tadpole.engine.sql.util.RDBTypeToJavaTypeUtils;
 import com.hangum.tadpole.engine.sql.util.resultset.QueryExecuteResultDTO;
-import com.hangum.tadpole.engine.sql.util.resultset.ResultSetUtilDTO;
 import com.hangum.tadpole.engine.sql.util.resultset.TadpoleResultSet;
 import com.hangum.tadpole.engine.sql.util.tables.TableUtil;
 import com.hangum.tadpole.engine.utils.RequestQuery;
 import com.hangum.tadpole.preference.get.GetPreferenceGeneral;
 import com.hangum.tadpole.rdb.core.Messages;
-import com.hangum.tadpole.rdb.core.editors.main.composite.direct.SQLResultLabelProvider;
+import com.hangum.tadpole.rdb.core.editors.main.composite.direct.QueryResultLabelProvider;
 import com.hangum.tadpole.sql.parse.UpdateDeleteStatementParser;
 
 /**
@@ -56,6 +52,8 @@ import com.hangum.tadpole.sql.parse.UpdateDeleteStatementParser;
  */
 public class UpdateDeleteConfirmDialog extends Dialog {
 	private static final Logger logger = Logger.getLogger(UpdateDeleteConfirmDialog.class);
+	
+	private String connectId;
 	private UserDBDAO userDB;
 	private RequestQuery reqQuery;
 	private TableViewer tvQueryResult;
@@ -73,10 +71,11 @@ public class UpdateDeleteConfirmDialog extends Dialog {
 	 * @param reqQuery 
 	 * @param userDB 
 	 */
-	public UpdateDeleteConfirmDialog(Shell parentShell, UserDBDAO userDB, RequestQuery reqQuery) {
+	public UpdateDeleteConfirmDialog(Shell parentShell, String connectId, UserDBDAO userDB, RequestQuery reqQuery) {
 		super(parentShell);
 		setShellStyle(SWT.MAX | SWT.RESIZE | SWT.TITLE | SWT.APPLICATION_MODAL);
 		
+		this.connectId = connectId;
 		this.userDB = userDB;
 		this.reqQuery = reqQuery;
 	}
@@ -84,7 +83,7 @@ public class UpdateDeleteConfirmDialog extends Dialog {
 	@Override
 	protected void configureShell(Shell newShell) {
 		super.configureShell(newShell);
-		newShell.setText(CommonMessages.get().UserRequestQuery);
+		newShell.setText(Messages.get().CheckDataAndRunQeury);
 		newShell.setImage(GlobalImageUtils.getTadpoleIcon());
 	}
 
@@ -177,12 +176,12 @@ public class UpdateDeleteConfirmDialog extends Dialog {
 				if(reqQuery.isAutoCommit()) {
 					rsDAO = QueryUtils.executeQuery(userDB, sqlSelect, 0, 500);
 				} else {
-					rsDAO = QueryUtils.executeQueryIsTransaction(userDB, sqlSelect, 0, 500);
+					rsDAO = QueryUtils.executeQueryIsTransaction(connectId, userDB, sqlSelect, 0, 500);
 				}
-				createTableColumn(reqQuery, tvQueryResult, rsDAO, false);
+				TableUtil.createTableColumn(tvQueryResult, rsDAO);
 				
-				tvQueryResult.setLabelProvider(new SQLResultLabelProvider(reqQuery.getMode(), rsDAO));
-				tvQueryResult.setContentProvider(new ArrayContentProvider());
+				tvQueryResult.setLabelProvider(new QueryResultLabelProvider(reqQuery.getMode(), rsDAO));
+				tvQueryResult.setContentProvider(ArrayContentProvider.getInstance());
 				final TadpoleResultSet trs = rsDAO.getDataList();
 				tvQueryResult.setInput(trs.getData());
 				TableUtil.packTable(tvQueryResult.getTable());
@@ -209,49 +208,6 @@ public class UpdateDeleteConfirmDialog extends Dialog {
 			
 			MessageDialog.openError(getShell(), CommonMessages.get().Error, e.getMessage() + "\n" + Messages.get().CheckSQLStatement);
 		}
-	}
-	
-	/**
-	 * table의 Column을 생성한다.
-	 * 
-	 * @param reqQuery
-	 * @param tableViewer
-	 * @param rsDAO
-	 * @param isEditable
-	 */
-	public static void createTableColumn(final RequestQuery reqQuery,
-										final TableViewer tableViewer,
-										final ResultSetUtilDTO rsDAO,
-										final boolean isEditable) {
-		// 기존 column을 삭제한다.
-		Table table = tableViewer.getTable();
-		int columnCount = table.getColumnCount();
-		for(int i=0; i<columnCount; i++) {
-			table.getColumn(0).dispose();
-		}
-		
-		if(rsDAO == null) return;
-		if(rsDAO.getColumnName() == null) return;
-			
-		try {			
-			for(int i=0; i<rsDAO.getColumnName().size(); i++) {
-				final int columnAlign = RDBTypeToJavaTypeUtils.isNumberType(rsDAO.getColumnType().get(i))?SWT.RIGHT:SWT.LEFT;
-				String strColumnName = rsDAO.getColumnLabelName().get(i);
-		
-				/** 표시 되면 안되는 컬럼을 제거 합니다 */
-				if(StringUtils.startsWithIgnoreCase(strColumnName, PublicTadpoleDefine.SPECIAL_USER_DEFINE_HIDE_COLUMN)) continue;
-				
-				final TableViewerColumn tv = new TableViewerColumn(tableViewer, columnAlign);
-				final TableColumn tc = tv.getColumn();
-				
-				tc.setText(strColumnName);
-				tc.setResizable(true);
-				tc.setMoveable(true);
-			}	// end for
-			
-		} catch(Exception e) { 
-			logger.error("SQLResult TableViewer", e);
-		}		
 	}
 	
 	/**

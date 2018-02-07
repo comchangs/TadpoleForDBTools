@@ -63,7 +63,7 @@ public class QueryUtils {
 	public static enum RESULT_TYPE {JSON, CSV, XML, HTML_TABLE};
 	
 	/**
-	 * columnname to index
+	 * index of column name 
 	 * 
 	 * @param mapColumnLableName
 	 * @return
@@ -127,6 +127,7 @@ public class QueryUtils {
 	/**
 	 * execute query
 	 * 
+	 * @param connectId
 	 * @param userDB
 	 * @param strQuery
 	 * @param intStartCnt
@@ -134,14 +135,14 @@ public class QueryUtils {
 	 * @return
 	 * @throws Exception
 	 */
-	public static QueryExecuteResultDTO executeQueryIsTransaction(final UserDBDAO userDB, String strSQL, final int intStartCnt, final int intSelectLimitCnt) throws Exception {
+	public static QueryExecuteResultDTO executeQueryIsTransaction(final String connectId, final UserDBDAO userDB, String strSQL, final int intStartCnt, final int intSelectLimitCnt) throws Exception {
 		ResultSet resultSet = null;
 		java.sql.Connection javaConn = null;
 		Statement statement = null;
 		
 		strSQL = SQLUtil.makeExecutableSQL(userDB, strSQL);
 		try {
-			javaConn = TadpoleSQLTransactionManager.getInstance(SessionManager.getEMAIL(), userDB);
+			javaConn = TadpoleSQLTransactionManager.getInstance(connectId, SessionManager.getEMAIL(), userDB);
 			statement = javaConn.createStatement();
 			
 			if(intStartCnt == 0) {
@@ -187,12 +188,14 @@ public class QueryUtils {
 			statement = javaConn.createStatement();
 			
 			if(intStartCnt == 0) {
+				if(logger.isDebugEnabled()) logger.debug("[sql called]: " + strSQL);
+				
 				statement.execute(strSQL);
 				resultSet = statement.getResultSet();
 			} else {
 				strSQL = PartQueryUtil.makeSelect(userDB, strSQL, intStartCnt, intSelectLimitCnt);
 				
-				if(logger.isDebugEnabled()) logger.debug("part sql called : " + strSQL);
+				if(logger.isDebugEnabled()) logger.debug("[part sql called]: " + strSQL);
 				statement.execute(strSQL);
 				resultSet = statement.getResultSet();
 			}
@@ -216,7 +219,7 @@ public class QueryUtils {
 	 * @throws Exception
 	 */
 	public static String executeDML(final UserDBDAO userDB, final String strQuery, final List<Object> listParam, final String resultType) throws Exception {
-		SqlMapClient client = TadpoleSQLManager.getInstance(userDB);
+//		SqlMapClient client = TadpoleSQLManager.getInstance(userDB);
 		Object effectObject = runSQLOther(userDB, strQuery, listParam);
 		
 		String strReturn = "";

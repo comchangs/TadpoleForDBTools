@@ -27,6 +27,7 @@ import org.eclipse.swt.widgets.Text;
 import com.hangum.tadpole.application.initialize.Messages;
 import com.hangum.tadpole.application.initialize.wizard.dao.SystemAdminWizardUserDAO;
 import com.hangum.tadpole.commons.google.analytics.AnalyticCaller;
+import com.hangum.tadpole.commons.libs.core.message.CommonMessages;
 import com.hangum.tadpole.commons.libs.core.utils.ValidChecker;
 
 /**
@@ -72,7 +73,7 @@ public class SystemAdminWizardDefaultUserPage extends WizardPage {
 		GridData gd_lblEmail = new GridData(SWT.LEFT, SWT.CENTER, false, false, 1, 1);
 		gd_lblEmail.widthHint = 120;
 		lblEmail.setLayoutData(gd_lblEmail);
-		lblEmail.setText(Messages.get().SystemAdminWizardPage_4);
+		lblEmail.setText(CommonMessages.get().Email);
 		
 		textEmail = new Text(grpAdministratorUserInformation, SWT.BORDER);
 		textEmail.addKeyListener(new KeyAdapter() {
@@ -93,7 +94,7 @@ public class SystemAdminWizardDefaultUserPage extends WizardPage {
 		
 		Label lblPasswd = new Label(grpAdministratorUserInformation, SWT.NONE);
 		lblPasswd.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, false, false, 1, 1));
-		lblPasswd.setText(Messages.get().SystemAdminWizardPage_5);
+		lblPasswd.setText(CommonMessages.get().Password);
 		
 		textPasswd = new Text(grpAdministratorUserInformation, SWT.BORDER | SWT.PASSWORD);
 		textPasswd.addKeyListener(new KeyAdapter() {

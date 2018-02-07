@@ -135,7 +135,7 @@ public class ExtensionBrowserURLDialog extends Dialog {
 		tblclmnComment.setWidth(100);
 		tblclmnComment.setText(CommonMessages.get().Description);
 		
-		tableViewer.setContentProvider(new ArrayContentProvider());
+		tableViewer.setContentProvider(ArrayContentProvider.getInstance());
 		tableViewer.setLabelProvider(new ExtensionBrowserLableProvider());
 		tableViewer.setInput(listExterBroswer);
 		

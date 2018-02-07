@@ -47,6 +47,15 @@ public class GetAdminPreference extends AbstractPreference {
 	}
 	
 	/**
+	 * use browser ip
+	 * @return
+	 */
+	public static boolean getUseBrowserIP() {
+		Map<String, UserInfoDataDAO> mapUserInfoData = TadpoleApplicationContextManager.getAdminSystemEnv();
+		return Boolean.valueOf(getAdminValue(mapUserInfoData, AdminPreferenceDefine.USER_BROWSER_IP, AdminPreferenceDefine.USER_BROWSER_IP_VALUE)).booleanValue();
+	}
+	
+	/**
 	 * system login method
 	 * @return
 	 */
@@ -136,9 +145,9 @@ public class GetAdminPreference extends AbstractPreference {
 	 * 사용자 디폴트 홈페이지 오픈 여부
 	 * @return
 	 */
-	public static String getHomePageOpen() {
+	public static boolean getHomePageOpen() {
 		Map<String, UserInfoDataDAO> mapUserInfoData = TadpoleApplicationContextManager.getAdminSystemEnv();
-		return getAdminValue(mapUserInfoData, AdminPreferenceDefine.DEFAULT_HOME_OPEN, AdminPreferenceDefine.DEFAULT_HOME_OPEN_VALUE);
+		return Boolean.valueOf(getAdminValue(mapUserInfoData, AdminPreferenceDefine.DEFAULT_HOME_OPEN, AdminPreferenceDefine.DEFAULT_HOME_OPEN_VALUE)).booleanValue();
 	}
 	
 	/**

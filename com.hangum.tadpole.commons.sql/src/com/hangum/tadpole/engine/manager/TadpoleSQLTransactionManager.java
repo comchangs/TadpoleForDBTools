@@ -14,8 +14,9 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.sql.Timestamp;
+import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 
 import javax.sql.DataSource;
@@ -65,18 +66,19 @@ public class TadpoleSQLTransactionManager extends AbstractTadpoleManager {
 	/**
 	 * java.sql.connection을 생성하고 관리합니다.
 	 * 
+	 * @param connectId
 	 * @param userId
 	 * @param userDB
 	 * 
 	 * @return
 	 * @throws Exception
 	 */
-	public static Connection getInstance(final String userId, final UserDBDAO userDB) throws TadpoleSQLManagerException, SQLException {
+	public static Connection getInstance(final String connectId, final String userId, final UserDBDAO userDB) throws TadpoleSQLManagerException, SQLException {
 		if(!userDB.is_isUseEnable()) {
 			throw new TadpoleSQLManagerException("You do not have DB database permissions.");
 		}
 		
-		final String searchKey = getKey(userId, userDB);
+		final String searchKey = getKey(connectId, userId, userDB);
 
 		Connection _conn = null;;
 		TransactionDAO transactionDAO = dbManager.get(searchKey);
@@ -101,6 +103,7 @@ public class TadpoleSQLTransactionManager extends AbstractTadpoleManager {
 
 				final TransactionDAO _transactionDAO = new TransactionDAO();
 				_transactionDAO.setConn(_conn);
+				_transactionDAO.setConnectId(connectId);
 				_transactionDAO.setUserId(userId);
 				_transactionDAO.setUserDB(userDB);
 				_transactionDAO.setStartTransaction(new Timestamp(System.currentTimeMillis()));
@@ -109,12 +112,12 @@ public class TadpoleSQLTransactionManager extends AbstractTadpoleManager {
 				dbManager.put(searchKey, _transactionDAO);
 			} catch(CloneNotSupportedException cnse) {
 				logger.error("clone not support exception");
-				removeInstance(userId, searchKey);
+				removeInstance(searchKey);
 				
 				new TadpoleSQLManagerException(cnse.getMessage());
 			} catch (SQLException e) {
 				logger.error("transaction connection", e);
-				removeInstance(userId, searchKey);
+				removeInstance(searchKey);
 				
 				throw e;
 			}
@@ -159,7 +162,7 @@ public class TadpoleSQLTransactionManager extends AbstractTadpoleManager {
 		} catch(Exception e) {
 			logger.error("Transaction Connection disconnected. and now connect of newone. user id is " + userId);
 			
-			removeInstance(userId, searchKey);
+			removeInstance(searchKey);
 			
 //			Display display = PlatformUI.getWorkbench().getDisplay();
 //			if(MessageDialog.openConfirm(display.getActiveShell(), "error", "디비연결시 오류가 발생했습니다.  기존 연결을 지우고 새롭게 연결하시겠습니까?")) {
@@ -182,15 +185,16 @@ public class TadpoleSQLTransactionManager extends AbstractTadpoleManager {
 	/**
 	 * transaction commit
 	 * 
+	 * @param connectId
 	 * @param userId
 	 * @param userDB
 	 */
-	public static void commit(final String userId, final UserDBDAO userDB) {
+	public static void commit(final String connectId, final String userId, final UserDBDAO userDB) {
 
-		final String searchKey = getKey(userId, userDB);
+		final String searchKey = getKey(connectId, userId, userDB);
 		if (logger.isDebugEnabled()) {
 			logger.debug("=============================================================================");
-			logger.debug("\t rollback [userId]" + searchKey);
+			logger.debug("\t commit [userId]" + searchKey);
 			logger.debug("=============================================================================");
 		}
 
@@ -204,26 +208,56 @@ public class TadpoleSQLTransactionManager extends AbstractTadpoleManager {
 			} finally {
 				try { if(conn != null) conn.close();} catch (Exception e) {}
 				
-				removeInstance(userId, searchKey);
+				removeInstance(searchKey);
 			}
 		}
+	}
+	
+	/**
+	 * all connection rollback
+	 * 
+	 * @param userId
+	 * @param userDB
+	 */
+	public static void rollbackAll(String userId, UserDBDAO userDB) {
+		final List<String> listKeys = new ArrayList<String>(dbManager.keySet());
+		for (String strKey : listKeys) {
+			String strArryKey[] = StringUtils.splitByWholeSeparator(strKey, PublicTadpoleDefine.DELIMITER);
+			
+			if(StringUtils.equals(userId + PublicTadpoleDefine.DELIMITER + userDB.getSeq(), 
+							 strArryKey[0] + PublicTadpoleDefine.DELIMITER + strArryKey[1])
+			) {
+				_rollback(strKey);
+			}	// end if
+		}
+		
 	}
 
 	/**
 	 * connection rollback
 	 * 
+	 * @param connectId
 	 * @param userId
 	 * @param userDB
 	 */
-	public static void rollback(final String userId, final UserDBDAO userDB) {
+	public static void rollback(final String connectId, final String userId, final UserDBDAO userDB) {
+		final String searchKey = getKey(connectId, userId, userDB);
+		_rollback(searchKey);
+	}
+	
+	/**
+	 * real rollback connection
+	 * 
+	 * @param searchKey
+	 */
+	private static void _rollback(String searchKey) {
+		TransactionDAO transactionDAO = dbManager.get(searchKey);
 
-		final String searchKey = getKey(userId, userDB);
 		if (logger.isDebugEnabled()) {
 			logger.debug("=============================================================================");
-			logger.debug("\t rollback [userId]" + searchKey);
+			logger.debug("\t rollback [searchKey]" + searchKey);
 			logger.debug("=============================================================================");
 		}
-		TransactionDAO transactionDAO = dbManager.get(searchKey);
 
 		if (transactionDAO != null) {
 			Connection conn = transactionDAO.getConn();
@@ -234,8 +268,10 @@ public class TadpoleSQLTransactionManager extends AbstractTadpoleManager {
 				logger.error("rollback exception", e);
 			} finally {
 				try { if(conn != null) conn.close(); } catch (Exception e) {}
-				removeInstance(userId, searchKey);
+				removeInstance(searchKey);
 			}
+		} else {
+			logger.error("Not found DB keys " + searchKey);
 		}
 	}
 
@@ -245,16 +281,14 @@ public class TadpoleSQLTransactionManager extends AbstractTadpoleManager {
 	 * @param userId
 	 */
 	public static void executeAllRollback(final String userId) {
-		Iterator iteratorEntrySet = dbManager.entrySet().iterator();
-		while(iteratorEntrySet.hasNext()) {
-			Map.Entry mapObject = (Map.Entry)iteratorEntrySet.next();
-			String searchKey = (String)mapObject.getKey();
-			
+		
+		final List<String> listKeys = new ArrayList<String>(dbManager.keySet());
+		for (String searchKey : listKeys) {
 			try {
 				if (StringUtils.startsWith(searchKey, userId + PublicTadpoleDefine.DELIMITER)) {
 					if (logger.isDebugEnabled()) logger.debug(String.format("== logout executeRollback start== [%s]", searchKey));
 	
-					TransactionDAO transactionDAO = (TransactionDAO)mapObject.getValue();
+					TransactionDAO transactionDAO = (TransactionDAO)dbManager.get(searchKey);
 					if (transactionDAO != null) {
 						Connection conn = transactionDAO.getConn();
 						
@@ -268,23 +302,22 @@ public class TadpoleSQLTransactionManager extends AbstractTadpoleManager {
 					} // end trsansaction dao
 
 					// 기존 object와 커넥션 풀을 삭제한다.
-					iteratorEntrySet.remove();
+					dbManager.remove(searchKey);
 					transactionDAO =null;
 					DBCPConnectionManager.getInstance().releaseConnectionPool(searchKey);
 				}
 			} catch(Exception e) {
 				logger.error("********************** Release connection pool exception", e);
-			}
-		}
+			}	// end try
+		}	// end for
 	}
 
 	/**
 	 * remove map instance
 	 * 
-	 * @param userId
 	 * @param userDB
 	 */
-	private static void removeInstance(final String userId, final String searchKey) {
+	private static void removeInstance(final String searchKey) {
 		if (logger.isDebugEnabled()) logger.debug("\t #### [TadpoleSQLTransactionManager] remove Instance: " + searchKey);
 
 		try {
@@ -301,21 +334,22 @@ public class TadpoleSQLTransactionManager extends AbstractTadpoleManager {
 		return dbManager;
 	}
 
-	public static boolean isInstance(final String userId, final UserDBDAO userDB) {
-		return getDbManager().containsKey(getKey(userId, userDB));
+	public static boolean isInstance(final String connectId, final String userId, final UserDBDAO userDB) {
+		return getDbManager().containsKey(getKey(connectId, userId, userDB));
 	}
 
 	/**
 	 * map의 카를 가져옵니다.
 	 * 
+	 * @param connectId
+	 * @param userId
 	 * @param userDB
 	 * @return
 	 */
-	private static String getKey(final String userId, final UserDBDAO userDB) {
-		return userId 						+ PublicTadpoleDefine.DELIMITER + 
-				userDB.getDisplay_name() 	+ PublicTadpoleDefine.DELIMITER + 
-				userDB.getDbms_type() 		+ PublicTadpoleDefine.DELIMITER + 
-				userDB.getSeq() 			+ PublicTadpoleDefine.DELIMITER + 
-				userDB.getUsers() 			+ PublicTadpoleDefine.DELIMITER;
+	private static String getKey(final String connectId, final String userId, final UserDBDAO userDB) {
+		return 	userId 						+ PublicTadpoleDefine.DELIMITER + 
+				userDB.getSeq() 			+ PublicTadpoleDefine.DELIMITER +
+				connectId 					+ PublicTadpoleDefine.DELIMITER; 
 	}
+
 }

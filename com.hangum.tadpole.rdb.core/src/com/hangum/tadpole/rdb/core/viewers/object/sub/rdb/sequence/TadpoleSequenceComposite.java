@@ -165,7 +165,7 @@ public class TadpoleSequenceComposite extends AbstractObjectComposite {
 
 		ColumnHeaderCreator.createColumnHeader(sequenceListViewer, tableColumnDef);
 
-		sequenceListViewer.setContentProvider(new ArrayContentProvider());
+		sequenceListViewer.setContentProvider(ArrayContentProvider.getInstance());
 		sequenceListViewer.setLabelProvider(new DefaultLabelProvider(sequenceListViewer));
 
 	}
