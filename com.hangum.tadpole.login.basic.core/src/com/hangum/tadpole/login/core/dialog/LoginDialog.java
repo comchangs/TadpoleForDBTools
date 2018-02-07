@@ -112,7 +112,7 @@ public class LoginDialog extends AbstractLoginDialog {
 		lblLoginForm.setText(LoginDialogMessages.get().LoginDialog_WelcomeMsg);
 		
 		lblLabelLblhangum = new Label(compositeHead, SWT.NONE);
-		lblLabelLblhangum.setText(String.format(LoginDialogMessages.get().LoginDialog_ProjectRelease, SystemDefine.MAJOR_VERSION, SystemDefine.SUB_VERSION, SystemDefine.RELEASE_DATE));
+		lblLabelLblhangum.setText(String.format(LoginDialogMessages.get().LoginDialog_ProjectRelease, SystemDefine.getProductName(), SystemDefine.getSystemInfo()));
 		
 		Composite compositeLeftBtn = new Composite(container, SWT.NONE);
 		compositeLeftBtn.setLayout(new GridLayout(1, false));
@@ -426,7 +426,7 @@ public class LoginDialog extends AbstractLoginDialog {
 		RWT.getUISession().setLocale(localeSelect);
 		
 		lblLoginForm.setText(LoginDialogMessages.get().LoginDialog_WelcomeMsg);
-		lblLabelLblhangum.setText(String.format(LoginDialogMessages.get().LoginDialog_ProjectRelease, SystemDefine.MAJOR_VERSION, SystemDefine.SUB_VERSION, SystemDefine.RELEASE_DATE));
+		lblLabelLblhangum.setText(String.format(LoginDialogMessages.get().LoginDialog_ProjectRelease, SystemDefine.getProductName(), SystemDefine.getSystemInfo()));
 		btnLogin.setText(LoginDialogMessages.get().LoginDialog_15);
 		
 		btnCheckButton.setText(LoginDialogMessages.get().LoginDialog_9);
