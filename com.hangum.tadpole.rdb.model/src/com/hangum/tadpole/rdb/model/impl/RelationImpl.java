@@ -42,7 +42,9 @@ import org.eclipse.emf.ecore.util.EcoreUtil;
  * <!-- end-user-doc -->
  * <p>
  * The following features are implemented:
+ * </p>
  * <ul>
+ *   <li>{@link com.hangum.tadpole.rdb.model.impl.RelationImpl#getType <em>Type</em>}</li>
  *   <li>{@link com.hangum.tadpole.rdb.model.impl.RelationImpl#getSource <em>Source</em>}</li>
  *   <li>{@link com.hangum.tadpole.rdb.model.impl.RelationImpl#getTarget <em>Target</em>}</li>
  *   <li>{@link com.hangum.tadpole.rdb.model.impl.RelationImpl#getSource_kind <em>Source kind</em>}</li>
@@ -54,11 +56,30 @@ import org.eclipse.emf.ecore.util.EcoreUtil;
  *   <li>{@link com.hangum.tadpole.rdb.model.impl.RelationImpl#getComment <em>Comment</em>}</li>
  *   <li>{@link com.hangum.tadpole.rdb.model.impl.RelationImpl#getConstraint_name <em>Constraint name</em>}</li>
  * </ul>
- * </p>
  *
  * @generated
  */
 public class RelationImpl extends EObjectImpl implements Relation {
+	/**
+	 * The default value of the '{@link #getType() <em>Type</em>}' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see #getType()
+	 * @generated
+	 * @ordered
+	 */
+	protected static final String TYPE_EDEFAULT = "RELATION";
+
+	/**
+	 * The cached value of the '{@link #getType() <em>Type</em>}' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see #getType()
+	 * @generated
+	 * @ordered
+	 */
+	protected String type = TYPE_EDEFAULT;
+
 	/**
 	 * The cached value of the '{@link #getSource() <em>Source</em>}' reference.
 	 * <!-- begin-user-doc -->
@@ -226,6 +247,27 @@ public class RelationImpl extends EObjectImpl implements Relation {
 	@Override
 	protected EClass eStaticClass() {
 		return RdbPackage.Literals.RELATION;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public String getType() {
+		return type;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public void setType(String newType) {
+		String oldType = type;
+		type = newType;
+		if (eNotificationRequired())
+			eNotify(new ENotificationImpl(this, Notification.SET, RdbPackage.RELATION__TYPE, oldType, type));
 	}
 
 	/**
@@ -591,6 +633,8 @@ public class RelationImpl extends EObjectImpl implements Relation {
 	@Override
 	public Object eGet(int featureID, boolean resolve, boolean coreType) {
 		switch (featureID) {
+			case RdbPackage.RELATION__TYPE:
+				return getType();
 			case RdbPackage.RELATION__SOURCE:
 				if (resolve) return getSource();
 				return basicGetSource();
@@ -626,6 +670,9 @@ public class RelationImpl extends EObjectImpl implements Relation {
 	@Override
 	public void eSet(int featureID, Object newValue) {
 		switch (featureID) {
+			case RdbPackage.RELATION__TYPE:
+				setType((String)newValue);
+				return;
 			case RdbPackage.RELATION__SOURCE:
 				setSource((Table)newValue);
 				return;
@@ -669,6 +716,9 @@ public class RelationImpl extends EObjectImpl implements Relation {
 	@Override
 	public void eUnset(int featureID) {
 		switch (featureID) {
+			case RdbPackage.RELATION__TYPE:
+				setType(TYPE_EDEFAULT);
+				return;
 			case RdbPackage.RELATION__SOURCE:
 				setSource((Table)null);
 				return;
@@ -711,6 +761,8 @@ public class RelationImpl extends EObjectImpl implements Relation {
 	@Override
 	public boolean eIsSet(int featureID) {
 		switch (featureID) {
+			case RdbPackage.RELATION__TYPE:
+				return TYPE_EDEFAULT == null ? type != null : !TYPE_EDEFAULT.equals(type);
 			case RdbPackage.RELATION__SOURCE:
 				return source != null;
 			case RdbPackage.RELATION__TARGET:
@@ -745,7 +797,9 @@ public class RelationImpl extends EObjectImpl implements Relation {
 		if (eIsProxy()) return super.toString();
 
 		StringBuffer result = new StringBuffer(super.toString());
-		result.append(" (source_kind: ");
+		result.append(" (type: ");
+		result.append(type);
+		result.append(", source_kind: ");
 		result.append(source_kind);
 		result.append(", target_kind: ");
 		result.append(target_kind);

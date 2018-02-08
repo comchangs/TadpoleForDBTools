@@ -1,14 +1,4 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!--
-  Copyright (c) 2013 hangum.
-  All rights reserved. This program and the accompanying materials
-  are made available under the terms of the GNU Lesser Public License v2.1
-  which accompanies this distribution, and is available at
-  http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
-  
-  Contributors:
-      hangum - initial API and implementation
--->
 <genmodel:GenModel xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:ecore="http://www.eclipse.org/emf/2002/Ecore"
     xmlns:genmodel="http://www.eclipse.org/emf/2002/GenModel" modelDirectory="/com.hangum.tadpole.rdb.model/src" modelPluginID="com.hangum.tadpole.rdb.model"
     modelName="Rdb" editPluginClass="com.hangum.tadpole.rdb.provider.RdbEditPlugin"
@@ -36,8 +26,11 @@
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute rdb.ecore#//DB/sid"/>
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference rdb.ecore#//DB/references"/>
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute rdb.ecore#//DB/comment"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference rdb.ecore#//DB/DBComment"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference rdb.ecore#//DB/styledReference"/>
     </genClasses>
     <genClasses ecoreClass="rdb.ecore#//Table">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute rdb.ecore#//Table/schema"/>
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference rdb.ecore#//Table/columns"/>
       <genFeatures property="None" notify="false" createChild="false" ecoreFeature="ecore:EReference rdb.ecore#//Table/db"/>
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute rdb.ecore#//Table/name"/>
@@ -45,7 +38,7 @@
       <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference rdb.ecore#//Table/incomingLinks"/>
       <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference rdb.ecore#//Table/outgoingLinks"/>
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute rdb.ecore#//Table/logicalName"/>
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute rdb.ecore#//Table/commant"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute rdb.ecore#//Table/comment"/>
       <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference rdb.ecore#//Table/UserCommentReference"/>
     </genClasses>
     <genClasses ecoreClass="rdb.ecore#//Column">
@@ -60,6 +53,7 @@
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute rdb.ecore#//Column/comment"/>
     </genClasses>
     <genClasses ecoreClass="rdb.ecore#//Relation">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute rdb.ecore#//Relation/type"/>
       <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference rdb.ecore#//Relation/source"/>
       <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference rdb.ecore#//Relation/target"/>
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute rdb.ecore#//Relation/source_kind"/>
@@ -77,9 +71,21 @@
     <genClasses ecoreClass="rdb.ecore#//ERDInfo">
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute rdb.ecore#//ERDInfo/autoLayout"/>
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute rdb.ecore#//ERDInfo/version"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference rdb.ecore#//ERDInfo/style"/>
     </genClasses>
     <genClasses ecoreClass="rdb.ecore#//UserComment">
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute rdb.ecore#//UserComment/comment"/>
+    </genClasses>
+    <genClasses ecoreClass="rdb.ecore#//Style">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute rdb.ecore#//Style/scale"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute rdb.ecore#//Style/tableTitle"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute rdb.ecore#//Style/columnPrimaryKey"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute rdb.ecore#//Style/columnName"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute rdb.ecore#//Style/columnComment"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute rdb.ecore#//Style/columnType"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute rdb.ecore#//Style/columnNullCheck"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute rdb.ecore#//Style/grid"/>
+      <genFeatures property="None" notify="false" createChild="false" ecoreFeature="ecore:EReference rdb.ecore#//Style/db"/>
     </genClasses>
   </genPackages>
 </genmodel:GenModel>

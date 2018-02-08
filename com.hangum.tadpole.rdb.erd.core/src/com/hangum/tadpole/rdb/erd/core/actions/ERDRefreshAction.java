@@ -109,6 +109,8 @@ public class ERDRefreshAction extends SelectionAction {
 				} else {
 					String tableComment = table.getComment();
 					tableComment = StringUtils.substring(""+tableComment, 0, 10); //$NON-NLS-1$
+					
+					tableModel.setSchema(table.getSchema_name());
 					tableModel.setComment(tableComment);
 				}
 				

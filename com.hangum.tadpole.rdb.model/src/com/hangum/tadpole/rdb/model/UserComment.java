@@ -21,10 +21,10 @@ import org.eclipse.emf.ecore.EObject;
  *
  * <p>
  * The following features are supported:
+ * </p>
  * <ul>
  *   <li>{@link com.hangum.tadpole.rdb.model.UserComment#getComment <em>Comment</em>}</li>
  * </ul>
- * </p>
  *
  * @see com.hangum.tadpole.rdb.model.RdbPackage#getUserComment()
  * @model

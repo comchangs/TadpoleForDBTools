@@ -21,12 +21,12 @@ import org.eclipse.emf.ecore.EObject;
  *
  * <p>
  * The following features are supported:
+ * </p>
  * <ul>
  *   <li>{@link com.hangum.tadpole.rdb.model.ERDInfo#isAutoLayout <em>Auto Layout</em>}</li>
  *   <li>{@link com.hangum.tadpole.rdb.model.ERDInfo#getVersion <em>Version</em>}</li>
  *   <li>{@link com.hangum.tadpole.rdb.model.ERDInfo#getStyle <em>Style</em>}</li>
  * </ul>
- * </p>
  *
  * @see com.hangum.tadpole.rdb.model.RdbPackage#getERDInfo()
  * @model

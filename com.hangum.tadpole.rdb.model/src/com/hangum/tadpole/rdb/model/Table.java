@@ -25,7 +25,9 @@ import org.eclipse.emf.ecore.EObject;
  *
  * <p>
  * The following features are supported:
+ * </p>
  * <ul>
+ *   <li>{@link com.hangum.tadpole.rdb.model.Table#getSchema <em>Schema</em>}</li>
  *   <li>{@link com.hangum.tadpole.rdb.model.Table#getColumns <em>Columns</em>}</li>
  *   <li>{@link com.hangum.tadpole.rdb.model.Table#getDb <em>Db</em>}</li>
  *   <li>{@link com.hangum.tadpole.rdb.model.Table#getName <em>Name</em>}</li>
@@ -36,13 +38,38 @@ import org.eclipse.emf.ecore.EObject;
  *   <li>{@link com.hangum.tadpole.rdb.model.Table#getComment <em>Comment</em>}</li>
  *   <li>{@link com.hangum.tadpole.rdb.model.Table#getUserCommentReference <em>User Comment Reference</em>}</li>
  * </ul>
- * </p>
  *
  * @see com.hangum.tadpole.rdb.model.RdbPackage#getTable()
  * @model
  * @generated
  */
 public interface Table extends EObject {
+	/**
+	 * Returns the value of the '<em><b>Schema</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <p>
+	 * If the meaning of the '<em>Schema</em>' attribute isn't clear,
+	 * there really should be more of a description here...
+	 * </p>
+	 * <!-- end-user-doc -->
+	 * @return the value of the '<em>Schema</em>' attribute.
+	 * @see #setSchema(String)
+	 * @see com.hangum.tadpole.rdb.model.RdbPackage#getTable_Schema()
+	 * @model
+	 * @generated
+	 */
+	String getSchema();
+
+	/**
+	 * Sets the value of the '{@link com.hangum.tadpole.rdb.model.Table#getSchema <em>Schema</em>}' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @param value the new value of the '<em>Schema</em>' attribute.
+	 * @see #getSchema()
+	 * @generated
+	 */
+	void setSchema(String value);
+
 	/**
 	 * Returns the value of the '<em><b>Columns</b></em>' containment reference list.
 	 * The list contents are of type {@link com.hangum.tadpole.rdb.model.Column}.
@@ -230,29 +257,19 @@ public interface Table extends EObject {
 	void setComment(String value);
 
 	/**
-	 * Returns the value of the '<em><b>User Comment Reference</b></em>' reference.
+	 * Returns the value of the '<em><b>User Comment Reference</b></em>' reference list.
+	 * The list contents are of type {@link com.hangum.tadpole.rdb.model.UserComment}.
 	 * <!-- begin-user-doc -->
 	 * <p>
 	 * If the meaning of the '<em>User Comment Reference</em>' reference isn't clear,
 	 * there really should be more of a description here...
 	 * </p>
 	 * <!-- end-user-doc -->
-	 * @return the value of the '<em>User Comment Reference</em>' reference.
-	 * @see #setUserCommentReference(UserComment)
+	 * @return the value of the '<em>User Comment Reference</em>' reference list.
 	 * @see com.hangum.tadpole.rdb.model.RdbPackage#getTable_UserCommentReference()
-	 * @model
+	 * @model upper="100"
 	 * @generated
 	 */
-	UserComment getUserCommentReference();
-
-	/**
-	 * Sets the value of the '{@link com.hangum.tadpole.rdb.model.Table#getUserCommentReference <em>User Comment Reference</em>}' reference.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @param value the new value of the '<em>User Comment Reference</em>' reference.
-	 * @see #getUserCommentReference()
-	 * @generated
-	 */
-	void setUserCommentReference(UserComment value);
+	EList<UserComment> getUserCommentReference();
 
 } // Table

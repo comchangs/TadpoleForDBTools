@@ -22,7 +22,9 @@ import org.eclipse.emf.ecore.util.EcoreUtil;
  * <!-- end-user-doc -->
  * <p>
  * The following features are implemented:
+ * </p>
  * <ul>
+ *   <li>{@link com.hangum.tadpole.rdb.model.impl.StyleImpl#getScale <em>Scale</em>}</li>
  *   <li>{@link com.hangum.tadpole.rdb.model.impl.StyleImpl#getTableTitle <em>Table Title</em>}</li>
  *   <li>{@link com.hangum.tadpole.rdb.model.impl.StyleImpl#getColumnPrimaryKey <em>Column Primary Key</em>}</li>
  *   <li>{@link com.hangum.tadpole.rdb.model.impl.StyleImpl#getColumnName <em>Column Name</em>}</li>
@@ -32,11 +34,30 @@ import org.eclipse.emf.ecore.util.EcoreUtil;
  *   <li>{@link com.hangum.tadpole.rdb.model.impl.StyleImpl#getGrid <em>Grid</em>}</li>
  *   <li>{@link com.hangum.tadpole.rdb.model.impl.StyleImpl#getDb <em>Db</em>}</li>
  * </ul>
- * </p>
  *
  * @generated
  */
 public class StyleImpl extends EObjectImpl implements Style {
+	/**
+	 * The default value of the '{@link #getScale() <em>Scale</em>}' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see #getScale()
+	 * @generated
+	 * @ordered
+	 */
+	protected static final Double SCALE_EDEFAULT = new Double(100.0);
+
+	/**
+	 * The cached value of the '{@link #getScale() <em>Scale</em>}' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see #getScale()
+	 * @generated
+	 * @ordered
+	 */
+	protected Double scale = SCALE_EDEFAULT;
+
 	/**
 	 * The default value of the '{@link #getTableTitle() <em>Table Title</em>}' attribute.
 	 * <!-- begin-user-doc -->
@@ -194,6 +215,27 @@ public class StyleImpl extends EObjectImpl implements Style {
 	@Override
 	protected EClass eStaticClass() {
 		return RdbPackage.Literals.STYLE;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public Double getScale() {
+		return scale;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public void setScale(Double newScale) {
+		Double oldScale = scale;
+		scale = newScale;
+		if (eNotificationRequired())
+			eNotify(new ENotificationImpl(this, Notification.SET, RdbPackage.STYLE__SCALE, oldScale, scale));
 	}
 
 	/**
@@ -436,6 +478,8 @@ public class StyleImpl extends EObjectImpl implements Style {
 	@Override
 	public Object eGet(int featureID, boolean resolve, boolean coreType) {
 		switch (featureID) {
+			case RdbPackage.STYLE__SCALE:
+				return getScale();
 			case RdbPackage.STYLE__TABLE_TITLE:
 				return getTableTitle();
 			case RdbPackage.STYLE__COLUMN_PRIMARY_KEY:
@@ -464,6 +508,9 @@ public class StyleImpl extends EObjectImpl implements Style {
 	@Override
 	public void eSet(int featureID, Object newValue) {
 		switch (featureID) {
+			case RdbPackage.STYLE__SCALE:
+				setScale((Double)newValue);
+				return;
 			case RdbPackage.STYLE__TABLE_TITLE:
 				setTableTitle((String)newValue);
 				return;
@@ -500,6 +547,9 @@ public class StyleImpl extends EObjectImpl implements Style {
 	@Override
 	public void eUnset(int featureID) {
 		switch (featureID) {
+			case RdbPackage.STYLE__SCALE:
+				setScale(SCALE_EDEFAULT);
+				return;
 			case RdbPackage.STYLE__TABLE_TITLE:
 				setTableTitle(TABLE_TITLE_EDEFAULT);
 				return;
@@ -536,6 +586,8 @@ public class StyleImpl extends EObjectImpl implements Style {
 	@Override
 	public boolean eIsSet(int featureID) {
 		switch (featureID) {
+			case RdbPackage.STYLE__SCALE:
+				return SCALE_EDEFAULT == null ? scale != null : !SCALE_EDEFAULT.equals(scale);
 			case RdbPackage.STYLE__TABLE_TITLE:
 				return TABLE_TITLE_EDEFAULT == null ? tableTitle != null : !TABLE_TITLE_EDEFAULT.equals(tableTitle);
 			case RdbPackage.STYLE__COLUMN_PRIMARY_KEY:
@@ -566,7 +618,9 @@ public class StyleImpl extends EObjectImpl implements Style {
 		if (eIsProxy()) return super.toString();
 
 		StringBuffer result = new StringBuffer(super.toString());
-		result.append(" (tableTitle: ");
+		result.append(" (scale: ");
+		result.append(scale);
+		result.append(", tableTitle: ");
 		result.append(tableTitle);
 		result.append(", columnPrimaryKey: ");
 		result.append(columnPrimaryKey);

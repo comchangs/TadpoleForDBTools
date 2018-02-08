@@ -11,7 +11,9 @@ import org.eclipse.emf.ecore.EObject;
  *
  * <p>
  * The following features are supported:
+ * </p>
  * <ul>
+ *   <li>{@link com.hangum.tadpole.rdb.model.Style#getScale <em>Scale</em>}</li>
  *   <li>{@link com.hangum.tadpole.rdb.model.Style#getTableTitle <em>Table Title</em>}</li>
  *   <li>{@link com.hangum.tadpole.rdb.model.Style#getColumnPrimaryKey <em>Column Primary Key</em>}</li>
  *   <li>{@link com.hangum.tadpole.rdb.model.Style#getColumnName <em>Column Name</em>}</li>
@@ -21,13 +23,39 @@ import org.eclipse.emf.ecore.EObject;
  *   <li>{@link com.hangum.tadpole.rdb.model.Style#getGrid <em>Grid</em>}</li>
  *   <li>{@link com.hangum.tadpole.rdb.model.Style#getDb <em>Db</em>}</li>
  * </ul>
- * </p>
  *
  * @see com.hangum.tadpole.rdb.model.RdbPackage#getStyle()
  * @model
  * @generated
  */
 public interface Style extends EObject {
+	/**
+	 * Returns the value of the '<em><b>Scale</b></em>' attribute.
+	 * The default value is <code>"100"</code>.
+	 * <!-- begin-user-doc -->
+	 * <p>
+	 * If the meaning of the '<em>Scale</em>' attribute isn't clear,
+	 * there really should be more of a description here...
+	 * </p>
+	 * <!-- end-user-doc -->
+	 * @return the value of the '<em>Scale</em>' attribute.
+	 * @see #setScale(Double)
+	 * @see com.hangum.tadpole.rdb.model.RdbPackage#getStyle_Scale()
+	 * @model default="100"
+	 * @generated
+	 */
+	Double getScale();
+
+	/**
+	 * Sets the value of the '{@link com.hangum.tadpole.rdb.model.Style#getScale <em>Scale</em>}' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @param value the new value of the '<em>Scale</em>' attribute.
+	 * @see #getScale()
+	 * @generated
+	 */
+	void setScale(Double value);
+
 	/**
 	 * Returns the value of the '<em><b>Table Title</b></em>' attribute.
 	 * The default value is <code>"nameComment"</code>.
