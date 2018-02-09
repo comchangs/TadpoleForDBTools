@@ -35,6 +35,7 @@ import org.eclipse.emf.ecore.impl.ENotificationImpl;
 import org.eclipse.emf.ecore.impl.EObjectImpl;
 
 import org.eclipse.emf.ecore.util.EObjectContainmentWithInverseEList;
+import org.eclipse.emf.ecore.util.EObjectResolvingEList;
 import org.eclipse.emf.ecore.util.EObjectWithInverseResolvingEList;
 import org.eclipse.emf.ecore.util.EcoreUtil;
 import org.eclipse.emf.ecore.util.InternalEList;
@@ -45,7 +46,9 @@ import org.eclipse.emf.ecore.util.InternalEList;
  * <!-- end-user-doc -->
  * <p>
  * The following features are implemented:
+ * </p>
  * <ul>
+ *   <li>{@link com.hangum.tadpole.rdb.model.impl.TableImpl#getSchema <em>Schema</em>}</li>
  *   <li>{@link com.hangum.tadpole.rdb.model.impl.TableImpl#getColumns <em>Columns</em>}</li>
  *   <li>{@link com.hangum.tadpole.rdb.model.impl.TableImpl#getDb <em>Db</em>}</li>
  *   <li>{@link com.hangum.tadpole.rdb.model.impl.TableImpl#getName <em>Name</em>}</li>
@@ -56,11 +59,30 @@ import org.eclipse.emf.ecore.util.InternalEList;
  *   <li>{@link com.hangum.tadpole.rdb.model.impl.TableImpl#getComment <em>Comment</em>}</li>
  *   <li>{@link com.hangum.tadpole.rdb.model.impl.TableImpl#getUserCommentReference <em>User Comment Reference</em>}</li>
  * </ul>
- * </p>
  *
  * @generated
  */
 public class TableImpl extends EObjectImpl implements Table {
+	/**
+	 * The default value of the '{@link #getSchema() <em>Schema</em>}' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see #getSchema()
+	 * @generated
+	 * @ordered
+	 */
+	protected static final String SCHEMA_EDEFAULT = null;
+
+	/**
+	 * The cached value of the '{@link #getSchema() <em>Schema</em>}' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see #getSchema()
+	 * @generated
+	 * @ordered
+	 */
+	protected String schema = SCHEMA_EDEFAULT;
+
 	/**
 	 * The cached value of the '{@link #getColumns() <em>Columns</em>}' containment reference list.
 	 * <!-- begin-user-doc -->
@@ -172,14 +194,14 @@ public class TableImpl extends EObjectImpl implements Table {
 	protected String comment = COMMENT_EDEFAULT;
 
 	/**
-	 * The cached value of the '{@link #getUserCommentReference() <em>User Comment Reference</em>}' reference.
+	 * The cached value of the '{@link #getUserCommentReference() <em>User Comment Reference</em>}' reference list.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @see #getUserCommentReference()
 	 * @generated
 	 * @ordered
 	 */
-	protected UserComment userCommentReference;
+	protected EList<UserComment> userCommentReference;
 
 	/**
 	 * <!-- begin-user-doc -->
@@ -198,6 +220,27 @@ public class TableImpl extends EObjectImpl implements Table {
 	@Override
 	protected EClass eStaticClass() {
 		return RdbPackage.Literals.TABLE;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public String getSchema() {
+		return schema;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public void setSchema(String newSchema) {
+		String oldSchema = schema;
+		schema = newSchema;
+		if (eNotificationRequired())
+			eNotify(new ENotificationImpl(this, Notification.SET, RdbPackage.TABLE__SCHEMA, oldSchema, schema));
 	}
 
 	/**
@@ -366,37 +409,11 @@ public class TableImpl extends EObjectImpl implements Table {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public UserComment getUserCommentReference() {
-		if (userCommentReference != null && userCommentReference.eIsProxy()) {
-			InternalEObject oldUserCommentReference = (InternalEObject)userCommentReference;
-			userCommentReference = (UserComment)eResolveProxy(oldUserCommentReference);
-			if (userCommentReference != oldUserCommentReference) {
-				if (eNotificationRequired())
-					eNotify(new ENotificationImpl(this, Notification.RESOLVE, RdbPackage.TABLE__USER_COMMENT_REFERENCE, oldUserCommentReference, userCommentReference));
-			}
+	public EList<UserComment> getUserCommentReference() {
+		if (userCommentReference == null) {
+			userCommentReference = new EObjectResolvingEList<UserComment>(UserComment.class, this, RdbPackage.TABLE__USER_COMMENT_REFERENCE);
 		}
 		return userCommentReference;
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	public UserComment basicGetUserCommentReference() {
-		return userCommentReference;
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	public void setUserCommentReference(UserComment newUserCommentReference) {
-		UserComment oldUserCommentReference = userCommentReference;
-		userCommentReference = newUserCommentReference;
-		if (eNotificationRequired())
-			eNotify(new ENotificationImpl(this, Notification.SET, RdbPackage.TABLE__USER_COMMENT_REFERENCE, oldUserCommentReference, userCommentReference));
 	}
 
 	/**
@@ -464,6 +481,8 @@ public class TableImpl extends EObjectImpl implements Table {
 	@Override
 	public Object eGet(int featureID, boolean resolve, boolean coreType) {
 		switch (featureID) {
+			case RdbPackage.TABLE__SCHEMA:
+				return getSchema();
 			case RdbPackage.TABLE__COLUMNS:
 				return getColumns();
 			case RdbPackage.TABLE__DB:
@@ -481,8 +500,7 @@ public class TableImpl extends EObjectImpl implements Table {
 			case RdbPackage.TABLE__COMMENT:
 				return getComment();
 			case RdbPackage.TABLE__USER_COMMENT_REFERENCE:
-				if (resolve) return getUserCommentReference();
-				return basicGetUserCommentReference();
+				return getUserCommentReference();
 		}
 		return super.eGet(featureID, resolve, coreType);
 	}
@@ -496,6 +514,9 @@ public class TableImpl extends EObjectImpl implements Table {
 	@Override
 	public void eSet(int featureID, Object newValue) {
 		switch (featureID) {
+			case RdbPackage.TABLE__SCHEMA:
+				setSchema((String)newValue);
+				return;
 			case RdbPackage.TABLE__COLUMNS:
 				getColumns().clear();
 				getColumns().addAll((Collection<? extends Column>)newValue);
@@ -524,7 +545,8 @@ public class TableImpl extends EObjectImpl implements Table {
 				setComment((String)newValue);
 				return;
 			case RdbPackage.TABLE__USER_COMMENT_REFERENCE:
-				setUserCommentReference((UserComment)newValue);
+				getUserCommentReference().clear();
+				getUserCommentReference().addAll((Collection<? extends UserComment>)newValue);
 				return;
 		}
 		super.eSet(featureID, newValue);
@@ -538,6 +560,9 @@ public class TableImpl extends EObjectImpl implements Table {
 	@Override
 	public void eUnset(int featureID) {
 		switch (featureID) {
+			case RdbPackage.TABLE__SCHEMA:
+				setSchema(SCHEMA_EDEFAULT);
+				return;
 			case RdbPackage.TABLE__COLUMNS:
 				getColumns().clear();
 				return;
@@ -563,7 +588,7 @@ public class TableImpl extends EObjectImpl implements Table {
 				setComment(COMMENT_EDEFAULT);
 				return;
 			case RdbPackage.TABLE__USER_COMMENT_REFERENCE:
-				setUserCommentReference((UserComment)null);
+				getUserCommentReference().clear();
 				return;
 		}
 		super.eUnset(featureID);
@@ -577,6 +602,8 @@ public class TableImpl extends EObjectImpl implements Table {
 	@Override
 	public boolean eIsSet(int featureID) {
 		switch (featureID) {
+			case RdbPackage.TABLE__SCHEMA:
+				return SCHEMA_EDEFAULT == null ? schema != null : !SCHEMA_EDEFAULT.equals(schema);
 			case RdbPackage.TABLE__COLUMNS:
 				return columns != null && !columns.isEmpty();
 			case RdbPackage.TABLE__DB:
@@ -594,7 +621,7 @@ public class TableImpl extends EObjectImpl implements Table {
 			case RdbPackage.TABLE__COMMENT:
 				return COMMENT_EDEFAULT == null ? comment != null : !COMMENT_EDEFAULT.equals(comment);
 			case RdbPackage.TABLE__USER_COMMENT_REFERENCE:
-				return userCommentReference != null;
+				return userCommentReference != null && !userCommentReference.isEmpty();
 		}
 		return super.eIsSet(featureID);
 	}
@@ -609,7 +636,9 @@ public class TableImpl extends EObjectImpl implements Table {
 		if (eIsProxy()) return super.toString();
 
 		StringBuffer result = new StringBuffer(super.toString());
-		result.append(" (name: ");
+		result.append(" (schema: ");
+		result.append(schema);
+		result.append(", name: ");
 		result.append(name);
 		result.append(", constraints: ");
 		result.append(constraints);

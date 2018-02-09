@@ -293,8 +293,8 @@ public class RdbPackageImpl extends EPackageImpl implements RdbPackage {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public EReference getTable_Columns() {
-		return (EReference)tableEClass.getEStructuralFeatures().get(0);
+	public EAttribute getTable_Schema() {
+		return (EAttribute)tableEClass.getEStructuralFeatures().get(0);
 	}
 
 	/**
@@ -302,7 +302,7 @@ public class RdbPackageImpl extends EPackageImpl implements RdbPackage {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public EReference getTable_Db() {
+	public EReference getTable_Columns() {
 		return (EReference)tableEClass.getEStructuralFeatures().get(1);
 	}
 
@@ -311,8 +311,8 @@ public class RdbPackageImpl extends EPackageImpl implements RdbPackage {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public EAttribute getTable_Name() {
-		return (EAttribute)tableEClass.getEStructuralFeatures().get(2);
+	public EReference getTable_Db() {
+		return (EReference)tableEClass.getEStructuralFeatures().get(2);
 	}
 
 	/**
@@ -320,7 +320,7 @@ public class RdbPackageImpl extends EPackageImpl implements RdbPackage {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public EAttribute getTable_Constraints() {
+	public EAttribute getTable_Name() {
 		return (EAttribute)tableEClass.getEStructuralFeatures().get(3);
 	}
 
@@ -329,8 +329,8 @@ public class RdbPackageImpl extends EPackageImpl implements RdbPackage {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public EReference getTable_IncomingLinks() {
-		return (EReference)tableEClass.getEStructuralFeatures().get(4);
+	public EAttribute getTable_Constraints() {
+		return (EAttribute)tableEClass.getEStructuralFeatures().get(4);
 	}
 
 	/**
@@ -338,7 +338,7 @@ public class RdbPackageImpl extends EPackageImpl implements RdbPackage {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public EReference getTable_OutgoingLinks() {
+	public EReference getTable_IncomingLinks() {
 		return (EReference)tableEClass.getEStructuralFeatures().get(5);
 	}
 
@@ -347,8 +347,8 @@ public class RdbPackageImpl extends EPackageImpl implements RdbPackage {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public EAttribute getTable_LogicalName() {
-		return (EAttribute)tableEClass.getEStructuralFeatures().get(6);
+	public EReference getTable_OutgoingLinks() {
+		return (EReference)tableEClass.getEStructuralFeatures().get(6);
 	}
 
 	/**
@@ -356,7 +356,7 @@ public class RdbPackageImpl extends EPackageImpl implements RdbPackage {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public EAttribute getTable_Comment() {
+	public EAttribute getTable_LogicalName() {
 		return (EAttribute)tableEClass.getEStructuralFeatures().get(7);
 	}
 
@@ -365,8 +365,17 @@ public class RdbPackageImpl extends EPackageImpl implements RdbPackage {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	public EAttribute getTable_Comment() {
+		return (EAttribute)tableEClass.getEStructuralFeatures().get(8);
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
 	public EReference getTable_UserCommentReference() {
-		return (EReference)tableEClass.getEStructuralFeatures().get(8);
+		return (EReference)tableEClass.getEStructuralFeatures().get(9);
 	}
 
 	/**
@@ -473,8 +482,8 @@ public class RdbPackageImpl extends EPackageImpl implements RdbPackage {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public EReference getRelation_Source() {
-		return (EReference)relationEClass.getEStructuralFeatures().get(0);
+	public EAttribute getRelation_Type() {
+		return (EAttribute)relationEClass.getEStructuralFeatures().get(0);
 	}
 
 	/**
@@ -482,7 +491,7 @@ public class RdbPackageImpl extends EPackageImpl implements RdbPackage {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public EReference getRelation_Target() {
+	public EReference getRelation_Source() {
 		return (EReference)relationEClass.getEStructuralFeatures().get(1);
 	}
 
@@ -491,8 +500,8 @@ public class RdbPackageImpl extends EPackageImpl implements RdbPackage {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public EAttribute getRelation_Source_kind() {
-		return (EAttribute)relationEClass.getEStructuralFeatures().get(2);
+	public EReference getRelation_Target() {
+		return (EReference)relationEClass.getEStructuralFeatures().get(2);
 	}
 
 	/**
@@ -500,7 +509,7 @@ public class RdbPackageImpl extends EPackageImpl implements RdbPackage {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public EAttribute getRelation_Target_kind() {
+	public EAttribute getRelation_Source_kind() {
 		return (EAttribute)relationEClass.getEStructuralFeatures().get(3);
 	}
 
@@ -509,7 +518,7 @@ public class RdbPackageImpl extends EPackageImpl implements RdbPackage {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public EAttribute getRelation_Column_name() {
+	public EAttribute getRelation_Target_kind() {
 		return (EAttribute)relationEClass.getEStructuralFeatures().get(4);
 	}
 
@@ -518,7 +527,7 @@ public class RdbPackageImpl extends EPackageImpl implements RdbPackage {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public EAttribute getRelation_Referenced_column_name() {
+	public EAttribute getRelation_Column_name() {
 		return (EAttribute)relationEClass.getEStructuralFeatures().get(5);
 	}
 
@@ -527,7 +536,7 @@ public class RdbPackageImpl extends EPackageImpl implements RdbPackage {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public EAttribute getRelation_Bendpoint() {
+	public EAttribute getRelation_Referenced_column_name() {
 		return (EAttribute)relationEClass.getEStructuralFeatures().get(6);
 	}
 
@@ -536,8 +545,17 @@ public class RdbPackageImpl extends EPackageImpl implements RdbPackage {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	public EAttribute getRelation_Bendpoint() {
+		return (EAttribute)relationEClass.getEStructuralFeatures().get(7);
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
 	public EReference getRelation_Db() {
-		return (EReference)relationEClass.getEStructuralFeatures().get(7);
+		return (EReference)relationEClass.getEStructuralFeatures().get(8);
 	}
 
 	/**
@@ -546,7 +564,7 @@ public class RdbPackageImpl extends EPackageImpl implements RdbPackage {
 	 * @generated
 	 */
 	public EAttribute getRelation_Comment() {
-		return (EAttribute)relationEClass.getEStructuralFeatures().get(8);
+		return (EAttribute)relationEClass.getEStructuralFeatures().get(9);
 	}
 
 	/**
@@ -555,7 +573,7 @@ public class RdbPackageImpl extends EPackageImpl implements RdbPackage {
 	 * @generated
 	 */
 	public EAttribute getRelation_Constraint_name() {
-		return (EAttribute)relationEClass.getEStructuralFeatures().get(9);
+		return (EAttribute)relationEClass.getEStructuralFeatures().get(10);
 	}
 
 	/**
@@ -644,7 +662,7 @@ public class RdbPackageImpl extends EPackageImpl implements RdbPackage {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public EAttribute getStyle_TableTitle() {
+	public EAttribute getStyle_Scale() {
 		return (EAttribute)styleEClass.getEStructuralFeatures().get(0);
 	}
 
@@ -653,7 +671,7 @@ public class RdbPackageImpl extends EPackageImpl implements RdbPackage {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public EAttribute getStyle_ColumnPrimaryKey() {
+	public EAttribute getStyle_TableTitle() {
 		return (EAttribute)styleEClass.getEStructuralFeatures().get(1);
 	}
 
@@ -662,7 +680,7 @@ public class RdbPackageImpl extends EPackageImpl implements RdbPackage {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public EAttribute getStyle_ColumnName() {
+	public EAttribute getStyle_ColumnPrimaryKey() {
 		return (EAttribute)styleEClass.getEStructuralFeatures().get(2);
 	}
 
@@ -671,7 +689,7 @@ public class RdbPackageImpl extends EPackageImpl implements RdbPackage {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public EAttribute getStyle_ColumnComment() {
+	public EAttribute getStyle_ColumnName() {
 		return (EAttribute)styleEClass.getEStructuralFeatures().get(3);
 	}
 
@@ -680,7 +698,7 @@ public class RdbPackageImpl extends EPackageImpl implements RdbPackage {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public EAttribute getStyle_ColumnType() {
+	public EAttribute getStyle_ColumnComment() {
 		return (EAttribute)styleEClass.getEStructuralFeatures().get(4);
 	}
 
@@ -689,7 +707,7 @@ public class RdbPackageImpl extends EPackageImpl implements RdbPackage {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public EAttribute getStyle_ColumnNullCheck() {
+	public EAttribute getStyle_ColumnType() {
 		return (EAttribute)styleEClass.getEStructuralFeatures().get(5);
 	}
 
@@ -698,7 +716,7 @@ public class RdbPackageImpl extends EPackageImpl implements RdbPackage {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public EAttribute getStyle_Grid() {
+	public EAttribute getStyle_ColumnNullCheck() {
 		return (EAttribute)styleEClass.getEStructuralFeatures().get(6);
 	}
 
@@ -707,8 +725,17 @@ public class RdbPackageImpl extends EPackageImpl implements RdbPackage {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	public EAttribute getStyle_Grid() {
+		return (EAttribute)styleEClass.getEStructuralFeatures().get(7);
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
 	public EReference getStyle_Db() {
-		return (EReference)styleEClass.getEStructuralFeatures().get(7);
+		return (EReference)styleEClass.getEStructuralFeatures().get(8);
 	}
 
 	/**
@@ -779,6 +806,7 @@ public class RdbPackageImpl extends EPackageImpl implements RdbPackage {
 		createEReference(dbEClass, DB__STYLED_REFERENCE);
 
 		tableEClass = createEClass(TABLE);
+		createEAttribute(tableEClass, TABLE__SCHEMA);
 		createEReference(tableEClass, TABLE__COLUMNS);
 		createEReference(tableEClass, TABLE__DB);
 		createEAttribute(tableEClass, TABLE__NAME);
@@ -801,6 +829,7 @@ public class RdbPackageImpl extends EPackageImpl implements RdbPackage {
 		createEAttribute(columnEClass, COLUMN__COMMENT);
 
 		relationEClass = createEClass(RELATION);
+		createEAttribute(relationEClass, RELATION__TYPE);
 		createEReference(relationEClass, RELATION__SOURCE);
 		createEReference(relationEClass, RELATION__TARGET);
 		createEAttribute(relationEClass, RELATION__SOURCE_KIND);
@@ -824,6 +853,7 @@ public class RdbPackageImpl extends EPackageImpl implements RdbPackage {
 		createEAttribute(userCommentEClass, USER_COMMENT__COMMENT);
 
 		styleEClass = createEClass(STYLE);
+		createEAttribute(styleEClass, STYLE__SCALE);
 		createEAttribute(styleEClass, STYLE__TABLE_TITLE);
 		createEAttribute(styleEClass, STYLE__COLUMN_PRIMARY_KEY);
 		createEAttribute(styleEClass, STYLE__COLUMN_NAME);
@@ -886,6 +916,7 @@ public class RdbPackageImpl extends EPackageImpl implements RdbPackage {
 		initEReference(getDB_StyledReference(), this.getStyle(), this.getStyle_Db(), "styledReference", null, 0, -1, com.hangum.tadpole.rdb.model.DB.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
 		initEClass(tableEClass, Table.class, "Table", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+		initEAttribute(getTable_Schema(), ecorePackage.getEString(), "schema", null, 0, 1, Table.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEReference(getTable_Columns(), this.getColumn(), this.getColumn_Table(), "columns", null, 1, -1, Table.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEReference(getTable_Db(), this.getDB(), this.getDB_Tables(), "db", null, 1, 1, Table.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEAttribute(getTable_Name(), ecorePackage.getEString(), "name", null, 0, 1, Table.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
@@ -894,7 +925,7 @@ public class RdbPackageImpl extends EPackageImpl implements RdbPackage {
 		initEReference(getTable_OutgoingLinks(), this.getRelation(), this.getRelation_Source(), "outgoingLinks", null, 0, -1, Table.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEAttribute(getTable_LogicalName(), ecorePackage.getEString(), "logicalName", null, 0, 1, Table.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEAttribute(getTable_Comment(), ecorePackage.getEString(), "comment", null, 0, 1, Table.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-		initEReference(getTable_UserCommentReference(), this.getUserComment(), null, "UserCommentReference", null, 0, 1, Table.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEReference(getTable_UserCommentReference(), this.getUserComment(), null, "UserCommentReference", null, 0, 100, Table.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
 		initEClass(columnEClass, Column.class, "Column", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 		initEAttribute(getColumn_Field(), ecorePackage.getEString(), "field", null, 0, 1, Column.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
@@ -908,6 +939,7 @@ public class RdbPackageImpl extends EPackageImpl implements RdbPackage {
 		initEAttribute(getColumn_Comment(), ecorePackage.getEString(), "comment", null, 0, 1, Column.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
 		initEClass(relationEClass, Relation.class, "Relation", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+		initEAttribute(getRelation_Type(), ecorePackage.getEString(), "type", "RELATION", 0, 1, Relation.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEReference(getRelation_Source(), this.getTable(), this.getTable_OutgoingLinks(), "source", null, 0, 1, Relation.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEReference(getRelation_Target(), this.getTable(), this.getTable_IncomingLinks(), "target", null, 0, 1, Relation.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEAttribute(getRelation_Source_kind(), this.getRelationKind(), "source_kind", null, 0, 1, Relation.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
@@ -931,6 +963,7 @@ public class RdbPackageImpl extends EPackageImpl implements RdbPackage {
 		initEAttribute(getUserComment_Comment(), ecorePackage.getEString(), "comment", null, 0, 1, UserComment.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
 		initEClass(styleEClass, Style.class, "Style", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+		initEAttribute(getStyle_Scale(), ecorePackage.getEDoubleObject(), "scale", "100", 0, 1, Style.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEAttribute(getStyle_TableTitle(), ecorePackage.getEString(), "tableTitle", "nameComment", 0, 1, Style.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEAttribute(getStyle_ColumnPrimaryKey(), ecorePackage.getEString(), "columnPrimaryKey", "YES", 0, 1, Style.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEAttribute(getStyle_ColumnName(), ecorePackage.getEString(), "columnName", "YES", 0, 1, Style.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);

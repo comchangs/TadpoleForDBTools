@@ -20,10 +20,10 @@ package com.hangum.tadpole.rdb.model;
  *
  * <p>
  * The following features are supported:
+ * </p>
  * <ul>
  *   <li>{@link com.hangum.tadpole.rdb.model.View#getTableName <em>Table Name</em>}</li>
  * </ul>
- * </p>
  *
  * @see com.hangum.tadpole.rdb.model.RdbPackage#getView()
  * @model

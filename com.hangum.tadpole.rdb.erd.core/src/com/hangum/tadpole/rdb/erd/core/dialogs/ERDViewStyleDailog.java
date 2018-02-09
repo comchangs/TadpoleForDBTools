@@ -152,6 +152,9 @@ public class ERDViewStyleDailog extends Dialog {
 		if(btnNullCheck.getSelection()) 	erdStyle.setColumnNullCheck("YES"); //$NON-NLS-1$
 		else 								erdStyle.setColumnNullCheck("NO"); //$NON-NLS-1$
 		
+		// scale 
+		erdStyle.setScale(100.0d);
+		
 		super.okPressed();
 	}
 	
@@ -174,7 +177,7 @@ public class ERDViewStyleDailog extends Dialog {
 	 */
 	@Override
 	protected Point getInitialSize() {
-		return new Point(470, 320);
+		return new Point(470, 340);
 	}
 
 }

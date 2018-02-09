@@ -21,6 +21,7 @@ import org.eclipse.emf.ecore.EObject;
  *
  * <p>
  * The following features are supported:
+ * </p>
  * <ul>
  *   <li>{@link com.hangum.tadpole.rdb.model.Column#getField <em>Field</em>}</li>
  *   <li>{@link com.hangum.tadpole.rdb.model.Column#getType <em>Type</em>}</li>
@@ -32,7 +33,6 @@ import org.eclipse.emf.ecore.EObject;
  *   <li>{@link com.hangum.tadpole.rdb.model.Column#getKey <em>Key</em>}</li>
  *   <li>{@link com.hangum.tadpole.rdb.model.Column#getComment <em>Comment</em>}</li>
  * </ul>
- * </p>
  *
  * @see com.hangum.tadpole.rdb.model.RdbPackage#getColumn()
  * @model

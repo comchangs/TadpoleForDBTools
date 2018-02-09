@@ -33,6 +33,7 @@ import org.eclipse.emf.ecore.util.EcoreUtil;
  * <!-- end-user-doc -->
  * <p>
  * The following features are implemented:
+ * </p>
  * <ul>
  *   <li>{@link com.hangum.tadpole.rdb.model.impl.ColumnImpl#getField <em>Field</em>}</li>
  *   <li>{@link com.hangum.tadpole.rdb.model.impl.ColumnImpl#getType <em>Type</em>}</li>
@@ -44,7 +45,6 @@ import org.eclipse.emf.ecore.util.EcoreUtil;
  *   <li>{@link com.hangum.tadpole.rdb.model.impl.ColumnImpl#getKey <em>Key</em>}</li>
  *   <li>{@link com.hangum.tadpole.rdb.model.impl.ColumnImpl#getComment <em>Comment</em>}</li>
  * </ul>
- * </p>
  *
  * @generated
  */

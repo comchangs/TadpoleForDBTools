@@ -98,6 +98,7 @@ public enum TadpoleModelUtils {
 			
 			final TableDAO tableDao = tables.get(i);
 			Table tableModel = factory.createTable();
+			tableModel.setSchema(tableDao.getSchema_name());
 			tableModel.setDb(db);
 			tableModel.setName(tableDao.getName());
 			

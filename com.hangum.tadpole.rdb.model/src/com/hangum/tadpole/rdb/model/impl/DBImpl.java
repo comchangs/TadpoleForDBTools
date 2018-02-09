@@ -40,6 +40,7 @@ import org.eclipse.emf.ecore.util.InternalEList;
  * <!-- end-user-doc -->
  * <p>
  * The following features are implemented:
+ * </p>
  * <ul>
  *   <li>{@link com.hangum.tadpole.rdb.model.impl.DBImpl#getDbType <em>Db Type</em>}</li>
  *   <li>{@link com.hangum.tadpole.rdb.model.impl.DBImpl#getTables <em>Tables</em>}</li>
@@ -52,7 +53,6 @@ import org.eclipse.emf.ecore.util.InternalEList;
  *   <li>{@link com.hangum.tadpole.rdb.model.impl.DBImpl#getDBComment <em>DB Comment</em>}</li>
  *   <li>{@link com.hangum.tadpole.rdb.model.impl.DBImpl#getStyledReference <em>Styled Reference</em>}</li>
  * </ul>
- * </p>
  *
  * @generated
  */

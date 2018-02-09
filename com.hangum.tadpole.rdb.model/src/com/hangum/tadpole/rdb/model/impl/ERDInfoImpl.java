@@ -30,12 +30,12 @@ import org.eclipse.emf.ecore.impl.EObjectImpl;
  * <!-- end-user-doc -->
  * <p>
  * The following features are implemented:
+ * </p>
  * <ul>
  *   <li>{@link com.hangum.tadpole.rdb.model.impl.ERDInfoImpl#isAutoLayout <em>Auto Layout</em>}</li>
  *   <li>{@link com.hangum.tadpole.rdb.model.impl.ERDInfoImpl#getVersion <em>Version</em>}</li>
  *   <li>{@link com.hangum.tadpole.rdb.model.impl.ERDInfoImpl#getStyle <em>Style</em>}</li>
  * </ul>
- * </p>
  *
  * @generated
  */

@@ -260,13 +260,22 @@ public interface RdbPackage extends EPackage {
 	int TABLE = 1;
 
 	/**
+	 * The feature id for the '<em><b>Schema</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int TABLE__SCHEMA = 0;
+
+	/**
 	 * The feature id for the '<em><b>Columns</b></em>' containment reference list.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 * @ordered
 	 */
-	int TABLE__COLUMNS = 0;
+	int TABLE__COLUMNS = 1;
 
 	/**
 	 * The feature id for the '<em><b>Db</b></em>' container reference.
@@ -275,7 +284,7 @@ public interface RdbPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int TABLE__DB = 1;
+	int TABLE__DB = 2;
 
 	/**
 	 * The feature id for the '<em><b>Name</b></em>' attribute.
@@ -284,7 +293,7 @@ public interface RdbPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int TABLE__NAME = 2;
+	int TABLE__NAME = 3;
 
 	/**
 	 * The feature id for the '<em><b>Constraints</b></em>' attribute.
@@ -293,7 +302,7 @@ public interface RdbPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int TABLE__CONSTRAINTS = 3;
+	int TABLE__CONSTRAINTS = 4;
 
 	/**
 	 * The feature id for the '<em><b>Incoming Links</b></em>' reference list.
@@ -302,7 +311,7 @@ public interface RdbPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int TABLE__INCOMING_LINKS = 4;
+	int TABLE__INCOMING_LINKS = 5;
 
 	/**
 	 * The feature id for the '<em><b>Outgoing Links</b></em>' reference list.
@@ -311,7 +320,7 @@ public interface RdbPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int TABLE__OUTGOING_LINKS = 5;
+	int TABLE__OUTGOING_LINKS = 6;
 
 	/**
 	 * The feature id for the '<em><b>Logical Name</b></em>' attribute.
@@ -320,7 +329,7 @@ public interface RdbPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int TABLE__LOGICAL_NAME = 6;
+	int TABLE__LOGICAL_NAME = 7;
 
 	/**
 	 * The feature id for the '<em><b>Comment</b></em>' attribute.
@@ -329,16 +338,16 @@ public interface RdbPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int TABLE__COMMENT = 7;
+	int TABLE__COMMENT = 8;
 
 	/**
-	 * The feature id for the '<em><b>User Comment Reference</b></em>' reference.
+	 * The feature id for the '<em><b>User Comment Reference</b></em>' reference list.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 * @ordered
 	 */
-	int TABLE__USER_COMMENT_REFERENCE = 8;
+	int TABLE__USER_COMMENT_REFERENCE = 9;
 
 	/**
 	 * The number of structural features of the '<em>Table</em>' class.
@@ -347,7 +356,7 @@ public interface RdbPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int TABLE_FEATURE_COUNT = 9;
+	int TABLE_FEATURE_COUNT = 10;
 
 	/**
 	 * The meta object id for the '{@link com.hangum.tadpole.rdb.model.impl.ColumnImpl <em>Column</em>}' class.
@@ -460,13 +469,22 @@ public interface RdbPackage extends EPackage {
 	int RELATION = 3;
 
 	/**
+	 * The feature id for the '<em><b>Type</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int RELATION__TYPE = 0;
+
+	/**
 	 * The feature id for the '<em><b>Source</b></em>' reference.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 * @ordered
 	 */
-	int RELATION__SOURCE = 0;
+	int RELATION__SOURCE = 1;
 
 	/**
 	 * The feature id for the '<em><b>Target</b></em>' reference.
@@ -475,7 +493,7 @@ public interface RdbPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int RELATION__TARGET = 1;
+	int RELATION__TARGET = 2;
 
 	/**
 	 * The feature id for the '<em><b>Source kind</b></em>' attribute.
@@ -484,7 +502,7 @@ public interface RdbPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int RELATION__SOURCE_KIND = 2;
+	int RELATION__SOURCE_KIND = 3;
 
 	/**
 	 * The feature id for the '<em><b>Target kind</b></em>' attribute.
@@ -493,7 +511,7 @@ public interface RdbPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int RELATION__TARGET_KIND = 3;
+	int RELATION__TARGET_KIND = 4;
 
 	/**
 	 * The feature id for the '<em><b>Column name</b></em>' attribute.
@@ -502,7 +520,7 @@ public interface RdbPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int RELATION__COLUMN_NAME = 4;
+	int RELATION__COLUMN_NAME = 5;
 
 	/**
 	 * The feature id for the '<em><b>Referenced column name</b></em>' attribute.
@@ -511,7 +529,7 @@ public interface RdbPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int RELATION__REFERENCED_COLUMN_NAME = 5;
+	int RELATION__REFERENCED_COLUMN_NAME = 6;
 
 	/**
 	 * The feature id for the '<em><b>Bendpoint</b></em>' attribute list.
@@ -520,7 +538,7 @@ public interface RdbPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int RELATION__BENDPOINT = 6;
+	int RELATION__BENDPOINT = 7;
 
 	/**
 	 * The feature id for the '<em><b>Db</b></em>' container reference.
@@ -529,7 +547,7 @@ public interface RdbPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int RELATION__DB = 7;
+	int RELATION__DB = 8;
 
 	/**
 	 * The feature id for the '<em><b>Comment</b></em>' attribute.
@@ -538,7 +556,7 @@ public interface RdbPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int RELATION__COMMENT = 8;
+	int RELATION__COMMENT = 9;
 
 	/**
 	 * The feature id for the '<em><b>Constraint name</b></em>' attribute.
@@ -547,7 +565,7 @@ public interface RdbPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int RELATION__CONSTRAINT_NAME = 9;
+	int RELATION__CONSTRAINT_NAME = 10;
 
 	/**
 	 * The number of structural features of the '<em>Relation</em>' class.
@@ -556,7 +574,7 @@ public interface RdbPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int RELATION_FEATURE_COUNT = 10;
+	int RELATION_FEATURE_COUNT = 11;
 
 	/**
 	 * The meta object id for the '{@link com.hangum.tadpole.rdb.model.impl.ViewImpl <em>View</em>}' class.
@@ -567,6 +585,15 @@ public interface RdbPackage extends EPackage {
 	 * @generated
 	 */
 	int VIEW = 4;
+
+	/**
+	 * The feature id for the '<em><b>Schema</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int VIEW__SCHEMA = TABLE__SCHEMA;
 
 	/**
 	 * The feature id for the '<em><b>Columns</b></em>' containment reference list.
@@ -641,7 +668,7 @@ public interface RdbPackage extends EPackage {
 	int VIEW__COMMENT = TABLE__COMMENT;
 
 	/**
-	 * The feature id for the '<em><b>User Comment Reference</b></em>' reference.
+	 * The feature id for the '<em><b>User Comment Reference</b></em>' reference list.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
@@ -706,13 +733,22 @@ public interface RdbPackage extends EPackage {
 	int STYLE = 7;
 
 	/**
+	 * The feature id for the '<em><b>Scale</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int STYLE__SCALE = 0;
+
+	/**
 	 * The feature id for the '<em><b>Table Title</b></em>' attribute.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 * @ordered
 	 */
-	int STYLE__TABLE_TITLE = 0;
+	int STYLE__TABLE_TITLE = 1;
 
 	/**
 	 * The feature id for the '<em><b>Column Primary Key</b></em>' attribute.
@@ -721,7 +757,7 @@ public interface RdbPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int STYLE__COLUMN_PRIMARY_KEY = 1;
+	int STYLE__COLUMN_PRIMARY_KEY = 2;
 
 	/**
 	 * The feature id for the '<em><b>Column Name</b></em>' attribute.
@@ -730,7 +766,7 @@ public interface RdbPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int STYLE__COLUMN_NAME = 2;
+	int STYLE__COLUMN_NAME = 3;
 
 	/**
 	 * The feature id for the '<em><b>Column Comment</b></em>' attribute.
@@ -739,7 +775,7 @@ public interface RdbPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int STYLE__COLUMN_COMMENT = 3;
+	int STYLE__COLUMN_COMMENT = 4;
 
 	/**
 	 * The feature id for the '<em><b>Column Type</b></em>' attribute.
@@ -748,7 +784,7 @@ public interface RdbPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int STYLE__COLUMN_TYPE = 4;
+	int STYLE__COLUMN_TYPE = 5;
 
 	/**
 	 * The feature id for the '<em><b>Column Null Check</b></em>' attribute.
@@ -757,7 +793,7 @@ public interface RdbPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int STYLE__COLUMN_NULL_CHECK = 5;
+	int STYLE__COLUMN_NULL_CHECK = 6;
 
 	/**
 	 * The feature id for the '<em><b>Grid</b></em>' attribute.
@@ -766,7 +802,7 @@ public interface RdbPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int STYLE__GRID = 6;
+	int STYLE__GRID = 7;
 
 	/**
 	 * The feature id for the '<em><b>Db</b></em>' container reference.
@@ -775,7 +811,7 @@ public interface RdbPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int STYLE__DB = 7;
+	int STYLE__DB = 8;
 
 	/**
 	 * The number of structural features of the '<em>Style</em>' class.
@@ -784,7 +820,7 @@ public interface RdbPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int STYLE_FEATURE_COUNT = 8;
+	int STYLE_FEATURE_COUNT = 9;
 
 	/**
 	 * The meta object id for the '{@link com.hangum.tadpole.rdb.model.RelationKind <em>Relation Kind</em>}' enum.
@@ -948,6 +984,17 @@ public interface RdbPackage extends EPackage {
 	EClass getTable();
 
 	/**
+	 * Returns the meta object for the attribute '{@link com.hangum.tadpole.rdb.model.Table#getSchema <em>Schema</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the attribute '<em>Schema</em>'.
+	 * @see com.hangum.tadpole.rdb.model.Table#getSchema()
+	 * @see #getTable()
+	 * @generated
+	 */
+	EAttribute getTable_Schema();
+
+	/**
 	 * Returns the meta object for the containment reference list '{@link com.hangum.tadpole.rdb.model.Table#getColumns <em>Columns</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -1036,10 +1083,10 @@ public interface RdbPackage extends EPackage {
 	EAttribute getTable_Comment();
 
 	/**
-	 * Returns the meta object for the reference '{@link com.hangum.tadpole.rdb.model.Table#getUserCommentReference <em>User Comment Reference</em>}'.
+	 * Returns the meta object for the reference list '{@link com.hangum.tadpole.rdb.model.Table#getUserCommentReference <em>User Comment Reference</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @return the meta object for the reference '<em>User Comment Reference</em>'.
+	 * @return the meta object for the reference list '<em>User Comment Reference</em>'.
 	 * @see com.hangum.tadpole.rdb.model.Table#getUserCommentReference()
 	 * @see #getTable()
 	 * @generated
@@ -1164,6 +1211,17 @@ public interface RdbPackage extends EPackage {
 	 * @generated
 	 */
 	EClass getRelation();
+
+	/**
+	 * Returns the meta object for the attribute '{@link com.hangum.tadpole.rdb.model.Relation#getType <em>Type</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the attribute '<em>Type</em>'.
+	 * @see com.hangum.tadpole.rdb.model.Relation#getType()
+	 * @see #getRelation()
+	 * @generated
+	 */
+	EAttribute getRelation_Type();
 
 	/**
 	 * Returns the meta object for the reference '{@link com.hangum.tadpole.rdb.model.Relation#getSource <em>Source</em>}'.
@@ -1369,6 +1427,17 @@ public interface RdbPackage extends EPackage {
 	 * @generated
 	 */
 	EClass getStyle();
+
+	/**
+	 * Returns the meta object for the attribute '{@link com.hangum.tadpole.rdb.model.Style#getScale <em>Scale</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the attribute '<em>Scale</em>'.
+	 * @see com.hangum.tadpole.rdb.model.Style#getScale()
+	 * @see #getStyle()
+	 * @generated
+	 */
+	EAttribute getStyle_Scale();
 
 	/**
 	 * Returns the meta object for the attribute '{@link com.hangum.tadpole.rdb.model.Style#getTableTitle <em>Table Title</em>}'.
@@ -1613,6 +1682,14 @@ public interface RdbPackage extends EPackage {
 		EClass TABLE = eINSTANCE.getTable();
 
 		/**
+		 * The meta object literal for the '<em><b>Schema</b></em>' attribute feature.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EAttribute TABLE__SCHEMA = eINSTANCE.getTable_Schema();
+
+		/**
 		 * The meta object literal for the '<em><b>Columns</b></em>' containment reference list feature.
 		 * <!-- begin-user-doc -->
 		 * <!-- end-user-doc -->
@@ -1677,7 +1754,7 @@ public interface RdbPackage extends EPackage {
 		EAttribute TABLE__COMMENT = eINSTANCE.getTable_Comment();
 
 		/**
-		 * The meta object literal for the '<em><b>User Comment Reference</b></em>' reference feature.
+		 * The meta object literal for the '<em><b>User Comment Reference</b></em>' reference list feature.
 		 * <!-- begin-user-doc -->
 		 * <!-- end-user-doc -->
 		 * @generated
@@ -1775,6 +1852,14 @@ public interface RdbPackage extends EPackage {
 		 * @generated
 		 */
 		EClass RELATION = eINSTANCE.getRelation();
+
+		/**
+		 * The meta object literal for the '<em><b>Type</b></em>' attribute feature.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EAttribute RELATION__TYPE = eINSTANCE.getRelation_Type();
 
 		/**
 		 * The meta object literal for the '<em><b>Source</b></em>' reference feature.
@@ -1935,6 +2020,14 @@ public interface RdbPackage extends EPackage {
 		 * @generated
 		 */
 		EClass STYLE = eINSTANCE.getStyle();
+
+		/**
+		 * The meta object literal for the '<em><b>Scale</b></em>' attribute feature.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EAttribute STYLE__SCALE = eINSTANCE.getStyle_Scale();
 
 		/**
 		 * The meta object literal for the '<em><b>Table Title</b></em>' attribute feature.

@@ -83,6 +83,8 @@ public class TableEditPart extends AbstractGraphicalEditPart implements NodeEdit
 	private void updateFigure(TableFigure figure) {
 		Table tableModel = (Table)getModel();
 		
+		final String strSchemaName = StringUtils.trimToEmpty(tableModel.getSchema());
+		
 		DB db = tableModel.getDb();
 		if(db == null) {
 			figure.removeAllColumns();
@@ -93,13 +95,18 @@ public class TableEditPart extends AbstractGraphicalEditPart implements NodeEdit
 			if(db.getDbType().startsWith(DBDefine.SQLite_DEFAULT.toString())) {
 				figure.setTableName(tableModel.getName() );
 			} else {
-				if("name".equals(strTableTitle)) 		figure.setTableName(tableModel.getName() );
-				else if("comment".equals(strTableTitle)) figure.setTableName(tableModel.getComment());
-				else {
+				if("name".equals(strTableTitle)) 		{
+					if("".equals(strSchemaName)) figure.setTableName(tableModel.getName());
+					else figure.setTableName(String.format("%s.%s", tableModel.getSchema(), tableModel.getName()));
+				} else if("comment".equals(strTableTitle)) {
+					figure.setTableName(tableModel.getComment());
+				} else {
 					if("".equals(tableModel.getComment())) {
-						figure.setTableName(tableModel.getName() );
+						if("".equals(strSchemaName)) figure.setTableName(tableModel.getName());
+						else figure.setTableName(String.format("%s.%s", tableModel.getSchema(), tableModel.getName()));
 					} else {
-						figure.setTableName(tableModel.getName() + "(" + tableModel.getComment() + ")");
+						if("".equals(strSchemaName)) figure.setTableName(tableModel.getName() + "(" + tableModel.getComment() + ")");
+						else figure.setTableName(String.format("%s.%s(%s)", tableModel.getSchema(), tableModel.getName(), tableModel.getComment()));
 					}
 				}
 			}

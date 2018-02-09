@@ -25,7 +25,9 @@ import org.eclipse.emf.ecore.EObject;
  *
  * <p>
  * The following features are supported:
+ * </p>
  * <ul>
+ *   <li>{@link com.hangum.tadpole.rdb.model.Relation#getType <em>Type</em>}</li>
  *   <li>{@link com.hangum.tadpole.rdb.model.Relation#getSource <em>Source</em>}</li>
  *   <li>{@link com.hangum.tadpole.rdb.model.Relation#getTarget <em>Target</em>}</li>
  *   <li>{@link com.hangum.tadpole.rdb.model.Relation#getSource_kind <em>Source kind</em>}</li>
@@ -37,13 +39,39 @@ import org.eclipse.emf.ecore.EObject;
  *   <li>{@link com.hangum.tadpole.rdb.model.Relation#getComment <em>Comment</em>}</li>
  *   <li>{@link com.hangum.tadpole.rdb.model.Relation#getConstraint_name <em>Constraint name</em>}</li>
  * </ul>
- * </p>
  *
  * @see com.hangum.tadpole.rdb.model.RdbPackage#getRelation()
  * @model
  * @generated
  */
 public interface Relation extends EObject {
+	/**
+	 * Returns the value of the '<em><b>Type</b></em>' attribute.
+	 * The default value is <code>"RELATION"</code>.
+	 * <!-- begin-user-doc -->
+	 * <p>
+	 * If the meaning of the '<em>Type</em>' attribute isn't clear,
+	 * there really should be more of a description here...
+	 * </p>
+	 * <!-- end-user-doc -->
+	 * @return the value of the '<em>Type</em>' attribute.
+	 * @see #setType(String)
+	 * @see com.hangum.tadpole.rdb.model.RdbPackage#getRelation_Type()
+	 * @model default="RELATION"
+	 * @generated
+	 */
+	String getType();
+
+	/**
+	 * Sets the value of the '{@link com.hangum.tadpole.rdb.model.Relation#getType <em>Type</em>}' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @param value the new value of the '<em>Type</em>' attribute.
+	 * @see #getType()
+	 * @generated
+	 */
+	void setType(String value);
+
 	/**
 	 * Returns the value of the '<em><b>Source</b></em>' reference.
 	 * It is bidirectional and its opposite is '{@link com.hangum.tadpole.rdb.model.Table#getOutgoingLinks <em>Outgoing Links</em>}'.

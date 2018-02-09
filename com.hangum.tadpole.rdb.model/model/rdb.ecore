@@ -18,6 +18,7 @@
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="Table">
     <eAnnotations/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="schema" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="columns" lowerBound="1"
         upperBound="-1" eType="#//Column" containment="true" eOpposite="#//Column/table"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="db" lowerBound="1" eType="#//DB"
@@ -30,7 +31,8 @@
         eType="#//Relation" eOpposite="#//Relation/source"/>
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="logicalName" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="comment" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="UserCommentReference" eType="#//UserComment"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="UserCommentReference" upperBound="100"
+        eType="#//UserComment"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="Column">
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="field" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
@@ -46,6 +48,8 @@
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EDataType" name="Rectangle" instanceClassName="org.eclipse.draw2d.geometry.Rectangle"/>
   <eClassifiers xsi:type="ecore:EClass" name="Relation">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="type" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"
+        defaultValueLiteral="RELATION"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="source" eType="#//Table"
         eOpposite="#//Table/outgoingLinks"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="target" eType="#//Table"
@@ -83,6 +87,8 @@
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="comment" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="Style">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="scale" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDoubleObject"
+        defaultValueLiteral="100"/>
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="tableTitle" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"
         defaultValueLiteral="nameComment"/>
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="columnPrimaryKey" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"

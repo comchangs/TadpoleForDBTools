@@ -21,6 +21,7 @@ import org.eclipse.emf.common.util.EList;
  *
  * <p>
  * The following features are supported:
+ * </p>
  * <ul>
  *   <li>{@link com.hangum.tadpole.rdb.model.DB#getDbType <em>Db Type</em>}</li>
  *   <li>{@link com.hangum.tadpole.rdb.model.DB#getTables <em>Tables</em>}</li>
@@ -33,7 +34,6 @@ import org.eclipse.emf.common.util.EList;
  *   <li>{@link com.hangum.tadpole.rdb.model.DB#getDBComment <em>DB Comment</em>}</li>
  *   <li>{@link com.hangum.tadpole.rdb.model.DB#getStyledReference <em>Styled Reference</em>}</li>
  * </ul>
- * </p>
  *
  * @see com.hangum.tadpole.rdb.model.RdbPackage#getDB()
  * @model

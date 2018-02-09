@@ -131,7 +131,7 @@ public class TadpoleSystem_UserQuery {
 	 */
 	public static UserDAO newLDAPUser(String userName, String email, String external_id, String useOPT) throws TadpoleSQLManagerException, SQLException, Exception {
 		return newUser(PublicTadpoleDefine.INPUT_TYPE.LDAP.name(), email, "LDAP", "YES", Utils.getUniqueDigit(12), PublicTadpoleDefine.USER_ROLE_TYPE.USER.name(),
-				userName, "KO", "Asia/Seoul", "YES", useOPT, "", "*", external_id, new Timestamp(System.currentTimeMillis()));
+				userName, "KO", "Asia/Seoul", GetAdminPreference.getNewUserPermit(), useOPT, "", "*", external_id, new Timestamp(System.currentTimeMillis()));
 	}
 	
 	/**

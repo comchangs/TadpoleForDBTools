@@ -261,13 +261,15 @@ public class MainSQLEditorAPIServiceDialog extends Dialog {
 		reqResultDAO.setIpAddress(SessionManager.getLoginIp());
 		
 		try {
-			
+			int intSQLCnt = 0;
 			// velocity 로 if else 가 있는지 검사합니다. 
 			strSQLs = RESTfulAPIUtils.makeTemplateTOSQL("APIServiceDialog", strSQL, strArgument); //$NON-NLS-1$
 			// 분리자 만큼 실행한다.
 			for (String strTmpSQL : strSQLs.split(PublicTadpoleDefine.SQL_DELIMITER)) {
-				if(StringUtils.trim(strTmpSQL).equals("")) continue;
-
+				String strRealSQL = SQLUtil.removeCommentAndOthers(userDB, strTmpSQL);
+				if(StringUtils.trim(strRealSQL).equals("")) continue;
+				intSQLCnt++;
+				
 				NamedParameterDAO dao = NamedParameterUtil.parseParameterUtils(userDB, strTmpSQL, strArgument);
 				if(QueryUtils.RESULT_TYPE.JSON.name().equalsIgnoreCase(comboResultType.getText())) {
 					strExecuteResultData += getSelect(userDB, dao.getStrSQL(), dao.getListParam()) + ","; //$NON-NLS-1$
@@ -276,8 +278,10 @@ public class MainSQLEditorAPIServiceDialog extends Dialog {
 				}
 			}
 			
-			if(QueryUtils.RESULT_TYPE.JSON.name().equalsIgnoreCase(comboResultType.getText())) {
-				strExecuteResultData = "[" + StringUtils.removeEnd(strExecuteResultData, ",") + "]";  //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+			if(intSQLCnt > 1) {	
+				if(QueryUtils.RESULT_TYPE.JSON.name().equalsIgnoreCase(comboResultType.getText())) {
+					strExecuteResultData = "[" + StringUtils.removeEnd(strExecuteResultData, ",") + "]";  //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+				}
 			}
 			
 			textResult.setText(strExecuteResultData);

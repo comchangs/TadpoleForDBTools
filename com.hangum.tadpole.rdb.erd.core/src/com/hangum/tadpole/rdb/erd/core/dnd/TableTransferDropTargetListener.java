@@ -201,6 +201,7 @@ public class TableTransferDropTargetListener extends AbstractTransferDropTargetL
 			String[] arryTable = StringUtils.splitByWholeSeparator(strTable, PublicTadpoleDefine.DELIMITER);
 			if(arryTable.length == 0) continue;
 			
+			String schemaName = arryTable[0];
 			String tableName = arryTable[1];
 			String refTableNames = "'" + tableName + "',"; //$NON-NLS-1$ //$NON-NLS-2$
 			
@@ -216,6 +217,7 @@ public class TableTransferDropTargetListener extends AbstractTransferDropTargetL
 			if(mapDBTables.get(tableName) == null) {
 				// 테이블 모델 생성
 				Table tableModel = tadpoleFactory.createTable();
+				tableModel.setSchema(schemaName);
 				tableModel.setName(tableName);
 				tableModel.setDb(db);
 				
