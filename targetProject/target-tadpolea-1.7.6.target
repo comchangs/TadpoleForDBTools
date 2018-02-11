@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<?pde version="3.8"?><target name="target-tadpolea-1.7.6" sequenceNumber="324">
+<?pde version="3.8"?><target name="target-tadpolea-1.7.6" sequenceNumber="328">
 <locations>
 <location includeAllPlatforms="false" includeConfigurePhase="false" includeMode="slicer" includeSource="true" type="InstallableUnit">
 <unit id="org.eclipse.rap.gef.feature.feature.group" version="0.1.0.20170612-1850"/>
@@ -14,5 +14,6 @@
 <repository location="http://download.eclipse.org/releases/oxygen"/>
 </location>
 <location path="${project_loc:/targetProject}/rap-3.4.0-R-20171204-1637" type="Directory"/>
+<location path="${project_loc:/targetProject}/ext" type="Directory"/>
 </locations>
 </target>
