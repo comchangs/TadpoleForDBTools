@@ -16,6 +16,7 @@ import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -33,19 +34,24 @@ import org.apache.commons.dbutils.QueryRunner;
 import org.apache.commons.dbutils.ResultSetHandler;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
+import org.eclipse.rap.rwt.RWT;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
+import com.hangum.tadpole.commons.dialogs.message.dao.RequestResultDAO;
 import com.hangum.tadpole.commons.exception.TadpoleSQLManagerException;
+import com.hangum.tadpole.commons.libs.core.define.PublicTadpoleDefine;
 import com.hangum.tadpole.commons.util.JSONUtil;
 import com.hangum.tadpole.commons.util.ResultSetToHTMLUtil;
 import com.hangum.tadpole.engine.define.DBGroupDefine;
 import com.hangum.tadpole.engine.manager.TadpoleSQLManager;
 import com.hangum.tadpole.engine.manager.TadpoleSQLTransactionManager;
 import com.hangum.tadpole.engine.query.dao.system.UserDBDAO;
+import com.hangum.tadpole.engine.query.sql.TadpoleSystem_ExecutedSQL;
 import com.hangum.tadpole.engine.sql.util.resultset.QueryExecuteResultDTO;
+import com.hangum.tadpole.engine.utils.RequestQuery;
 import com.hangum.tadpole.session.manager.SessionManager;
 import com.ibatis.sqlmap.client.SqlMapClient;
 import com.opencsv.CSVWriter;
@@ -124,45 +130,130 @@ public class QueryUtils {
 		}
 	}
 	
+//	/**
+//	 * execute query
+//	 * 
+//	 * @param connectId
+//	 * @param userDB
+//	 * @param strQuery
+//	 * @param intStartCnt
+//	 * @param intSelectLimitCnt
+//	 * @return
+//	 * @throws Exception
+//	 */
+//	public static QueryExecuteResultDTO executeQueryIsTransaction(final String connectId, final UserDBDAO userDB, String strSQL, final int intStartCnt, final int intSelectLimitCnt) throws Exception {
+//		ResultSet resultSet = null;
+//		java.sql.Connection javaConn = null;
+//		Statement statement = null;
+//		
+//		strSQL = SQLUtil.makeExecutableSQL(userDB, strSQL);
+//		try {
+//			javaConn = TadpoleSQLTransactionManager.getInstance(connectId, SessionManager.getEMAIL(), userDB);
+//			statement = javaConn.createStatement();
+//			
+//			if(intStartCnt == 0) {
+//				statement.execute(strSQL);
+//				resultSet = statement.getResultSet();
+//			} else {
+//				strSQL = PartQueryUtil.makeSelect(userDB, strSQL, intStartCnt, intSelectLimitCnt);
+//				
+//				if(logger.isDebugEnabled()) logger.debug("part sql called : " + strSQL);
+//				statement.execute(strSQL);
+//				resultSet = statement.getResultSet();
+//			}
+//			return new QueryExecuteResultDTO(userDB, strSQL, false, resultSet, intSelectLimitCnt, intStartCnt);
+//			
+//		} catch(Exception e) {
+//			logger.error(String.format("execute query %s", e.getMessage()));
+//			throw e;
+//		} finally {
+//			if(statement != null) statement.close();
+//			if(resultSet != null) resultSet.close();
+//		}
+//		
+//	}
+	/**
+	 * 쿼리중에 quote sql을 반영해서 작업합니다.
+	 * 
+	 * @param userDB
+	 * @param reqResultDAO
+	 * @param reqQuery
+	 * @throws Exception
+	 */
+	public static QueryExecuteResultDTO executSQL(RequestQuery reqQuery, final int intStartCnt, final int intSelectLimitCnt) throws Exception {
+		if(logger.isDebugEnabled()) logger.debug("\t ### "+ reqQuery.getSql());
+		
+		RequestResultDAO reqResultDAO = new RequestResultDAO(); 
+		reqResultDAO.setStartDateExecute(new Timestamp(System.currentTimeMillis()));
+		reqResultDAO.setIpAddress(RWT.getRequest().getRemoteAddr());
+		reqResultDAO.setSql_text(reqQuery.getSql());
+	
+		try {
+			return _executeQuery(reqQuery, intStartCnt, intSelectLimitCnt);
+			
+//			reqResultDAO.setDataChanged((Boolean)resultMap.get("result"));
+//			reqResultDAO.setMesssage((String)resultMap.get("dbms_output"));
+		} catch(Exception e) {
+			logger.error("execute sql", e);
+			reqResultDAO.setResult(PublicTadpoleDefine.SUCCESS_FAIL.F.name()); //$NON-NLS-1$
+			reqResultDAO.setMesssage(e.getMessage());
+			reqResultDAO.setException(e);
+			
+			throw e;
+		} finally {
+			reqResultDAO.setEndDateExecute(new Timestamp(System.currentTimeMillis()));
+			reqQuery.setRequestResultDao(reqResultDAO);
+			
+			// 히스토리 정보 메타디비에 저장
+			TadpoleSystem_ExecutedSQL.insertExecuteHistory(
+					SessionManager.getUserSeq(), reqQuery.getUserDB(), 
+						reqResultDAO,
+						null
+						);
+		}
+	}
+	
 	/**
 	 * execute query
 	 * 
-	 * @param connectId
-	 * @param userDB
-	 * @param strQuery
+	 * @param reqQuery
 	 * @param intStartCnt
 	 * @param intSelectLimitCnt
 	 * @return
 	 * @throws Exception
 	 */
-	public static QueryExecuteResultDTO executeQueryIsTransaction(final String connectId, final UserDBDAO userDB, String strSQL, final int intStartCnt, final int intSelectLimitCnt) throws Exception {
+	private static QueryExecuteResultDTO _executeQuery(RequestQuery reqQuery, final int intStartCnt, final int intSelectLimitCnt) throws TadpoleSQLManagerException, SQLException {
 		ResultSet resultSet = null;
 		java.sql.Connection javaConn = null;
 		Statement statement = null;
 		
-		strSQL = SQLUtil.makeExecutableSQL(userDB, strSQL);
+		String strSQL = SQLUtil.makeExecutableSQL(reqQuery.getUserDB(), reqQuery.getSql());
 		try {
-			javaConn = TadpoleSQLTransactionManager.getInstance(connectId, SessionManager.getEMAIL(), userDB);
+			if(reqQuery.isAutoCommit()) {
+				javaConn = TadpoleSQLManager.getConnection(reqQuery.getUserDB());
+			} else {
+				javaConn = TadpoleSQLTransactionManager.getInstance(reqQuery.getConnectId(), SessionManager.getEMAIL(), reqQuery.getUserDB());
+			}
 			statement = javaConn.createStatement();
 			
 			if(intStartCnt == 0) {
+				if(logger.isDebugEnabled()) logger.debug("[sql called]: " + strSQL);
+				
 				statement.execute(strSQL);
 				resultSet = statement.getResultSet();
 			} else {
-				strSQL = PartQueryUtil.makeSelect(userDB, strSQL, intStartCnt, intSelectLimitCnt);
+				strSQL = PartQueryUtil.makeSelect(reqQuery.getUserDB(), strSQL, intStartCnt, intSelectLimitCnt);
 				
-				if(logger.isDebugEnabled()) logger.debug("part sql called : " + strSQL);
+				if(logger.isDebugEnabled()) logger.debug("[part sql called]: " + strSQL);
 				statement.execute(strSQL);
 				resultSet = statement.getResultSet();
 			}
-			return new QueryExecuteResultDTO(userDB, strSQL, false, resultSet, intSelectLimitCnt, intStartCnt);
+			return new QueryExecuteResultDTO(reqQuery.getUserDB(), strSQL, false, resultSet, intSelectLimitCnt, intStartCnt);
 			
-		} catch(Exception e) {
-			logger.error(String.format("execute query %s", e.getMessage()));
-			throw e;
 		} finally {
 			if(statement != null) statement.close();
 			if(resultSet != null) resultSet.close();
+			if(javaConn != null) javaConn.close();
 		}
 		
 	}

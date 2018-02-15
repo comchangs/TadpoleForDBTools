@@ -33,7 +33,6 @@ import com.hangum.tadpole.commons.libs.core.dao.SQLStatementStruct;
 import com.hangum.tadpole.commons.libs.core.define.PublicTadpoleDefine;
 import com.hangum.tadpole.commons.libs.core.message.CommonMessages;
 import com.hangum.tadpole.commons.util.GlobalImageUtils;
-import com.hangum.tadpole.engine.query.dao.system.UserDBDAO;
 import com.hangum.tadpole.engine.sql.util.QueryUtils;
 import com.hangum.tadpole.engine.sql.util.resultset.QueryExecuteResultDTO;
 import com.hangum.tadpole.engine.sql.util.resultset.TadpoleResultSet;
@@ -53,8 +52,6 @@ import com.hangum.tadpole.sql.parse.UpdateDeleteStatementParser;
 public class UpdateDeleteConfirmDialog extends Dialog {
 	private static final Logger logger = Logger.getLogger(UpdateDeleteConfirmDialog.class);
 	
-	private String connectId;
-	private UserDBDAO userDB;
 	private RequestQuery reqQuery;
 	private TableViewer tvQueryResult;
 	private Text textQuery;
@@ -71,12 +68,10 @@ public class UpdateDeleteConfirmDialog extends Dialog {
 	 * @param reqQuery 
 	 * @param userDB 
 	 */
-	public UpdateDeleteConfirmDialog(Shell parentShell, String connectId, UserDBDAO userDB, RequestQuery reqQuery) {
+	public UpdateDeleteConfirmDialog(Shell parentShell, RequestQuery reqQuery) {
 		super(parentShell);
 		setShellStyle(SWT.MAX | SWT.RESIZE | SWT.TITLE | SWT.APPLICATION_MODAL);
 		
-		this.connectId = connectId;
-		this.userDB = userDB;
 		this.reqQuery = reqQuery;
 	}
 	
@@ -162,7 +157,7 @@ public class UpdateDeleteConfirmDialog extends Dialog {
 		
 		textQuery.setText(strSQL);
 		try {
-			SQLStatementStruct sqlStatement = UpdateDeleteStatementParser.getParse(userDB, strSQL);
+			SQLStatementStruct sqlStatement = UpdateDeleteStatementParser.getParse(reqQuery.getUserDB(), strSQL);
 			String sqlSelect = "select * from " + sqlStatement.getObjectName();
 			if(!StringUtils.trimToEmpty(sqlStatement.getWhere()).equals("")) {
 				sqlSelect += " where " + sqlStatement.getWhere();
@@ -172,12 +167,9 @@ public class UpdateDeleteConfirmDialog extends Dialog {
 			if(logger.isDebugEnabled()) logger.debug("[change select statement]" + sqlSelect);
 			
 			if(isWhere) {
-				QueryExecuteResultDTO rsDAO = null;
-				if(reqQuery.isAutoCommit()) {
-					rsDAO = QueryUtils.executeQuery(userDB, sqlSelect, 0, 500);
-				} else {
-					rsDAO = QueryUtils.executeQueryIsTransaction(connectId, userDB, sqlSelect, 0, 500);
-				}
+				RequestQuery _cloneRequestQuery = (RequestQuery)reqQuery.clone();
+				_cloneRequestQuery.setSql(sqlSelect);
+				QueryExecuteResultDTO rsDAO = QueryUtils.executSQL(_cloneRequestQuery, 0, 500);
 				TableUtil.createTableColumn(tvQueryResult, rsDAO);
 				
 				tvQueryResult.setLabelProvider(new QueryResultLabelProvider(reqQuery.getMode(), rsDAO));

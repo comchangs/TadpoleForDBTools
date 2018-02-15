@@ -89,12 +89,12 @@ public class TableDataEditorAction extends AbstractObjectSelectAction {
 				Map<String, String> mapParam = new HashMap<String, String>();
 				mapParam.put("schema", tableDAO.getSchema_name()); //$NON-NLS-1$
 				mapParam.put("table", tableDAO.getName()); //$NON-NLS-1$
-				List<TableColumnDAO> showTableColumns = sqlClient.queryForList("tableColumnList", mapParam); //$NON-NLS-1$
+				List<TableColumnDAO> listTableColumns = sqlClient.queryForList("tableColumnList", mapParam); //$NON-NLS-1$
 	
 				// Open the table director editor
 				IWorkbenchPage page = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage();
 				
-				DBTableEditorInput dbEditorInput = new DBTableEditorInput(tableDAO, userDB, showTableColumns);
+				DBTableEditorInput dbEditorInput = new DBTableEditorInput(tableDAO, userDB, listTableColumns);
 				page.openEditor(dbEditorInput, TableInformationEditor.ID, false);
 			} catch(Exception e) {
 				logger.error("Load the table data", e); //$NON-NLS-1$

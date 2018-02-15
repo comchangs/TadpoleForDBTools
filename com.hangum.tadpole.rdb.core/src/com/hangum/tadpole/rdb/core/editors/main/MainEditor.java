@@ -182,11 +182,6 @@ public class MainEditor extends EditorExtension {
 			}
 		}
 		strLastContent = initDefaultEditorStr;
-
-		strRoleType = userDB.getRole_id();
-		super.setUserType(strRoleType);
-		
-		// schema 변경
 		
 		setSite(site);
 		setInput(input);
@@ -698,7 +693,6 @@ public class MainEditor extends EditorExtension {
 	protected void addBrowserService() {
 		browserQueryEditor.setUrl(REAL_DB_URL);
 	    	
-//	    final String strConstList = findDefaultKeyword();
 		// 기존 리소스를 가져왔으면 auto save mode 는 false
 	    final String varAutoSave 	= dBResource != null?"fasle":""+GetPreferenceGeneral.getEditorAutoSave();
 	    
@@ -851,17 +845,10 @@ public class MainEditor extends EditorExtension {
 		// 요청쿼리가 없다면 무시합니다. 
 		if(StringUtils.isEmpty(reqQuery.getSql())) return;
 		
-//		if(logger.isDebugEnabled()) {
-//			logger.debug("===> [connection id]" + reqQuery.getConnectId());
-//		}
-		
 		//
 		//  schema test code start
 		//
 		final UserDBDAO userDB = getUserDB();
-//		if(logger.isDebugEnabled()) {
-//			logger.debug("======= schema name : " + userDB.getSchema());
-//		}
 
 		// do not execute query
 //		if(System.currentTimeMillis() > SessionManager.getServiceEnd().getTime()) {

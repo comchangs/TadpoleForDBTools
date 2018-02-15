@@ -18,7 +18,6 @@ import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.ui.IWorkbenchWindow;
 
-import com.hangum.tadpole.commons.dialogs.message.dao.RequestResultDAO;
 import com.hangum.tadpole.commons.libs.core.define.PublicTadpoleDefine;
 import com.hangum.tadpole.commons.libs.core.define.PublicTadpoleDefine.OBJECT_TYPE;
 import com.hangum.tadpole.commons.libs.core.message.CommonMessages;
@@ -42,6 +41,8 @@ import com.hangum.tadpole.engine.query.dao.system.UserDBDAO;
 import com.hangum.tadpole.engine.sql.util.ExecuteDDLCommand;
 import com.hangum.tadpole.engine.sql.util.SQLUtil;
 import com.hangum.tadpole.engine.sql.util.executer.ProcedureExecuterManager;
+import com.hangum.tadpole.engine.utils.RequestQuery;
+import com.hangum.tadpole.engine.utils.RequestQueryUtil;
 import com.hangum.tadpole.mongodb.core.query.MongoDBQuery;
 import com.hangum.tadpole.rdb.core.Messages;
 import com.hangum.tadpole.rdb.core.actions.object.AbstractObjectSelectAction;
@@ -397,11 +398,10 @@ public class ObjectDropAction extends AbstractObjectSelectAction {
 	 * @param cmd
 	 * @throws Exception
 	 */
-	private void executeSQL(UserDBDAO userDB, String cmd) throws Exception {
-		RequestResultDAO reqReResultDAO = new RequestResultDAO();
-		ExecuteDDLCommand.executSQL(userDB, reqReResultDAO, cmd); //$NON-NLS-1$
-		if(PublicTadpoleDefine.SUCCESS_FAIL.F.name().equals(reqReResultDAO.getResult())) {
-			exeMessage(Messages.get().ObjectDeleteAction_0, reqReResultDAO.getException());		
+	private void executeSQL(UserDBDAO userDB, String strSQL) throws Exception {
+		RequestQuery reqQuery = ExecuteDDLCommand.executSQL(RequestQueryUtil.simpleRequestQuery(userDB, strSQL)); //$NON-NLS-1$
+		if(PublicTadpoleDefine.SUCCESS_FAIL.F.name().equals(reqQuery.getRequestResultDao().getResult())) {
+			exeMessage(Messages.get().ObjectDeleteAction_0, reqQuery.getRequestResultDao().getException());		
 		}
 	}
 	

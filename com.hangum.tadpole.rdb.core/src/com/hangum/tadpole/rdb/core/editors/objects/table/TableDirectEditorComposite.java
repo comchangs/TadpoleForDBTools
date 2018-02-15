@@ -14,7 +14,6 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -50,10 +49,8 @@ import org.eclipse.swt.widgets.ToolItem;
 import com.hangum.tadpole.commons.exception.dialog.ExceptionDetailsErrorDialog;
 import com.hangum.tadpole.commons.google.analytics.AnalyticCaller;
 import com.hangum.tadpole.commons.libs.core.define.PublicTadpoleDefine;
-import com.hangum.tadpole.commons.libs.core.define.PublicTadpoleDefine.OBJECT_TYPE;
 import com.hangum.tadpole.commons.libs.core.message.CommonMessages;
 import com.hangum.tadpole.commons.util.GlobalImageUtils;
-import com.hangum.tadpole.commons.util.Utils;
 import com.hangum.tadpole.engine.define.DBGroupDefine;
 import com.hangum.tadpole.engine.manager.TadpoleSQLManager;
 import com.hangum.tadpole.engine.query.dao.mysql.TableColumnDAO;
@@ -67,9 +64,8 @@ import com.hangum.tadpole.engine.sql.util.tables.SQLResultContentProvider;
 import com.hangum.tadpole.engine.sql.util.tables.SQLResultFilter;
 import com.hangum.tadpole.engine.sql.util.tables.SQLResultSorter;
 import com.hangum.tadpole.engine.sql.util.tables.TableUtil;
-import com.hangum.tadpole.engine.utils.EditorDefine.EXECUTE_TYPE;
-import com.hangum.tadpole.engine.utils.EditorDefine.QUERY_MODE;
 import com.hangum.tadpole.engine.utils.RequestQuery;
+import com.hangum.tadpole.engine.utils.RequestQueryUtil;
 import com.hangum.tadpole.preference.get.GetPreferenceGeneral;
 import com.hangum.tadpole.rdb.core.Activator;
 import com.hangum.tadpole.rdb.core.Messages;
@@ -363,6 +359,36 @@ public class TableDirectEditorComposite extends Composite {
 		// google analytic
 		AnalyticCaller.track("TableDirectEditorComposite"); //$NON-NLS-1$
 	}
+	
+	/**
+	 * 사용자가 원하는 쿼리를 만든다.
+	 * 
+	 * @param strWhere
+	 * @param strOrderBy
+	 * @return
+	 */
+	private String _preparedMakeQuery(String strWhere, String strOrderBy) throws Exception {
+		String strRequestQuery = "SELECT "; //$NON-NLS-1$
+		
+		if(DBGroupDefine.ORACLE_GROUP == userDB.getDBGroup()) {
+			strRequestQuery += " rowid, "; //$NON-NLS-1$
+		} else if(DBGroupDefine.POSTGRE_GROUP == userDB.getDBGroup()) {
+			strRequestQuery += " ctid, "; //$NON-NLS-1$
+		}
+		List<TableColumnDAO> tmpTableColumns = TadpoleObjectQuery.getTableColumns(userDB, tableDao);
+		for(int i=0 ; i<tmpTableColumns.size(); i++) {
+			TableColumnDAO tabledao = tmpTableColumns.get(i);
+			strRequestQuery += SQLUtil.makeIdentifierName(userDB, tabledao.getName());
+			if(i < (tmpTableColumns.size()-1)) strRequestQuery += ","; //$NON-NLS-1$
+		}
+		
+		strRequestQuery += " FROM " + tableDao.getFullName();
+		
+		if(!"".equals( strWhere )) strRequestQuery += " where " + strWhere; //$NON-NLS-1$ //$NON-NLS-2$
+		if(!"".equals( strOrderBy )) strRequestQuery += " order by " + strOrderBy; //$NON-NLS-1$ //$NON-NLS-2$
+		
+		return strRequestQuery;
+	}
 
 	/**
 	 * 테이블에 쿼리를 실행합니다.
@@ -373,25 +399,10 @@ public class TableDirectEditorComposite extends Composite {
 	 * @param strOrderBy
 	 */
 	private void runSQLSelect(String strWhere, String strOrderBy) throws Exception {
-		String requestQuery = "SELECT "; //$NON-NLS-1$
 		
-		if(DBGroupDefine.ORACLE_GROUP == userDB.getDBGroup()) {
-			requestQuery += " rowid, "; //$NON-NLS-1$
-		} else if(DBGroupDefine.POSTGRE_GROUP == userDB.getDBGroup()) {
-			requestQuery += " ctid, "; //$NON-NLS-1$
-		}
-		List<TableColumnDAO> tmpTableColumns = TadpoleObjectQuery.getTableColumns(userDB, tableDao);
-		for(int i=0 ; i<tmpTableColumns.size(); i++) {
-			TableColumnDAO tabledao = tmpTableColumns.get(i);
-			requestQuery += SQLUtil.makeIdentifierName(userDB, tabledao.getName());
-			if(i < (tmpTableColumns.size()-1)) requestQuery += ","; //$NON-NLS-1$
-		}
-		
-		requestQuery += " FROM " + tableDao.getFullName();
-		
-		if(!"".equals( strWhere )) requestQuery += " where " + strWhere; //$NON-NLS-1$ //$NON-NLS-2$
-		if(!"".equals( strOrderBy )) requestQuery += " order by " + strOrderBy; //$NON-NLS-1$ //$NON-NLS-2$
-		if(logger.isDebugEnabled()) logger.debug("Last query is " + requestQuery);
+		// RequestQuery object 로 일을 처리하도록 한다. 
+		RequestQuery reqQuery = RequestQueryUtil.simpleRequestQuery(userDB, _preparedMakeQuery(strWhere, strOrderBy));
+		if(logger.isDebugEnabled()) logger.debug("Last query is " + reqQuery.getSql());
 					
 		ResultSet rs = null;
 		PreparedStatement stmt = null;
@@ -400,7 +411,7 @@ public class TableDirectEditorComposite extends Composite {
 		try {
 			javaConn = TadpoleSQLManager.getConnection(userDB);
 			
-			stmt = javaConn.prepareStatement(SQLConvertCharUtil.toServer(userDB, requestQuery));
+			stmt = javaConn.prepareStatement(SQLConvertCharUtil.toServer(userDB, reqQuery.getSql()));
 			stmt.setMaxRows(GetPreferenceGeneral.getSelectLimitCount());
 			
 			rs = stmt.executeQuery();
@@ -590,10 +601,12 @@ public class TableDirectEditorComposite extends Composite {
 		if(isUpdateed == IDialogConstants.CANCEL_ID) return;
 		if("".equals(changedSQL)) return; //$NON-NLS-1$
 		
-		querys = SQLTextUtil.delLineChar(changedSQL).split(";"); //$NON-NLS-1$
+		List<RequestQuery> listRequestQuery = new ArrayList<>();
+		for(String strSQL : SQLTextUtil.delLineChar(changedSQL).split(";")) {
+			listRequestQuery.add(RequestQueryUtil.simpleRequestQuery(userDB, strSQL));
+		}
 		try {
-			RequestQuery reqQuery = new RequestQuery(Utils.getUniqueID(), userDB, changedSQL, OBJECT_TYPE.TABLES, QUERY_MODE.QUERY, EXECUTE_TYPE.ALL, true);
-			ExecuteBatchSQL.runSQLExecuteBatch(Messages.get().MainEditor_21, Arrays.asList(querys), reqQuery, userDB, userDB.getRole_id(), 1000, SessionManager.getEMAIL());
+			ExecuteBatchSQL.runSQLExecuteBatch(Messages.get().MainEditor_21, listRequestQuery, 1000, SessionManager.getEMAIL());
 			
 			// 정상적으로 모든 결과 처리 완료.
 			initBusiness();

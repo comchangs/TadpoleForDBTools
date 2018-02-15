@@ -11,7 +11,6 @@
 package com.hangum.tadpole.engine.utils;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.log4j.Logger;
 
 import com.hangum.tadpole.commons.dialogs.message.dao.RequestResultDAO;
 import com.hangum.tadpole.commons.libs.core.define.PublicTadpoleDefine;
@@ -34,8 +33,11 @@ import com.hangum.tadpole.session.manager.SessionManager;
  *
  */
 public class RequestQuery implements Cloneable {
-	/**  Logger for this class. */
-	private static final Logger logger = Logger.getLogger(RequestQuery.class);
+//	/**  Logger for this class. */
+//	private static final Logger logger = Logger.getLogger(RequestQuery.class);
+	
+	/** user db */
+	private UserDBDAO userDB;
 	
 	/** 현재 커넥션 id */
 	private String connectId;
@@ -52,7 +54,7 @@ public class RequestQuery implements Cloneable {
 	/** 에디터가 실행 가능한 쿼리로 수정한 */
 	private String sql = "";
 	
-	/** {@link PublicTadpoleDefine.SQL_STATEMENT_TYPE#PREPARED_STATEMENT} 일경우에 변수에 값이 들어간 전체 퀄기ㅏ 들어가 있다 */
+	/** {@link PublicTadpoleDefine.SQL_STATEMENT_TYPE#PREPARED_STATEMENT} 일경우에 변수에 값이 들어간 전체 쿼리가 들어가 있다 */
 	private String sqlAddParameter = "";
 	
 	/** 현재 실행 중인 sql statement type */
@@ -97,6 +99,7 @@ public class RequestQuery implements Cloneable {
 	 */
 	public RequestQuery(String connectId, UserDBDAO userDB, String originalSql, OBJECT_TYPE dbAction, EditorDefine.QUERY_MODE mode, EditorDefine.EXECUTE_TYPE type, boolean isAutoCommit) {
 		this.connectId = connectId;
+		this.userDB = userDB;
 		//
 		// 사용자가 네트웍을 바꾸어서 사용하면 어떻게 되지???
 		//
@@ -104,8 +107,13 @@ public class RequestQuery implements Cloneable {
 		
 		this.originalSql = originalSql;
 		this.dbAction = dbAction;
+		
 		this.sql = SQLUtil.makeExecutableSQL(userDB, originalSql);
+		
 		parseSQL(this.sql);
+		
+		// 사용자 쿼리에 포맷팅을 한다.
+		this.sql = SessionManager.getHeadComment() + this.sql;
 		
 //		logger.debug("================================================================================================");
 //		logger.debug("[originalSql]" + originalSql);
@@ -264,14 +272,14 @@ public class RequestQuery implements Cloneable {
 	/**
 	 * @return the resultDao
 	 */
-	public RequestResultDAO getResultDao() {
+	public RequestResultDAO getRequestResultDao() {
 		return resultDao;
 	}
 
 	/**
 	 * @param resultDao the resultDao to set
 	 */
-	public void setResultDao(RequestResultDAO resultDao) {
+	public void setRequestResultDao(RequestResultDAO resultDao) {
 		this.resultDao = resultDao;
 	}
 
@@ -407,6 +415,18 @@ public class RequestQuery implements Cloneable {
 	 */
 	public void setConnectId(String connectId) {
 		this.connectId = connectId;
+	}
+	
+	public void setUserDB(UserDBDAO userDB) {
+		this.userDB = userDB;
+	}
+	
+	/**
+	 * 
+	 * @return
+	 */
+	public UserDBDAO getUserDB() {
+		return userDB;
 	}
 
 	/* (non-Javadoc)

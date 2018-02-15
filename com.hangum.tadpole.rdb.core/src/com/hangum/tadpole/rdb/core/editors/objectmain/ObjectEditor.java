@@ -12,7 +12,6 @@ package com.hangum.tadpole.rdb.core.editors.objectmain;
 
 import java.sql.Connection;
 import java.sql.SQLException;
-import java.sql.Timestamp;
 import java.util.HashMap;
 
 import org.apache.commons.lang.StringUtils;
@@ -54,6 +53,7 @@ import com.hangum.tadpole.engine.sql.util.ObjectCompileUtil;
 import com.hangum.tadpole.engine.utils.EditorDefine;
 import com.hangum.tadpole.engine.utils.EditorDefine.EXECUTE_TYPE;
 import com.hangum.tadpole.engine.utils.RequestQuery;
+import com.hangum.tadpole.engine.utils.RequestQueryUtil;
 import com.hangum.tadpole.preference.define.PreferenceDefine;
 import com.hangum.tadpole.preference.get.GetPreferenceGeneral;
 import com.hangum.tadpole.rdb.core.Activator;
@@ -61,6 +61,7 @@ import com.hangum.tadpole.rdb.core.Messages;
 import com.hangum.tadpole.rdb.core.dialog.db.DBInformationDialog;
 import com.hangum.tadpole.rdb.core.editors.main.MainEditor;
 import com.hangum.tadpole.rdb.core.editors.main.composite.ResultMainComposite;
+import com.hangum.tadpole.rdb.core.editors.main.utils.AcessControlUtils;
 import com.hangum.tadpole.rdb.core.util.FindEditorAndWriteQueryUtil;
 import com.hangum.tadpole.rdb.core.util.GrantCheckerUtils;
 import com.hangum.tadpole.rdb.core.viewers.connections.DBIconsUtils;
@@ -88,7 +89,6 @@ public class ObjectEditor extends MainEditor {
 		userDB = qei.getUserDB();
 		initDefaultEditorStr = qei.getDefaultStr();
 		dbAction = qei.getDbAction();
-		strRoleType = userDB.getRole_id();
 		
 		String strPartName = "";
 		if("".equals(qei.getObjectName())) strPartName = qei.getName(); //$NON-NLS-1$
@@ -382,46 +382,33 @@ public class ObjectEditor extends MainEditor {
 				logger.error("if execute query?", e1);
 				return;
 			}
-			
-//			if(!MessageDialog.openConfirm(null, CommonMessages.get().Confirm, Messages.get().ObjectEditor_3)) {
-//				setOrionTextFocus();
-//				return;
-//			}
-			
-			RequestResultDAO reqResultDAO = new RequestResultDAO();
-			reqResultDAO.setStartDateExecute(new Timestamp(System.currentTimeMillis()));
-			reqResultDAO.setIpAddress(reqQuery.getUserIp());
-			
 			try {
-				runPermissionSQLExecution(Messages.get().MainEditor_21, reqQuery, userDB, getUserType(), getUserEMail());
-				ExecuteDDLCommand.executSQL(userDB, reqResultDAO, reqQuery.getOriginalSql()); //$NON-NLS-1$
+				AcessControlUtils.SQLPermissionCheck(Messages.get().MainEditor_21, reqQuery);
+				ExecuteDDLCommand.executSQL(reqQuery); //$NON-NLS-1$
 			} catch(Exception e) {
 				logger.error("execute ddl", e); //$NON-NLS-1$
-				reqResultDAO.setResult(PublicTadpoleDefine.SUCCESS_FAIL.F.name());
-				reqResultDAO.setMesssage(e.getMessage());
 			} finally {
-				reqResultDAO.setEndDateExecute(new Timestamp(System.currentTimeMillis()));
 				
-				if(PublicTadpoleDefine.SUCCESS_FAIL.F.name().equals(reqResultDAO.getResult())) {
-					afterProcess(reqQuery, reqResultDAO, ""); //$NON-NLS-1$
+				if(PublicTadpoleDefine.SUCCESS_FAIL.F.name().equals(reqQuery.getRequestResultDao().getResult())) {
+					afterProcess(reqQuery, reqQuery.getRequestResultDao(), ""); //$NON-NLS-1$
 					
 					if(DBGroupDefine.MYSQL_GROUP == getUserDB().getDBGroup()) {
-						mysqlAfterFailProcess(reqResultDAO, reqQuery);
+						mysqlAfterFailProcess(reqQuery.getRequestResultDao(), reqQuery);
 					} else if(DBGroupDefine.MSSQL_GROUP == getUserDB().getDBGroup()) {
-						mssqlAfterFailProcess(reqResultDAO, reqQuery);
+						mssqlAfterFailProcess(reqQuery.getRequestResultDao(), reqQuery);
 					}
 					
 				} else {
 					String retMsg = ObjectCompileUtil.validateObject(userDB, reqQuery.getSqlDDLType(), reqQuery.getSqlObjectName());
 
 					if(!"".equals(retMsg)) { //$NON-NLS-1$
-						reqResultDAO.setMesssage(retMsg);
+						reqQuery.getRequestResultDao().setMesssage(retMsg);
 						
-						afterProcess(reqQuery, reqResultDAO, Messages.get().ObjectEditorCompileError);
+						afterProcess(reqQuery, reqQuery.getRequestResultDao(), Messages.get().ObjectEditorCompileError);
 					} else {
 						//DBMS_OUTOUT.PUT_LINE을 이용해 출력했던 내용이 있으면 그대로 표시하기 위해서 주석처리.
 						//reqResultDAO.setMesssage("");
-						afterProcess(reqQuery, reqResultDAO, Messages.get().ObjectEditor_2);
+						afterProcess(reqQuery, reqQuery.getRequestResultDao(), Messages.get().ObjectEditor_2);
 					}
 					
 				}
@@ -505,13 +492,12 @@ public class ObjectEditor extends MainEditor {
 			
 			String cmd = String.format("DROP %s %s", reqQuery.getSqlDDLType(), reqQuery.getSqlObjectName()); //$NON-NLS-1$
 			if(MessageDialog.openConfirm(null, CommonMessages.get().Confirm, String.format(Messages.get().ObjectEditor_13, reqQuery.getSqlObjectName()))) {
-				RequestResultDAO reqReResultDAO = new RequestResultDAO();
 				try {
-					ExecuteDDLCommand.executSQL(userDB, reqReResultDAO, cmd); //$NON-NLS-1$
-					afterProcess(reqQuery, reqReResultDAO, Messages.get().ObjectEditor_2);
+					RequestQuery _reqQuery = ExecuteDDLCommand.executSQL(RequestQueryUtil.simpleRequestQuery(userDB, cmd)); //$NON-NLS-1$
+					afterProcess(reqQuery, _reqQuery.getRequestResultDao(), Messages.get().ObjectEditor_2);
 					
-					ExecuteDDLCommand.executSQL(userDB, reqReResultDAO, reqQuery.getOriginalSql()); //$NON-NLS-1$
-					afterProcess(reqQuery, reqReResultDAO, Messages.get().ObjectEditor_2);
+					ExecuteDDLCommand.executSQL(reqQuery); //$NON-NLS-1$
+					afterProcess(reqQuery, reqQuery.getRequestResultDao(), Messages.get().ObjectEditor_2);
 				} catch(Exception ee) {
 					afterProcess(reqQuery, reqResultDAO, ""); //$NON-NLS-1$
 				}
@@ -546,13 +532,12 @@ public class ObjectEditor extends MainEditor {
 		if(strSQLState.equals("S0001") && intSQLErrorCode == 2714) { //$NON-NLS-1$
 			String cmd = String.format("DROP %s %s", reqQuery.getSqlDDLType(), reqQuery.getSqlObjectName()); //$NON-NLS-1$
 			if(MessageDialog.openConfirm(null, CommonMessages.get().Confirm, String.format(Messages.get().ObjectEditor_13, reqQuery.getSqlObjectName()))) {
-				RequestResultDAO reqReResultDAO = new RequestResultDAO();
 				try {
-					ExecuteDDLCommand.executSQL(userDB, reqReResultDAO, cmd); //$NON-NLS-1$
-					afterProcess(reqQuery, reqReResultDAO, Messages.get().ObjectEditor_2);
+					RequestQuery _reqQuery = ExecuteDDLCommand.executSQL(RequestQueryUtil.simpleRequestQuery(userDB, cmd)); //$NON-NLS-1$
+					afterProcess(reqQuery, _reqQuery.getRequestResultDao(), Messages.get().ObjectEditor_2);
 					
-					ExecuteDDLCommand.executSQL(userDB, reqReResultDAO, reqQuery.getOriginalSql()); //$NON-NLS-1$
-					afterProcess(reqQuery, reqReResultDAO, Messages.get().ObjectEditor_2);
+					ExecuteDDLCommand.executSQL(reqQuery); //$NON-NLS-1$
+					afterProcess(reqQuery, reqQuery.getRequestResultDao(), Messages.get().ObjectEditor_2);
 				} catch(Exception ee) {
 					afterProcess(reqQuery, reqResultDAO, ""); //$NON-NLS-1$
 				}

@@ -81,7 +81,7 @@ public abstract class AbstractPlanComposite extends Composite {
 	public String getTailResultMsg() {
 		if(getRsDAO() == null) return "";
 		final TadpoleResultSet trs = getRsDAO().getDataList();
-		final RequestResultDAO rsDAO = getReqQuery().getResultDao();
+		final RequestResultDAO rsDAO = getReqQuery().getRequestResultDao();
 		
 		// 메시지를 출력합니다.
 		float longExecuteTime = (rsDAO.getEndDateExecute().getTime() - rsDAO.getStartDateExecute().getTime()) / 1000f;

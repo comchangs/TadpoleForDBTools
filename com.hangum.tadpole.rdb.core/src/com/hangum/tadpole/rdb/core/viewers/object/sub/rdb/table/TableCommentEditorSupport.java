@@ -102,7 +102,7 @@ public class TableCommentEditorSupport extends EditingSupport {
 			// 기존 코멘트와 다를때만 db에 반영한다.
 			if (!(comment.equals(dao.getComment()))) {
 				dao.setComment(comment);
-				applyComment(dao);
+				updateComment(dao);
 			}
 
 			viewer.update(element, null);
@@ -116,7 +116,7 @@ public class TableCommentEditorSupport extends EditingSupport {
 	 * DBMS별 처리를 위해 별도의 Class로 분리해야 하지 않을까?
 	 * @param dao
 	 */
-	private void applyComment(TableDAO dao) {
+	private void updateComment(TableDAO dao) throws Exception {
 		TadpoleObjectQuery.updateComment(userDB, dao);
 	}
 

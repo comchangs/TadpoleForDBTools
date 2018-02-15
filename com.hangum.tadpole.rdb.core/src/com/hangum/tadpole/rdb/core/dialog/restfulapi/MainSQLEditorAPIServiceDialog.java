@@ -50,6 +50,8 @@ import com.hangum.tadpole.engine.sql.paremeter.NamedParameterDAO;
 import com.hangum.tadpole.engine.sql.paremeter.NamedParameterUtil;
 import com.hangum.tadpole.engine.sql.util.QueryUtils;
 import com.hangum.tadpole.engine.sql.util.SQLUtil;
+import com.hangum.tadpole.engine.utils.RequestQuery;
+import com.hangum.tadpole.engine.utils.RequestQueryUtil;
 import com.hangum.tadpole.rdb.core.Messages;
 import com.hangum.tadpole.session.manager.SessionManager;
 
@@ -245,12 +247,22 @@ public class MainSQLEditorAPIServiceDialog extends Dialog {
 	}
 	
 	/**
-	 * 검색
+	 * 쿼리 수행
 	 * 
 	 * @param strSQL
 	 * @param strArgument
 	 */
 	private void executeQuery(String strSQL, String strArgument) {
+		executeQuery(RequestQueryUtil.simpleRequestQuery(userDB, strSQL), strArgument);
+	}
+	
+	/**
+	 * 검색
+	 * 
+	 * @param strSQL
+	 * @param strArgument
+	 */
+	private void executeQuery(RequestQuery reqQuery, String strArgument) {
 		String strExecuteResultData = ""; //$NON-NLS-1$
 		String strSQLs = "";
 		
@@ -263,7 +275,7 @@ public class MainSQLEditorAPIServiceDialog extends Dialog {
 		try {
 			int intSQLCnt = 0;
 			// velocity 로 if else 가 있는지 검사합니다. 
-			strSQLs = RESTfulAPIUtils.makeTemplateTOSQL("APIServiceDialog", strSQL, strArgument); //$NON-NLS-1$
+			strSQLs = RESTfulAPIUtils.makeTemplateTOSQL("APIServiceDialog", reqQuery.getSql(), strArgument); //$NON-NLS-1$
 			// 분리자 만큼 실행한다.
 			for (String strTmpSQL : strSQLs.split(PublicTadpoleDefine.SQL_DELIMITER)) {
 				String strRealSQL = SQLUtil.removeCommentAndOthers(userDB, strTmpSQL);

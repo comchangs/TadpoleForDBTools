@@ -332,7 +332,7 @@ public class PublicTadpoleDefine {
 	public static enum QUERY_DML_TYPE {SELECT, EXPLAIN_PLAN, INSERT, UPDATE, DELETE, UNKNOWN};
 	
 	/** query ddl type */
-	public static enum QUERY_DDL_STATUS {CREATE, ALTER, DROP, UNKNOWN};
+	public static enum QUERY_DDL_STATUS {CREATE, ALTER, DROP, TRUNCATE, UNKNOWN};
 	public static enum QUERY_DDL_TYPE 	{TABLE, VIEW, SEQUENCE, INDEX, PROCEDURE, FUNCTION, TRIGGER, PACKAGE, SYNONYM, LINK, JOBS, JAVA, UNKNOWN};
 	public static enum ACCEAS_CTL_DDL_TYPE {SCHEMA, TABLEoVIEW, FUNCTION, PROCEDURE};
 	public static String[] DB_PRIMARY_KEY = {

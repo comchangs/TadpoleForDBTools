@@ -167,4 +167,10 @@ public class AdminPreferenceDefine {
 	public static final String IS_PASSWD_CACHE = _PREFIX + "IS_PASSWD_CACHE";
 	public static final String IS_PASSWD_CACHE_VALUE = "YES";
 	
+	/**
+	 * 사용자 SQL 헤더에 TADPOLE 코멘트 추가 여부
+	 * 예를들어 : {@code SessionManager#getHeadComment()}
+	 */
+	public static final String ADD_TADPOLE_SQL_HEAD = _PREFIX + "ADD_TADPOLE_SQL_HEAD";
+	public static final String ADD_TADPOLE_SQL_HEAD_VALUE = "NO";	
 }

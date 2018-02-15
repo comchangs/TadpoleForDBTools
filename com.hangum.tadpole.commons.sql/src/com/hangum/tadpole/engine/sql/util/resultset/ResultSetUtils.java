@@ -21,7 +21,6 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 
 import com.hangum.tadpole.engine.define.DBGroupDefine;
-import com.hangum.tadpole.engine.define.DBVariableDefine;
 import com.hangum.tadpole.engine.query.dao.system.UserDBDAO;
 import com.hangum.tadpole.engine.sql.util.SQLConvertCharUtil;
 
@@ -77,7 +76,7 @@ public class ResultSetUtils {
 				final int intColIndex = i+1;
 				final int intShowColIndex = i + intStartIndex;
 				final int colType = rs.getMetaData().getColumnType(intColIndex); 
-				if(logger.isDebugEnabled()) logger.debug("[column type] --> " + colType);
+//				if(logger.isDebugEnabled()) logger.debug("[column type] --> " + colType);
 				
 				try {
 					if (java.sql.Types.LONGVARCHAR == colType || 

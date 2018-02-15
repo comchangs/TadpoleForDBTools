@@ -24,7 +24,6 @@ import org.eclipse.swt.custom.SashForm;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
-import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Group;
@@ -32,15 +31,14 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
 
-import com.hangum.tadpole.commons.dialogs.message.dao.RequestResultDAO;
 import com.hangum.tadpole.commons.google.analytics.AnalyticCaller;
-import com.hangum.tadpole.commons.libs.core.define.PublicTadpoleDefine;
 import com.hangum.tadpole.commons.libs.core.message.CommonMessages;
 import com.hangum.tadpole.commons.util.GlobalImageUtils;
 import com.hangum.tadpole.engine.manager.TadpoleSQLManager;
 import com.hangum.tadpole.engine.query.dao.rdb.OracleJavaDAO;
 import com.hangum.tadpole.engine.query.dao.system.UserDBDAO;
 import com.hangum.tadpole.engine.sql.util.ExecuteDDLCommand;
+import com.hangum.tadpole.engine.utils.RequestQueryUtil;
 import com.hangum.tadpole.rdb.core.Messages;
 import com.ibatis.sqlmap.client.SqlMapClient;
 
@@ -60,8 +58,6 @@ public class CreateJavaDialog extends Dialog {
 	private UserDBDAO userDB;
 	private OracleJavaDAO javaDao;
 
-	private Button btnCreateJava;
-	private Button btnDropJava;
 	private Text textScript;
 	private Group grpTables;
 	private Label lblJavaName;
@@ -172,10 +168,10 @@ public class CreateJavaDialog extends Dialog {
 	@Override
 	protected void createButtonsForButtonBar(Composite parent) {
 		if (StringUtils.isBlank(javaDao.getObjectName())) {
-			btnCreateJava = createButton(parent, ID_CREATE_JAVA, Messages.get().CreateJava, false);
+			createButton(parent, ID_CREATE_JAVA, Messages.get().CreateJava, false);
 		} else {
-			btnCreateJava = createButton(parent, ID_CREATE_JAVA, Messages.get().ChangeJava, false);
-			btnDropJava = createButton(parent, ID_DROP_JAVA, Messages.get().DropJava, false);
+			createButton(parent, ID_CREATE_JAVA, Messages.get().ChangeJava, false);
+			createButton(parent, ID_DROP_JAVA, Messages.get().DropJava, false);
 		}
 		createButton(parent, IDialogConstants.OK_ID, CommonMessages.get().Close, false);
 	}
@@ -183,7 +179,6 @@ public class CreateJavaDialog extends Dialog {
 	private String getCreateScript() {
 		StringBuffer script = new StringBuffer();
 		StringBuffer source = new StringBuffer();
-		//strSQL = "begin execute immediate '" + strSQL.replace("'", "''") + "'; dbms_output.put_line(sqlerrm); end;"; 
 
 		String object_name = (StringUtils.isBlank(this.javaDao.getSchema_name()) ? userDB.getSchema() : this.javaDao.getSchema_name());
 
@@ -203,33 +198,26 @@ public class CreateJavaDialog extends Dialog {
 	@Override
 	protected void buttonPressed(int buttonId) {
 		if (buttonId == ID_CREATE_JAVA) {
-			RequestResultDAO reqReResultDAO = new RequestResultDAO();
+			
 			try {
-				String create_stmt = getCreateScript();
-				ExecuteDDLCommand.executSQL(userDB, reqReResultDAO, create_stmt);
-			} catch (Exception e) {
-				logger.error(e);
-			}
-			if (PublicTadpoleDefine.SUCCESS_FAIL.F.name().equals(reqReResultDAO.getResult())) {
-				MessageDialog.openError(this.getShell(),CommonMessages.get().Error, Messages.get().CreateOrChangedErrorJavaObject + reqReResultDAO.getMesssage() + reqReResultDAO.getException().getMessage());
-			} else {
+				ExecuteDDLCommand.executSQL(RequestQueryUtil.simpleRequestQuery(userDB, getCreateScript())); //$NON-NLS-1$
+				
 				MessageDialog.openInformation(this.getShell(), CommonMessages.get().Information, Messages.get().CreateOrChangedJavaObject);
 				this.okPressed();
-			}
-		} else if (buttonId == ID_DROP_JAVA) {
-			RequestResultDAO reqReResultDAO = new RequestResultDAO();
-			try {
-				String drop_stmp = "";
-				drop_stmp = "DROP JAVA SOURCE " + javaDao.getFullName() + " ";
-				ExecuteDDLCommand.executSQL(userDB, reqReResultDAO, drop_stmp);
 			} catch (Exception e) {
 				logger.error(e);
+				
+				MessageDialog.openError(this.getShell(),CommonMessages.get().Error, Messages.get().CreateOrChangedErrorJavaObject + e.getMessage());
 			}
-			if (PublicTadpoleDefine.SUCCESS_FAIL.F.name().equals(reqReResultDAO.getResult())) {
-				MessageDialog.openError(this.getShell(),CommonMessages.get().Error, Messages.get().DeletedErrorJavaObject + reqReResultDAO.getMesssage() + reqReResultDAO.getException().getMessage());
-			}else{
+		} else if (buttonId == ID_DROP_JAVA) {
+			try {
+				ExecuteDDLCommand.executSQL(RequestQueryUtil.simpleRequestQuery(userDB, "DROP JAVA SOURCE " + javaDao.getFullName() + " ")); //$NON-NLS-1$
 				MessageDialog.openInformation(this.getShell(), CommonMessages.get().Information, Messages.get().DeletedJavaObject);
 				this.okPressed();
+			} catch (Exception e) {
+				logger.error(e);
+				
+				MessageDialog.openError(this.getShell(),CommonMessages.get().Error, Messages.get().DeletedErrorJavaObject + e.getMessage());
 			}
 		} else {
 			okPressed();
@@ -243,5 +231,4 @@ public class CreateJavaDialog extends Dialog {
 	protected Point getInitialSize() {
 		return new Point(700, 700);
 	}
-
 }

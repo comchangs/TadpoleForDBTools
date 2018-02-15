@@ -10,7 +10,6 @@
  ******************************************************************************/
 package com.hangum.tadpole.rdb.core.viewers.object.sub.utils;
 
-import java.sql.PreparedStatement;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -19,7 +18,6 @@ import java.util.Map;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 
-import com.hangum.tadpole.commons.dialogs.message.dao.RequestResultDAO;
 import com.hangum.tadpole.commons.libs.core.define.PublicTadpoleDefine;
 import com.hangum.tadpole.commons.libs.core.define.PublicTadpoleDefine.OBJECT_TYPE;
 import com.hangum.tadpole.db.dynamodb.core.manager.DynamoDBManager;
@@ -37,6 +35,7 @@ import com.hangum.tadpole.engine.query.dao.system.UserDBDAO;
 import com.hangum.tadpole.engine.security.DBAccessCtlManager;
 import com.hangum.tadpole.engine.sql.util.ExecuteDDLCommand;
 import com.hangum.tadpole.engine.sql.util.SQLUtil;
+import com.hangum.tadpole.engine.utils.RequestQueryUtil;
 import com.ibatis.sqlmap.client.SqlMapClient;
 
 /**
@@ -54,68 +53,38 @@ public class TadpoleObjectQuery {
 	 * @param userDB
 	 * @param dao
 	 */
-	public static void updateComment(final UserDBDAO userDB, TableDAO dao) {
-		java.sql.Connection javaConn = null;
-		PreparedStatement stmt = null;
-		try {
-			javaConn = TadpoleSQLManager.getConnection(userDB);
+	public static void updateComment(final UserDBDAO userDB, TableDAO dao) throws Exception {
+		if (DBGroupDefine.ORACLE_GROUP == userDB.getDBGroup() || DBGroupDefine.POSTGRE_GROUP == userDB.getDBGroup()) {
+			ExecuteDDLCommand.executSQL(RequestQueryUtil.simpleRequestQuery(userDB, String.format("COMMENT ON TABLE %s IS %s", dao.getSysName(), SQLUtil.makeQuote(dao.getComment()))));
 
-			if (DBGroupDefine.ORACLE_GROUP == userDB.getDBGroup() || DBGroupDefine.POSTGRE_GROUP == userDB.getDBGroup()) {
-				String strSQL = String.format("COMMENT ON TABLE %s IS %s", dao.getSysName(), SQLUtil.makeQuote(dao.getComment()));
-				stmt = javaConn.prepareStatement(strSQL);
-				try{
-					stmt.execute();
-				}catch(Exception e){
-					//  org.postgresql.util.PSQLException: No results were returned by the query.
-				}
-
-			} else if (userDB.getDBDefine() == DBDefine.MSSQL_8_LE_DEFAULT) {
-				StringBuffer query = new StringBuffer();
-				try{
-					query.append(" exec sp_dropextendedproperty 'MS_Description' ").append(", 'user' ,").append(userDB.getUsers()).append(",'table' ").append(" , '").append(dao.getSysName()).append("'");
-					stmt = javaConn.prepareStatement(query.toString());
-					stmt.execute();
-				} catch(Exception e) {
-					// 주석이 최초로 등록될때는 삭제될 주석이 없으므로 오류 발생함.
-				} finally {
-					try { if(stmt != null) stmt.close(); } catch(Exception e) {}
-				}
-
-				query = new StringBuffer();
-				query.append(" exec sp_addextendedproperty 'MS_Description', '").append(dao.getComment()).append("' ,'user' ,").append(userDB.getUsers()).append(",'table' ").append(" , '").append(dao.getName()).append("'");
-				stmt = javaConn.prepareStatement(query.toString());
-				stmt.execute();
-			} else if (userDB.getDBDefine() == DBDefine.MSSQL_DEFAULT ) {
-				StringBuffer query = new StringBuffer();
-				try{
-					query.append(" exec sp_dropextendedproperty 'MS_Description' ").append(", 'schema' , "+dao.getSchema_name()+",'table' ").append(" , '").append(dao.getTable_name()).append("'");
-					if(logger.isDebugEnabled()) logger.debug(query);
-					stmt = javaConn.prepareStatement(query.toString());
-					stmt.execute();
-				}catch(Exception e){
-					// 주석이 최초로 등록될때는 삭제될 주석이 없으므로 오류 발생함.
-				} finally {
-					try { if(stmt != null) stmt.close(); } catch(Exception e) {}
-				}
-
-				query = new StringBuffer();
-				query.append(" exec sp_addextendedproperty 'MS_Description', '").append(dao.getComment()).append("' ,'schema' , "+dao.getSchema_name()+" ,'table' ").append(" , '").append(dao.getTable_name()).append("'");
-				if(logger.isDebugEnabled()) logger.debug(query);
-				stmt = javaConn.prepareStatement(query.toString());
-				stmt.execute();
-
-			} else if (DBGroupDefine.MYSQL_GROUP == userDB.getDBGroup()) {
-				String strSQL = String.format("ALTER TABLE %s COMMENT %s", dao.getFullName(), SQLUtil.makeQuote(dao.getComment()));
-				if(logger.isDebugEnabled()) logger.debug(strSQL);
-				stmt = javaConn.prepareStatement(strSQL);
-				stmt.execute();
+		} else if (userDB.getDBDefine() == DBDefine.MSSQL_8_LE_DEFAULT) {
+			StringBuffer query = new StringBuffer();
+			try {
+				query.append(" exec sp_dropextendedproperty 'MS_Description' ").append(", 'user' ,").append(userDB.getUsers()).append(",'table' ").append(" , '").append(dao.getSysName()).append("'");
+				ExecuteDDLCommand.executSQL(RequestQueryUtil.simpleRequestQuery(userDB, query.toString()));
+			} catch(Exception e) {
+				// 주석이 최초로 등록될때는 삭제될 주석이 없으므로 오류 발생함.
 			}
 
-		} catch (Exception e) {
-			logger.error("Comment change error ", e);
-		} finally {
-			try { if(stmt != null) stmt.close(); } catch(Exception e) {}
-			try { if(javaConn != null) javaConn.close(); } catch (Exception e) {}
+			query = new StringBuffer();
+			query.append(" exec sp_addextendedproperty 'MS_Description', '").append(dao.getComment()).append("' ,'user' ,").append(userDB.getUsers()).append(",'table' ").append(" , '").append(dao.getName()).append("'");
+			ExecuteDDLCommand.executSQL(RequestQueryUtil.simpleRequestQuery(userDB, query.toString()));
+		} else if (userDB.getDBDefine() == DBDefine.MSSQL_DEFAULT ) {
+			StringBuffer query = new StringBuffer();
+			try {
+				query.append(" exec sp_dropextendedproperty 'MS_Description' ").append(", 'schema' , "+dao.getSchema_name()+",'table' ").append(" , '").append(dao.getTable_name()).append("'");
+				ExecuteDDLCommand.executSQL(RequestQueryUtil.simpleRequestQuery(userDB, query.toString()));
+			} catch(Exception e) {
+				// 주석이 최초로 등록될때는 삭제될 주석이 없으므로 오류 발생함.
+			}
+
+			query = new StringBuffer();
+			query.append(" exec sp_addextendedproperty 'MS_Description', '").append(dao.getComment()).append("' ,'schema' , "+dao.getSchema_name()+" ,'table' ").append(" , '").append(dao.getTable_name()).append("'");
+			ExecuteDDLCommand.executSQL(RequestQueryUtil.simpleRequestQuery(userDB, query.toString()));
+
+		} else if (DBGroupDefine.MYSQL_GROUP == userDB.getDBGroup()) {
+			String strSQL = String.format("ALTER TABLE %s COMMENT %s", dao.getFullName(), SQLUtil.makeQuote(dao.getComment()));
+			ExecuteDDLCommand.executSQL(RequestQueryUtil.simpleRequestQuery(userDB, strSQL));
 		}
 	}
 	
@@ -127,11 +96,11 @@ public class TadpoleObjectQuery {
 	 * @param strNewname
 	 * @return
 	 */
-	public static RequestResultDAO renameTable(final UserDBDAO userDB, TableDAO tableDAO, String strNewname) throws Exception {
-		RequestResultDAO reqReResultDAO = new RequestResultDAO();
+	public static void renameTable(final UserDBDAO userDB, TableDAO tableDAO, String strNewname) throws Exception {
+		String strSQL = "";
+		
 		if(DBGroupDefine.MYSQL_GROUP == userDB.getDBGroup()) {
-			String strQuery = String.format("ALTER TABLE %s RENAME %s", tableDAO.getFullName(), SQLUtil.makeIdentifierName(userDB, tableDAO.getSchema_name()) +"."+ SQLUtil.makeIdentifierName(userDB,strNewname));
-			ExecuteDDLCommand.executSQL(userDB, reqReResultDAO, strQuery);
+			strSQL = String.format("ALTER TABLE %s RENAME %s", tableDAO.getFullName(), SQLUtil.makeIdentifierName(userDB, tableDAO.getSchema_name()) +"."+ SQLUtil.makeIdentifierName(userDB,strNewname));
 		} else if(DBGroupDefine.POSTGRE_GROUP == userDB.getDBGroup() ||
 				DBGroupDefine.ORACLE_GROUP == userDB.getDBGroup() ||
 				DBGroupDefine.SQLITE_GROUP == userDB.getDBGroup()
@@ -139,19 +108,17 @@ public class TadpoleObjectQuery {
 			if(!StringUtils.equals(strNewname, strNewname.toUpperCase() )){
 				strNewname = SQLUtil.makeIdentifierName(userDB, strNewname);
 			}
-			String strQuery = String.format("ALTER TABLE %s RENAME TO %s", tableDAO.getSysName(), strNewname);
-			ExecuteDDLCommand.executSQL(userDB, reqReResultDAO, strQuery);
+			strSQL = String.format("ALTER TABLE %s RENAME TO %s", tableDAO.getSysName(), strNewname);
 		} else if(DBGroupDefine.MSSQL_GROUP == userDB.getDBGroup()) {
-			String strQuery = String.format("sp_rename %s, %s", tableDAO.getSysName(), strNewname);
-			ExecuteDDLCommand.executSQL(userDB, reqReResultDAO, strQuery);
+			strSQL = String.format("sp_rename %s, %s", tableDAO.getSysName(), strNewname);
 		} else if(DBGroupDefine.CUBRID_GROUP == userDB.getDBGroup()) {
-			String strQuery = String.format("RENAME TABLE %s AS %s", tableDAO.getSysName(), strNewname);
-			ExecuteDDLCommand.executSQL(userDB, reqReResultDAO, strQuery);
+			strSQL = String.format("RENAME TABLE %s AS %s", tableDAO.getSysName(), strNewname);
 		} else {
 			throw new Exception("Not support rename table.");
 		}
 		
-		return reqReResultDAO;
+		// 쿼리를 실행한다.
+		ExecuteDDLCommand.executSQL(RequestQueryUtil.simpleRequestQuery(userDB, strSQL));
 	}
 	
 	/**
@@ -425,7 +392,6 @@ public class TadpoleObjectQuery {
 		SqlMapClient sqlClient = TadpoleSQLManager.getInstance(userDB);
 		
 		return sqlClient.queryForList("allObjects", object_map); //$NON-NLS-1$
-		 
 	}
 
 	/**
@@ -445,7 +411,6 @@ public class TadpoleObjectQuery {
 		paramMap.put("index_name", indexDao.getINDEX_NAME()); //$NON-NLS-1$
 		
 		return sqlClient.queryForList("indexDetailList", paramMap); //$NON-NLS-1$
-		 
 	}
 	
 	/**
@@ -465,6 +430,5 @@ public class TadpoleObjectQuery {
 		return  client.queryForObject("getIndexStatisticsInfo", paramMap);
 		
 	}
-
 	
 }

@@ -31,7 +31,6 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.PlatformUI;
 
-import com.hangum.tadpole.commons.dialogs.message.dao.RequestResultDAO;
 import com.hangum.tadpole.commons.google.analytics.AnalyticCaller;
 import com.hangum.tadpole.commons.libs.core.message.CommonMessages;
 import com.hangum.tadpole.commons.util.GlobalImageUtils;
@@ -41,6 +40,7 @@ import com.hangum.tadpole.engine.sql.util.ExecuteDDLCommand;
 import com.hangum.tadpole.engine.sql.util.QueryUtils;
 import com.hangum.tadpole.engine.sql.util.resultset.QueryExecuteResultDTO;
 import com.hangum.tadpole.engine.sql.util.resultset.TadpoleResultSet;
+import com.hangum.tadpole.engine.utils.RequestQueryUtil;
 import com.hangum.tadpole.rdb.core.Messages;
 import com.hangum.tadpole.rdb.core.dialog.msg.TDBErroDialog;
 import com.hangum.tadpole.rdb.core.viewers.object.ExplorerViewer;
@@ -231,15 +231,14 @@ public class MySQLTaableCreateDialog extends TitleAreaDialog {
 		tableCreateDao.setType(""+comboTableType.getData(comboTableType.getText()));
 		
 		if(MessageDialog.openConfirm(null, CommonMessages.get().Confirm, Messages.get().TableCreationWantToCreate)) {
-			String strCreateTable = String.format(MySQLDMLTemplate.TMP_DIALOG_CREATE_TABLE,
+			String strSQL = String.format(MySQLDMLTemplate.TMP_DIALOG_CREATE_TABLE,
 					tableCreateDao.getFullName(userDB),
 					tableCreateDao.getEncoding(),
 					tableCreateDao.getCollation(),
 					tableCreateDao.getType());
 			
 			try {
-				RequestResultDAO reqReResultDAO = new RequestResultDAO();
-				ExecuteDDLCommand.executSQL(userDB, reqReResultDAO, strCreateTable);
+				ExecuteDDLCommand.executSQL(RequestQueryUtil.simpleRequestQuery(userDB, strSQL));
 				
 				// 테이블이 
 				isCreated = true;
