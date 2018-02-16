@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<?pde version="3.8"?><target name="target-tadpolea-1.7.6" sequenceNumber="328">
+<?pde version="3.8"?><target name="target-tadpolea-1.7.6" sequenceNumber="329">
 <locations>
 <location includeAllPlatforms="false" includeConfigurePhase="false" includeMode="slicer" includeSource="true" type="InstallableUnit">
 <unit id="org.eclipse.rap.gef.feature.feature.group" version="0.1.0.20170612-1850"/>
@@ -15,5 +15,9 @@
 </location>
 <location path="${project_loc:/targetProject}/rap-3.4.0-R-20171204-1637" type="Directory"/>
 <location path="${project_loc:/targetProject}/ext" type="Directory"/>
+<location includeAllPlatforms="false" includeConfigurePhase="false" includeMode="slicer" includeSource="true" type="InstallableUnit">
+<unit id="org.eclipse.babel.nls_rt.rap_ko.feature.group" version="4.5.0.v20161126080556"/>
+<repository location="http://archive.eclipse.org/technology/babel/update-site/R0.14.1/mars"/>
+</location>
 </locations>
 </target>
