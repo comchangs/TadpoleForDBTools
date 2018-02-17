@@ -282,12 +282,16 @@ public class ResultTableComposite extends AbstractResultDetailComposite {
 				public void widgetSelected(SelectionEvent e) {
 					
 					// rsDAO의 결과가 없을 경우에 처리 할것 
-					Object obj = rsDAO.getMapExtendResult().get(MYSQL_EXTENSION_VIEW.SHOW_PROFILLING.name());
-					if(obj != null) {
-						MySQLExtensionViewDialog profileDialog = new MySQLExtensionViewDialog(getShell(), reqQuery, rsDAO);
-						profileDialog.open();
-					} else {
+					if(rsDAO == null) {
 						MessageDialog.openWarning(getShell(), CommonMessages.get().Warning, Messages.get().DoNotShowProfileResult);
+					} else {
+						Object obj = rsDAO.getMapExtendResult().get(MYSQL_EXTENSION_VIEW.SHOW_PROFILLING.name());
+						if(obj != null) {
+							MySQLExtensionViewDialog profileDialog = new MySQLExtensionViewDialog(getShell(), reqQuery, rsDAO);
+							profileDialog.open();
+						} else {
+							MessageDialog.openWarning(getShell(), CommonMessages.get().Warning, Messages.get().DoNotShowProfileResult);
+						}
 					}
 				}
 			});

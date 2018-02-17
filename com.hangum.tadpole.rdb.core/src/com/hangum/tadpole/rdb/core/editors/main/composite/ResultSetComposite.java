@@ -130,10 +130,6 @@ public class ResultSetComposite extends Composite {
 	 * 에디터가 select 에디터인지 즉 구분자로 쿼리를 검색하는 상태인지 나타냅니다.
 	 */
 	private boolean isSelect = true;
-//	/**
-//	 * 현재 사용자의 데이터의 궈한타입.
-//	 */
-//	private String dbUserRoleType = ""; //$NON-NLS-1$
 	
 	/** execute job */
 	private Job jobQueryManager = null;
@@ -525,32 +521,33 @@ public class ResultSetComposite extends Composite {
 										QueryUtils.executeQuery(tmpUserDB, "SET profiling_history_size = 15", 0, 10);
 
 										// 사용자 쿼리를 날리고. 
-										QueryExecuteResultDTO startStatus = QueryUtils.executeQuery(tmpUserDB, "SHOW STATUS", 0, 500);
+										final QueryExecuteResultDTO startStatus = QueryUtils.executeQuery(tmpUserDB, "SHOW STATUS", 0, 500);
 										
 										//
 										rsDAO = runSelect(reqQuery, queryTimeOut, strUserEmail, intSelectLimitCnt, 0);
 										listRSDao.add(rsDAO);
 										//
-										QueryExecuteResultDTO endStatus = QueryUtils.executeQuery(tmpUserDB, "SHOW STATUS", 0, 500);
-										QueryExecuteResultDTO _tmppShowProfiles = QueryUtils.executeQuery(tmpUserDB, "SHOW PROFILES", 0, 100);
-										String strQueryID = getLastQueryID(_tmppShowProfiles);
+										final QueryExecuteResultDTO endStatus = QueryUtils.executeQuery(tmpUserDB, "SHOW STATUS", 0, 500);
+										final QueryExecuteResultDTO _tmppShowProfiles = QueryUtils.executeQuery(tmpUserDB, "SHOW PROFILES", 0, 100);
+										final String strQueryID = getLastQueryID(_tmppShowProfiles);
 
 										if(logger.isDebugEnabled()) logger.debug("profile query id is : " + strQueryID);
-										QueryExecuteResultDTO showProfiles = QueryUtils.executeQuery(tmpUserDB, 
+										final QueryExecuteResultDTO showProfiles = QueryUtils.executeQuery(tmpUserDB, 
 												String.format("SELECT state, ROUND(SUM(duration),5) AS `duration(sec)` FROM information_schema.profiling WHERE query_id=%s GROUP BY state ORDER BY `duration(sec)` DESC", strQueryID), 0, 100);
 										rsDAO.setMapExtendResult(MySQLExtensionViewDialog.MYSQL_EXTENSION_VIEW.SHOW_PROFILLING.name(), showProfiles);
 										
 										// diff data
-										QueryExecuteResultDTO diffStatusDAO = diffStatus(startStatus, endStatus);
+										final QueryExecuteResultDTO diffStatusDAO = diffStatus(startStatus, endStatus);
 										rsDAO.setMapExtendResult(MySQLExtensionViewDialog.MYSQL_EXTENSION_VIEW.STATUS_VARIABLE.name(), diffStatusDAO);
 										
 										// free profiling
 										QueryUtils.executeQuery(tmpUserDB, "SET PROFILING = 0", 0, 10);
 										
 										// EXECUTE_PLAN
-										if(!(StringUtils.startsWithIgnoreCase(StringUtils.trimToEmpty(reqQuery.getSql()), "SET") ||
-											StringUtils.startsWithIgnoreCase(StringUtils.trimToEmpty(reqQuery.getSql()), "CALL") ||
-											StringUtils.startsWithIgnoreCase(StringUtils.trimToEmpty(reqQuery.getSql()), "SHOW"))
+										final String _checkSQL = SQLUtil.removeCommentAndOthers(reqQuery.getUserDB(), reqQuery.getSql());
+										if(!(StringUtils.startsWithIgnoreCase(_checkSQL, "SET") ||
+											StringUtils.startsWithIgnoreCase(_checkSQL, "CALL") ||
+											StringUtils.startsWithIgnoreCase(_checkSQL, "SHOW"))
 										) {
 											try {
 												QueryExecuteResultDTO queryPlanDAO = ExecuteQueryPlan.runSQLExplainPlan(getUserDB(), reqQuery, strPlanTBName);
@@ -658,6 +655,7 @@ public class ResultSetComposite extends Composite {
 				columnLabelName.put(0, "variable");
 				columnLabelName.put(1, "value");
 				renewDiffObject.setColumnName(columnLabelName);
+				renewDiffObject.setColumnLabelName(columnLabelName);
 				
 				TadpoleResultSet dataList = new TadpoleResultSet();
 				List<Map<Integer, Object>> diffData = new ArrayList<>();
@@ -1120,13 +1118,6 @@ public class ResultSetComposite extends Composite {
 		}
 	}
 
-//	public void setDbUserRoleType(String userRoleType) {
-//		dbUserRoleType = userRoleType;
-//	}
-//	public String getDbUserRoleType() {
-//		return dbUserRoleType;
-//	}
-
 	/**
 	 * 쿼리 결과를 화면에 출력하고 로그를 쌓습니다.
 	 * 
@@ -1174,13 +1165,13 @@ public class ResultSetComposite extends Composite {
 				// 결과에 메시지가 있으면 시스템 메시지에 결과 메시지를 출력한다. 종료.
 			} else if(reqQuery.isStatement()) {
 				getRdbResultComposite().refreshErrorMessageView(reqQuery, null, _strBasicMsg);
-			
-				if(reqQuery.getExecuteType() == EditorDefine.EXECUTE_TYPE.ALL) {
+				
+				if(listRSDao.get(0).getDataList() == null) { 
 					getRdbResultComposite().refreshInfoMessageView(reqQuery, Messages.get().ResultSetComposite_10 + reqQuery.getRequestResultDao().getMesssage() + PublicTadpoleDefine.LINE_SEPARATOR + _strBasicMsg  + StringUtils.abbreviate(reqQuery.getOriginalSql(), 200));
 					getRdbResultComposite().resultFolderSel(EditorDefine.RESULT_TAB.TADPOLE_MESSAGE);
-					refreshExplorerView(getUserDB(), reqQuery);
+				} else {
+					if(!listRSDao.isEmpty()) showResultView(reqQuery, listRSDao, listLongHistorySeq);
 				}
-				if(!listRSDao.isEmpty()) showResultView(reqQuery, listRSDao, listLongHistorySeq);
 			} else {
 				if(reqQuery.getSqlType() == SQL_TYPE.DDL) {
 					String strDefaultMsg = Messages.get().ResultSetComposite_10 + reqQuery.getOriginalSql();
