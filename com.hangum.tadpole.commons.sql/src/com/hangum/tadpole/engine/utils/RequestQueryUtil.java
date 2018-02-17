@@ -33,5 +33,19 @@ public class RequestQueryUtil {
 		return new RequestQuery(Utils.getUniqueID(), userDB, strSQL, PublicTadpoleDefine.OBJECT_TYPE.TABLES, 
 				EditorDefine.QUERY_MODE.QUERY, EditorDefine.EXECUTE_TYPE.BLOCK, true);
 	}
+	
+	/**
+	 * simple request query
+	 * 
+	 * @param loginIp
+	 * @param sqlHead
+	 * @param userDB
+	 * @param strQuery
+	 * @return
+	 */
+	public static RequestQuery simpleRequestQuery(String loginIp, String sqlHead, UserDBDAO userDB, String strSQL) {
+		return new RequestQuery(loginIp, sqlHead, Utils.getUniqueID(), userDB, strSQL, PublicTadpoleDefine.OBJECT_TYPE.TABLES, 
+				EditorDefine.QUERY_MODE.QUERY, EditorDefine.EXECUTE_TYPE.BLOCK, true);
+	}
 
 }

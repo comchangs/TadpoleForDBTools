@@ -122,7 +122,7 @@ public class ResultSetComposite extends Composite {
 	
 	/** 몇 행이 변경 되었습니다. 메시지 */
 	private static final String MSG_ROW_CHAGE = Messages.get().RowChangeCount;
-	
+
 	/** 쿼리를 배치실행했을때 수행 할 수 있는 SQL 수 */
 	private int BATCH_EXECUTE_SQL_LIMIT = 5;
 	
@@ -467,6 +467,9 @@ public class ResultSetComposite extends Composite {
 		// is profilling
 		final boolean isProfilling = GetPreferenceGeneral.getRDBQueryProfilling();
 		
+		final String strLoginIP = SessionManager.getLoginIp();
+		final String strSQLHead = SessionManager.getHeadComment();
+		
 		jobQueryManager = new Job(Messages.get().MainEditor_45) {
 			@Override
 			public IStatus run(IProgressMonitor monitor) {
@@ -480,9 +483,9 @@ public class ResultSetComposite extends Composite {
 							if(!strExeSQL.equals("")) { 
 								// execute batch update는 ddl문이 있으면 안되어서 실행할 수 있는 쿼리만 걸러 줍니다.
 								if(!SQLUtil.isStatement(strExeSQL)) {
-									listNotStmtRequestQuery.add(RequestQueryUtil.simpleRequestQuery(tmpUserDB, strExeSQL));
+									listNotStmtRequestQuery.add(RequestQueryUtil.simpleRequestQuery(strLoginIP, strSQLHead, tmpUserDB, strExeSQL));
 								} else {
-									listStmtRequestQuery.add(RequestQueryUtil.simpleRequestQuery(tmpUserDB, strExeSQL));
+									listStmtRequestQuery.add(RequestQueryUtil.simpleRequestQuery(strLoginIP, strSQLHead, tmpUserDB, strExeSQL));
 								}
 							}
 						}

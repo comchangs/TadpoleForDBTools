@@ -98,12 +98,16 @@ public class RequestQuery implements Cloneable {
 	 * @param isAutoCommit autocommit
 	 */
 	public RequestQuery(String connectId, UserDBDAO userDB, String originalSql, OBJECT_TYPE dbAction, EditorDefine.QUERY_MODE mode, EditorDefine.EXECUTE_TYPE type, boolean isAutoCommit) {
+		this(SessionManager.getLoginIp(), SessionManager.getHeadComment(), connectId, userDB, originalSql, dbAction, mode, type, isAutoCommit);
+	}
+	
+	public RequestQuery(String loginIP, String sqlHead, String connectId, UserDBDAO userDB, String originalSql, OBJECT_TYPE dbAction, EditorDefine.QUERY_MODE mode, EditorDefine.EXECUTE_TYPE type, boolean isAutoCommit) {
 		this.connectId = connectId;
 		this.userDB = userDB;
 		//
 		// 사용자가 네트웍을 바꾸어서 사용하면 어떻게 되지???
 		//
-		this.userIp = SessionManager.getLoginIp();// RWT.getRequest().getRemoteAddr();
+		this.userIp = loginIP;
 		
 		this.originalSql = originalSql;
 		this.dbAction = dbAction;
@@ -113,7 +117,7 @@ public class RequestQuery implements Cloneable {
 		parseSQL(this.sql);
 		
 		// 사용자 쿼리에 포맷팅을 한다.
-		this.sql = SessionManager.getHeadComment() + this.sql;
+		this.sql = sqlHead + this.sql;
 		
 //		logger.debug("================================================================================================");
 //		logger.debug("[originalSql]" + originalSql);
@@ -122,6 +126,7 @@ public class RequestQuery implements Cloneable {
 		this.mode = mode;
 		this.executeType = type;
 		this.isAutoCommit = isAutoCommit;
+
 	}
 
 	/**
