@@ -244,13 +244,13 @@ public class TablesComposite extends DBInfosComposite {
 	 */
 	private void download() {
 		if(tvTableInform.getTable().getItemCount() == 0) return;
-		if(!MessageDialog.openConfirm(null, CommonMessages.get().Confirm, Messages.get().TablesComposite_3)) return;
+		if(!MessageDialog.openConfirm(null, CommonMessages.get().Confirm, CommonMessages.get().DoYouWantDownload)) return;
 		
 		try {
 			byte[] strCVSContent = CSVUtils.tableToCSV(tvTableInform.getTable());//CSVUtils.makeData(listCsvData);
 			downloadExtFile(userDB.getDisplay_name() + "_TableInformation.csv", strCVSContent); //$NON-NLS-1$
 			
-			MessageDialog.openInformation(null, CommonMessages.get().Information, Messages.get().TablesComposite_5);
+			MessageDialog.openInformation(null, CommonMessages.get().Information, CommonMessages.get().DownloadIsComplete);
 		} catch (Exception e) {
 			logger.error("Save CSV Data", e); //$NON-NLS-1$
 		}		

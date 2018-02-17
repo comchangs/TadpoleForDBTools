@@ -21,6 +21,11 @@ import org.eclipse.rap.rwt.RWT;
 public class CommonMessages {
 	private static final String BUNDLE_NAME = "com.hangum.tadpole.commons.libs.core.message.messages"; //$NON-NLS-1$
 	
+	public String ExecutedRunTime;
+	public String ExecutionResult;
+	
+	public String SQL;
+	public String UseLicense;
 	// 메뉴
 	public String File;
 	public String Manager;
@@ -105,7 +110,7 @@ public class CommonMessages {
 	public String CantModifyPreferenc;
 	
 	public String Download;
-	public String ResourceDownload;
+	public String DoYouWantDownload;
 
 	public String Role;
 
@@ -222,6 +227,8 @@ public class CommonMessages {
 	public String Import;
 
 	public String Gullim;
+	
+	public String Term;
 	
 	public static CommonMessages get() {
 		return RWT.NLS.getISO8859_1Encoded(BUNDLE_NAME, CommonMessages.class);

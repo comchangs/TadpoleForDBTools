@@ -377,8 +377,6 @@ public class Messages {
 	public String SQLUpdateDialog_8;
 	public String Update;
 	public String TableInformationEditor_1;
-	public String TablesComposite_3;
-	public String TablesComposite_5;
 	public String TDBErroDialog_2;
 	public String TDBInfoDialog_0;
 	public String RecordViewDialog_0;
