@@ -600,41 +600,57 @@ public class ResultSetDownloadDialog extends Dialog {
 	 */
 	protected ExportResultDTO downloadFile(final String fileName, final ExportResultDTO exportDto, final String encoding) throws Exception {
 		final File file = new File(exportDto.getFileFullName());
-		String strExt = StringUtils.substringAfterLast(exportDto.getFileFullName(), ".");
-//		if(logger.isInfoEnabled()) {
-//			logger.info("#####[start]#####################[resource download]");
-//			logger.info("\tfile ext : " + strExt);
-//			logger.info("\tfile size : " + file.length());
-//			logger.info("#####[end]#####################[resource download]");
-//		}
-		final byte[] bytesDatas = FileUtils.readFileToByteArray(file);
-		
-		// excel 파일의 경우 바이너리가 저장 되므로... 파일의 위치를 %user_home%/res/파일명 으로 남기도록 합니다.
-		if(exportDto.getExportMethod() == EXPORT_METHOD.EXCEL) {
+		if(file.exists()) {
+			String strExt = StringUtils.substringAfterLast(exportDto.getFileFullName(), ".");
+	//		if(logger.isInfoEnabled()) {
+	//			logger.info("#####[start]#####################[resource download]");
+	//			logger.info("\tfile ext : " + strExt);
+	//			logger.info("\tfile size : " + file.length());
+	//			logger.info("#####[end]#####################[resource download]");
+	//		}
+			final byte[] bytesDatas = FileUtils.readFileToByteArray(file);
 			
-			String strNewFile = ApplicationArgumentUtils.USER_RESOURCE_DIR + userSeq + PublicTadpoleDefine.DIR_SEPARATOR + System.currentTimeMillis() + file.getName();
-			if(logger.isDebugEnabled()) logger.debug("==> new file location: " + strNewFile);
-			FileUtils.moveFile(file, new File(strNewFile));
-			
-			exportDto.setResultData("file location: " + strNewFile);
-		} else {
-			exportDto.setResultData(new String(bytesDatas));
-		}
-		
-		getShell().getDisplay().asyncExec(new Runnable() {
-			@Override
-			public void run() {
-				try {
-					_downloadExtFile(fileName + "." + strExt, bytesDatas); //$NON-NLS-1$
-					
-					// 사용후 파일을 삭제한다.
-					FileUtils.deleteDirectory(new File(file.getParent()));
-				} catch(Exception e) {
-					logger.error("download file", e);
-				}
+			// excel 파일의 경우 바이너리가 저장 되므로... 파일의 위치를 %user_home%/res/파일명 으로 남기도록 합니다.
+			if(exportDto.getExportMethod() == EXPORT_METHOD.EXCEL) {
+				
+				String strNewFile = ApplicationArgumentUtils.USER_RESOURCE_DIR + userSeq + PublicTadpoleDefine.DIR_SEPARATOR + System.currentTimeMillis() + file.getName();
+				if(logger.isDebugEnabled()) logger.debug("==> new file location: " + strNewFile);
+				FileUtils.moveFile(file, new File(strNewFile));
+				
+				exportDto.setResultData("file location: " + strNewFile);
+			} else {
+				exportDto.setResultData(new String(bytesDatas));
 			}
-		});
-		
+			
+			getShell().getDisplay().asyncExec(new Runnable() {
+				@Override
+				public void run() {
+					try {
+						_downloadExtFile(fileName + "." + strExt, bytesDatas); //$NON-NLS-1$
+						
+						// 사용후 파일을 삭제한다.
+						FileUtils.deleteDirectory(new File(file.getParent()));
+					} catch(Exception e) {
+						logger.error("download file", e);
+					}
+				}
+			});
+		} else {
+			// 파일 결과가 없는 경우는 SQL문(INSERT, UPDATE 등)을 만드는데 SELECT ROW 결과가 없는 경우이다. 
+			// INSERT INTO AA(A, B, C) VLAUES(?, ?, ?) 를 만들수가 없는 경우...
+
+			getShell().getDisplay().asyncExec(new Runnable() {
+				@Override
+				public void run() {
+					try {
+						// Invalid thread access 에러 조심
+						MessageDialog.openWarning(null, CommonMessages.get().Warning, Messages.get().NoResultNoFile);
+					} catch(Exception e) {
+						logger.error("download file", e);
+					}
+				}
+			});
+		}
 		return exportDto;
 	}
 	

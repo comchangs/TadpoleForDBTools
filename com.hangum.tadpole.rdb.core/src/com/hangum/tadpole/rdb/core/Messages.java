@@ -726,7 +726,8 @@ public class Messages {
 	public String TextResultView;
 
 	public String TadpoleHistoryHubDataLocation;
-	
+
+	public String NoResultNoFile;
 	
 	
 	public static Messages get() {
