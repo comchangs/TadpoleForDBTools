@@ -229,6 +229,8 @@ public class CommonMessages {
 	public String Gullim;
 	
 	public String Term;
+
+	public String New;
 	
 	public static CommonMessages get() {
 		return RWT.NLS.getISO8859_1Encoded(BUNDLE_NAME, CommonMessages.class);

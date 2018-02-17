@@ -96,6 +96,8 @@ public class RequestQuery implements Cloneable {
 	 * @param mode 전체인지, 부분인지 {@code EditorDefine.QUERY_MODE}
 	 * @param type 쿼리, 실행 계획인지 {@code EditorDefine.EXECUTE_TYPE}
 	 * @param isAutoCommit autocommit
+	 * 
+	 * @category invalid thread 익셥션이 나오는 곳에서는 사용하면 안된다.
 	 */
 	public RequestQuery(String connectId, UserDBDAO userDB, String originalSql, OBJECT_TYPE dbAction, EditorDefine.QUERY_MODE mode, EditorDefine.EXECUTE_TYPE type, boolean isAutoCommit) {
 		this(SessionManager.getLoginIp(), SessionManager.getHeadComment(), connectId, userDB, originalSql, dbAction, mode, type, isAutoCommit);

@@ -24,6 +24,7 @@ public class RequestQueryUtil {
 
 	/**
 	 * simple request query
+	 * 	ps) invalid thread 익셥션이 나오는 곳에서는 사용하면 안된다.
 	 * 
 	 * @param userDB
 	 * @param strQuery
