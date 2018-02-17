@@ -260,7 +260,7 @@ public class ParameterDialog extends Dialog {
 	@Override
 	protected Point getInitialSize() {
 		// 영문에 맞추어 사이즈를 키웠다.	
-		return new Point(580, 400);
+		return new Point(600, 400);
 	}
 
 	/**

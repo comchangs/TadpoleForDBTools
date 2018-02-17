@@ -15,8 +15,11 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
+import org.eclipse.swt.widgets.Label;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPreferencePage;
+
+import com.hangum.tadpole.preference.Messages;
 
 /**
  * DB preference page
@@ -48,7 +51,10 @@ public class DBPreferencePage extends TadpoleDefaulPreferencePage implements IWo
 	@Override
 	protected Control createContents(Composite parent) {
 		Composite container = new Composite(parent, SWT.NULL);
-		container.setLayout(new GridLayout(2, false));
+		container.setLayout(new GridLayout(12, false));
+		
+		Label lblNewLabel = new Label(container, SWT.NONE);
+		lblNewLabel.setText(Messages.get().DatabaseSetting);
 		
 		return container;
 	}
