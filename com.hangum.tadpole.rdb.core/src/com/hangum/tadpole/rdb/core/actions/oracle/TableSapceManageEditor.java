@@ -60,7 +60,7 @@ import com.hangum.tadpole.engine.manager.TadpoleSQLManager;
 import com.hangum.tadpole.engine.query.dao.rdb.OracleTablespaceDAO;
 import com.hangum.tadpole.engine.query.dao.system.UserDBDAO;
 import com.hangum.tadpole.engine.sql.util.ExecuteDDLCommand;
-import com.hangum.tadpole.engine.sql.util.QueryUtils;
+import com.hangum.tadpole.engine.sql.util.ExecuteDMLCommand;
 import com.hangum.tadpole.engine.utils.RequestQueryUtil;
 import com.hangum.tadpole.rdb.core.Activator;
 import com.hangum.tadpole.rdb.core.Messages;
@@ -656,7 +656,7 @@ public class TableSapceManageEditor extends EditorPart {
 		String map_key = "getTablespaceList";
 
 		try {
-			QueryUtils.executeQuery(userDB, "SELECT 1 FROM SYS.DBA_DATA_FILES A,SYS.DBA_FREE_SPACE B,SYS.V_$TEMP_SPACE_HEADER C,SYS.V_$TEMP_EXTENT_POOL D,SYS.DBA_TEMP_FILES E,V$PARAMETER F WHERE 0=1", 0, 1);
+			ExecuteDMLCommand.executeQuery(userDB, "SELECT 1 FROM SYS.DBA_DATA_FILES A,SYS.DBA_FREE_SPACE B,SYS.V_$TEMP_SPACE_HEADER C,SYS.V_$TEMP_EXTENT_POOL D,SYS.DBA_TEMP_FILES E,V$PARAMETER F WHERE 0=1", 0, 1);
 		} catch (Exception e) {
 			map_key = "getUserTablespaceList";
 			//MessageDialog.openError(this.getSite().getShell(),CommonMessages.get().Error, "Tablespace 정보를 조회하기 위한 시스템 테이블 접근 권한이 부족합니다.\n" + e.getMessage() );

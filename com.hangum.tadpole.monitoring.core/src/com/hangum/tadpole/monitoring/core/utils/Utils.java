@@ -19,7 +19,7 @@ import com.hangum.tadpole.engine.query.dao.system.UserDAO;
 import com.hangum.tadpole.engine.query.dao.system.UserDBDAO;
 import com.hangum.tadpole.engine.query.dao.system.monitoring.MonitoringIndexDAO;
 import com.hangum.tadpole.engine.query.sql.TadpoleSystem_UserQuery;
-import com.hangum.tadpole.engine.sql.util.QueryUtils;
+import com.hangum.tadpole.engine.sql.util.ExecuteDMLCommand;
 
 /**
  * monitoring utils
@@ -44,7 +44,7 @@ public class Utils {
 		if(StringUtils.isNotEmpty(indexDao.getParam_1_init_value())) listParam.add(indexDao.getParam_1_init_value());
 		if(StringUtils.isNotEmpty(indexDao.getParam_2_init_value())) listParam.add(indexDao.getParam_2_init_value());
 		
-		return QueryUtils.selectToJson(userDB, indexDao.getQuery(), listParam);
+		return ExecuteDMLCommand.selectToJson(userDB, indexDao.getQuery(), listParam);
 	}
 	
 	/**
@@ -77,7 +77,7 @@ public class Utils {
 		JsonObject jsonEntry = new JsonObject();
 		
 		try {
-			JsonArray jsonArray = QueryUtils.selectToJson(userDB, strSQL);
+			JsonArray jsonArray = ExecuteDMLCommand.selectToJson(userDB, strSQL);
 			jsonEntry.add(strSQL, jsonArray);
 		} catch (Exception e) {
 			logger.error("sql to json error", e);
@@ -96,7 +96,7 @@ public class Utils {
 		
 		for (String strSQL : strSQLs) {
 			try {
-				JsonArray jsonArray = QueryUtils.selectToJson(userDB, strSQL);
+				JsonArray jsonArray = ExecuteDMLCommand.selectToJson(userDB, strSQL);
 				jsonEntry.add(strSQL, jsonArray);
 			} catch (Exception e) {
 				logger.error("sql to json error", e);

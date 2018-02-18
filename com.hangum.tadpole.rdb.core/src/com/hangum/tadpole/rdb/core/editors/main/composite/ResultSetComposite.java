@@ -77,7 +77,7 @@ import com.hangum.tadpole.engine.sql.paremeter.lang.OracleStyleSQLNamedParameter
 import com.hangum.tadpole.engine.sql.util.ObjectCompileUtil;
 import com.hangum.tadpole.engine.sql.util.OracleDbmsOutputUtil;
 import com.hangum.tadpole.engine.sql.util.PartQueryUtil;
-import com.hangum.tadpole.engine.sql.util.QueryUtils;
+import com.hangum.tadpole.engine.sql.util.ExecuteDMLCommand;
 import com.hangum.tadpole.engine.sql.util.SQLConvertCharUtil;
 import com.hangum.tadpole.engine.sql.util.SQLUtil;
 import com.hangum.tadpole.engine.sql.util.resultset.QueryExecuteResultDTO;
@@ -434,13 +434,13 @@ public class ResultSetComposite extends Composite {
 			reqResultDAO.setTdb_result_code(e.getErrorCode());
 			reqResultDAO.setMesssage(e.getMessage());
 			
-			TadpoleSystem_ExecutedSQL.insertExecuteHistory(
-						getRdbResultComposite().getUserSeq(), 
-						getRdbResultComposite().getUserDB(), 
-						reqResultDAO);
-			
 			executeErrorProgress(reqQuery, e, e.getMessage());
 			return false;
+		} finally {
+			TadpoleSystem_ExecutedSQL.insertExecuteHistory(
+					getRdbResultComposite().getUserSeq(), 
+					getRdbResultComposite().getUserDB(), 
+					reqResultDAO);
 		}
 		
 		///////////////////////////////////////////////////////////////////////////
@@ -519,23 +519,23 @@ public class ResultSetComposite extends Composite {
 								if(DBGroupDefine.MYSQL_GROUP == getUserDB().getDBGroup()) {
 									if(isProfilling) {
 
-										QueryUtils.executeQuery(tmpUserDB, "SET PROFILING = 1", 0, 10);
-										QueryUtils.executeQuery(tmpUserDB, "SET profiling_history_size = 0", 0, 10);
-										QueryUtils.executeQuery(tmpUserDB, "SET profiling_history_size = 15", 0, 10);
+										ExecuteDMLCommand.executeQuery(tmpUserDB, "SET PROFILING = 1", 0, 10);
+										ExecuteDMLCommand.executeQuery(tmpUserDB, "SET profiling_history_size = 0", 0, 10);
+										ExecuteDMLCommand.executeQuery(tmpUserDB, "SET profiling_history_size = 15", 0, 10);
 
 										// 사용자 쿼리를 날리고. 
-										final QueryExecuteResultDTO startStatus = QueryUtils.executeQuery(tmpUserDB, "SHOW STATUS", 0, 500);
+										final QueryExecuteResultDTO startStatus = ExecuteDMLCommand.executeQuery(tmpUserDB, "SHOW STATUS", 0, 500);
 										
 										//
 										rsDAO = runSelect(reqQuery, queryTimeOut, strUserEmail, intSelectLimitCnt, 0);
 										listRSDao.add(rsDAO);
 										//
-										final QueryExecuteResultDTO endStatus = QueryUtils.executeQuery(tmpUserDB, "SHOW STATUS", 0, 500);
-										final QueryExecuteResultDTO _tmppShowProfiles = QueryUtils.executeQuery(tmpUserDB, "SHOW PROFILES", 0, 100);
+										final QueryExecuteResultDTO endStatus = ExecuteDMLCommand.executeQuery(tmpUserDB, "SHOW STATUS", 0, 500);
+										final QueryExecuteResultDTO _tmppShowProfiles = ExecuteDMLCommand.executeQuery(tmpUserDB, "SHOW PROFILES", 0, 100);
 										final String strQueryID = getLastQueryID(_tmppShowProfiles);
 
 										if(logger.isDebugEnabled()) logger.debug("profile query id is : " + strQueryID);
-										final QueryExecuteResultDTO showProfiles = QueryUtils.executeQuery(tmpUserDB, 
+										final QueryExecuteResultDTO showProfiles = ExecuteDMLCommand.executeQuery(tmpUserDB, 
 												String.format("SELECT state, ROUND(SUM(duration),5) AS `duration(sec)` FROM information_schema.profiling WHERE query_id=%s GROUP BY state ORDER BY `duration(sec)` DESC", strQueryID), 0, 100);
 										rsDAO.setMapExtendResult(MySQLExtensionViewDialog.MYSQL_EXTENSION_VIEW.SHOW_PROFILLING.name(), showProfiles);
 										
@@ -544,7 +544,7 @@ public class ResultSetComposite extends Composite {
 										rsDAO.setMapExtendResult(MySQLExtensionViewDialog.MYSQL_EXTENSION_VIEW.STATUS_VARIABLE.name(), diffStatusDAO);
 										
 										// free profiling
-										QueryUtils.executeQuery(tmpUserDB, "SET PROFILING = 0", 0, 10);
+										ExecuteDMLCommand.executeQuery(tmpUserDB, "SET PROFILING = 0", 0, 10);
 										
 										// EXECUTE_PLAN
 										final String _checkSQL = SQLUtil.removeCommentAndOthers(reqQuery.getUserDB(), reqQuery.getSql());

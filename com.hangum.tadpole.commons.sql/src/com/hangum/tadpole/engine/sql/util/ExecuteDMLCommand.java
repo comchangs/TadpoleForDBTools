@@ -18,9 +18,7 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.sql.Timestamp;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -62,26 +60,11 @@ import com.opencsv.CSVWriter;
  * @author hangum
  *
  */
-public class QueryUtils {
-	private static final Logger logger = Logger.getLogger(QueryUtils.class);
+public class ExecuteDMLCommand {
+	private static final Logger logger = Logger.getLogger(ExecuteDMLCommand.class);
 	
 	/** SUPPORT RESULT TYPE */
 	public static enum RESULT_TYPE {JSON, CSV, XML, HTML_TABLE};
-	
-	/**
-	 * index of column name 
-	 * 
-	 * @param mapColumnLableName
-	 * @return
-	 */
-	public static Map<String, Integer> columnNameToIndex(Map<Integer, String> mapColumnLableName) {
-		Map<String, Integer> _reverseColumnName = new HashMap<String, Integer>();
-		for(int i=0; i<mapColumnLableName.size(); i++) {
-			_reverseColumnName.put(mapColumnLableName.get(i).toUpperCase(), i);	
-		}
-		
-		return _reverseColumnName;
-	}
 	
 	/**
 	 * select문 이외의 쿼리를 실행합니다
@@ -130,48 +113,6 @@ public class QueryUtils {
 		}
 	}
 	
-//	/**
-//	 * execute query
-//	 * 
-//	 * @param connectId
-//	 * @param userDB
-//	 * @param strQuery
-//	 * @param intStartCnt
-//	 * @param intSelectLimitCnt
-//	 * @return
-//	 * @throws Exception
-//	 */
-//	public static QueryExecuteResultDTO executeQueryIsTransaction(final String connectId, final UserDBDAO userDB, String strSQL, final int intStartCnt, final int intSelectLimitCnt) throws Exception {
-//		ResultSet resultSet = null;
-//		java.sql.Connection javaConn = null;
-//		Statement statement = null;
-//		
-//		strSQL = SQLUtil.makeExecutableSQL(userDB, strSQL);
-//		try {
-//			javaConn = TadpoleSQLTransactionManager.getInstance(connectId, SessionManager.getEMAIL(), userDB);
-//			statement = javaConn.createStatement();
-//			
-//			if(intStartCnt == 0) {
-//				statement.execute(strSQL);
-//				resultSet = statement.getResultSet();
-//			} else {
-//				strSQL = PartQueryUtil.makeSelect(userDB, strSQL, intStartCnt, intSelectLimitCnt);
-//				
-//				if(logger.isDebugEnabled()) logger.debug("part sql called : " + strSQL);
-//				statement.execute(strSQL);
-//				resultSet = statement.getResultSet();
-//			}
-//			return new QueryExecuteResultDTO(userDB, strSQL, false, resultSet, intSelectLimitCnt, intStartCnt);
-//			
-//		} catch(Exception e) {
-//			logger.error(String.format("execute query %s", e.getMessage()));
-//			throw e;
-//		} finally {
-//			if(statement != null) statement.close();
-//			if(resultSet != null) resultSet.close();
-//		}
-//		
-//	}
 	/**
 	 * 쿼리중에 quote sql을 반영해서 작업합니다.
 	 * 
@@ -189,10 +130,10 @@ public class QueryUtils {
 		reqResultDAO.setSql_text(reqQuery.getSql());
 	
 		try {
-			return _executeQuery(reqQuery, intStartCnt, intSelectLimitCnt);
+			QueryExecuteResultDTO queryExecuteResult =  _executeQuery(reqQuery, intStartCnt, intSelectLimitCnt);
+			reqQuery.setRequestResultDao(reqResultDAO);
 			
-//			reqResultDAO.setDataChanged((Boolean)resultMap.get("result"));
-//			reqResultDAO.setMesssage((String)resultMap.get("dbms_output"));
+			return queryExecuteResult;
 		} catch(Exception e) {
 			logger.error("execute sql", e);
 			reqResultDAO.setResult(PublicTadpoleDefine.SUCCESS_FAIL.F.name()); //$NON-NLS-1$

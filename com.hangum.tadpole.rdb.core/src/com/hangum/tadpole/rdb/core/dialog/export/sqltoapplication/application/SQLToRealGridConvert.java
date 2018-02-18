@@ -17,7 +17,7 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 
 import com.hangum.tadpole.engine.query.dao.system.UserDBDAO;
-import com.hangum.tadpole.engine.sql.util.QueryUtils;
+import com.hangum.tadpole.engine.sql.util.ExecuteDMLCommand;
 import com.hangum.tadpole.engine.sql.util.RDBTypeToJavaTypeUtils;
 import com.hangum.tadpole.engine.sql.util.resultset.QueryExecuteResultDTO;
 
@@ -46,7 +46,7 @@ public class SQLToRealGridConvert extends AbstractSQLTo {
 		try {
 			String STR_TEMPLATE = IOUtils.toString(SQLToRealGridConvert.class.getResource("realgrid.js.template"));
 
-			QueryExecuteResultDTO queryResult = QueryUtils.executeQuery(userDB, sql, 0, 4);
+			QueryExecuteResultDTO queryResult = ExecuteDMLCommand.executeQuery(userDB, sql, 0, 4);
 			Map<Integer, String> columnLabel = queryResult.getColumnLabelName();
 			Map<Integer, Integer> columnType = queryResult.getColumnType();
 			

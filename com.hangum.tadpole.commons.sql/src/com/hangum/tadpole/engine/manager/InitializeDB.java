@@ -17,7 +17,7 @@ import org.apache.log4j.Logger;
 
 import com.hangum.tadpole.engine.define.DBGroupDefine;
 import com.hangum.tadpole.engine.query.dao.system.UserDBDAO;
-import com.hangum.tadpole.engine.sql.util.QueryUtils;
+import com.hangum.tadpole.engine.sql.util.ExecuteDMLCommand;
 import com.hangum.tadpole.engine.sql.util.resultset.QueryExecuteResultDTO;
 
 /**
@@ -42,7 +42,7 @@ public class InitializeDB {
 				//
 				// db readonly 여부
 				//
-				QueryExecuteResultDTO endStatus = QueryUtils.executeQuery(userDB, "SHOW global variables like 'read_only'", 0, 20);
+				QueryExecuteResultDTO endStatus = ExecuteDMLCommand.executeQuery(userDB, "SHOW global variables like 'read_only'", 0, 20);
 				List<Map<Integer, Object>> tdbResultSet = endStatus.getDataList().getData();
 				String strReadonly = ""+tdbResultSet.get(0).get(1);
 				if("OFF".equals(strReadonly)) userDB.setReadonly("NO"); 
@@ -67,7 +67,7 @@ public class InitializeDB {
 		if(userDB.getDBGroup() == DBGroupDefine.MYSQL_GROUP) {
 			
 			try {
-				QueryExecuteResultDTO endStatus = QueryUtils.executeQuery(userDB, "show variables like 'character_set_database'", 0, 20);
+				QueryExecuteResultDTO endStatus = ExecuteDMLCommand.executeQuery(userDB, "show variables like 'character_set_database'", 0, 20);
 				List<Map<Integer, Object>> tdbResultSet = endStatus.getDataList().getData();
 				strCharacterSetDatabase = ""+tdbResultSet.get(0).get(1);
 				

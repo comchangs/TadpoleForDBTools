@@ -33,7 +33,7 @@ import com.hangum.tadpole.commons.libs.core.dao.SQLStatementStruct;
 import com.hangum.tadpole.commons.libs.core.define.PublicTadpoleDefine;
 import com.hangum.tadpole.commons.libs.core.message.CommonMessages;
 import com.hangum.tadpole.commons.util.GlobalImageUtils;
-import com.hangum.tadpole.engine.sql.util.QueryUtils;
+import com.hangum.tadpole.engine.sql.util.ExecuteDMLCommand;
 import com.hangum.tadpole.engine.sql.util.resultset.QueryExecuteResultDTO;
 import com.hangum.tadpole.engine.sql.util.resultset.TadpoleResultSet;
 import com.hangum.tadpole.engine.sql.util.tables.TableUtil;
@@ -169,7 +169,7 @@ public class UpdateDeleteConfirmDialog extends Dialog {
 			if(isWhere) {
 				RequestQuery _cloneRequestQuery = (RequestQuery)reqQuery.clone();
 				_cloneRequestQuery.setSql(sqlSelect);
-				QueryExecuteResultDTO rsDAO = QueryUtils.executSQL(_cloneRequestQuery, 0, 500);
+				QueryExecuteResultDTO rsDAO = ExecuteDMLCommand.executSQL(_cloneRequestQuery, 0, 500);
 				TableUtil.createTableColumn(tvQueryResult, rsDAO);
 				
 				tvQueryResult.setLabelProvider(new QueryResultLabelProvider(reqQuery.getMode(), rsDAO));

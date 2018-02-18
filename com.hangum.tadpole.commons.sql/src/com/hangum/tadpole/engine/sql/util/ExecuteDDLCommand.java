@@ -17,7 +17,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.apache.log4j.Logger;
-import org.eclipse.rap.rwt.RWT;
 
 import com.hangum.tadpole.commons.dialogs.message.dao.RequestResultDAO;
 import com.hangum.tadpole.commons.exception.TadpoleSQLManagerException;
@@ -34,7 +33,7 @@ import com.hangum.tadpole.engine.utils.RequestQuery;
 import com.hangum.tadpole.session.manager.SessionManager;
 
 /**
- * tadpole system에서 공통으로 사용하는 모듈
+ * tadpole system에서 공통으로 사용하는 DDL 모듈
  * 
  * @author hangum
  *
@@ -58,7 +57,7 @@ public class ExecuteDDLCommand {
 		
 		RequestResultDAO reqResultDAO = new RequestResultDAO(); 
 		reqResultDAO.setStartDateExecute(new Timestamp(System.currentTimeMillis()));
-		reqResultDAO.setIpAddress(RWT.getRequest().getRemoteAddr());
+		reqResultDAO.setIpAddress(reqQuery.getUserIp());
 		reqResultDAO.setSql_text(reqQuery.getSql());
 	
 		try {

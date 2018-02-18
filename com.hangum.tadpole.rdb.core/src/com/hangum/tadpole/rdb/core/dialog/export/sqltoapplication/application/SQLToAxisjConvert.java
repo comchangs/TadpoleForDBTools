@@ -18,7 +18,7 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 
 import com.hangum.tadpole.engine.query.dao.system.UserDBDAO;
-import com.hangum.tadpole.engine.sql.util.QueryUtils;
+import com.hangum.tadpole.engine.sql.util.ExecuteDMLCommand;
 import com.hangum.tadpole.engine.sql.util.RDBTypeToJavaTypeUtils;
 import com.hangum.tadpole.engine.sql.util.resultset.QueryExecuteResultDTO;
 import com.hangum.tadpole.engine.sql.util.resultset.TadpoleResultSet;
@@ -41,7 +41,7 @@ public class SQLToAxisjConvert extends AbstractSQLTo {
 	
 	public static List<AxisjHeaderDAO> initializeHead(List<AxisjHeaderDAO> listAxisjHeader, UserDBDAO userDB, String sql) {
 		try {
-			QueryExecuteResultDTO queryResult = QueryUtils.executeQuery(userDB, sql, 0, 4);
+			QueryExecuteResultDTO queryResult = ExecuteDMLCommand.executeQuery(userDB, sql, 0, 4);
 			Map<Integer, String> columnLabel = queryResult.getColumnLabelName();
 			Map<Integer, Integer> columnType = queryResult.getColumnType();
 			
@@ -83,7 +83,7 @@ public class SQLToAxisjConvert extends AbstractSQLTo {
 		try {
 			String STR_TEMPLATE = IOUtils.toString(SQLToAxisjConvert.class.getResource("axis.js.template"), "UTF-8");
 
-			QueryExecuteResultDTO queryResult = QueryUtils.executeQuery(userDB, sql, 0, 4);
+			QueryExecuteResultDTO queryResult = ExecuteDMLCommand.executeQuery(userDB, sql, 0, 4);
 			Map<Integer, String> columnLabel = queryResult.getColumnLabelName();
 			
 			String strHead = "";

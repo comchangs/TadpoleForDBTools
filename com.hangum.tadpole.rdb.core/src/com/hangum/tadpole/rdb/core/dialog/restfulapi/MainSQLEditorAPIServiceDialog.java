@@ -48,7 +48,7 @@ import com.hangum.tadpole.engine.query.sql.TadpoleSystem_ExecutedSQL;
 import com.hangum.tadpole.engine.restful.RESTfulAPIUtils;
 import com.hangum.tadpole.engine.sql.paremeter.NamedParameterDAO;
 import com.hangum.tadpole.engine.sql.paremeter.NamedParameterUtil;
-import com.hangum.tadpole.engine.sql.util.QueryUtils;
+import com.hangum.tadpole.engine.sql.util.ExecuteDMLCommand;
 import com.hangum.tadpole.engine.sql.util.SQLUtil;
 import com.hangum.tadpole.engine.utils.RequestQuery;
 import com.hangum.tadpole.engine.utils.RequestQueryUtil;
@@ -138,7 +138,7 @@ public class MainSQLEditorAPIServiceDialog extends Dialog {
 			}
 		});
 		comboResultType.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
-		for (QueryUtils.RESULT_TYPE resultType : QueryUtils.RESULT_TYPE.values()) {
+		for (ExecuteDMLCommand.RESULT_TYPE resultType : ExecuteDMLCommand.RESULT_TYPE.values()) {
 			comboResultType.add(resultType.name());
 		}
 		comboResultType.select(0);
@@ -200,7 +200,7 @@ public class MainSQLEditorAPIServiceDialog extends Dialog {
 	 */
 	private void initResultType() {
 		boolean isEnable = false;
-		if(QueryUtils.RESULT_TYPE.CSV.name().equals(comboResultType.getText())) {
+		if(ExecuteDMLCommand.RESULT_TYPE.CSV.name().equals(comboResultType.getText())) {
 			isEnable = true;
 		}
 		
@@ -283,7 +283,7 @@ public class MainSQLEditorAPIServiceDialog extends Dialog {
 				intSQLCnt++;
 				
 				NamedParameterDAO dao = NamedParameterUtil.parseParameterUtils(userDB, strTmpSQL, strArgument);
-				if(QueryUtils.RESULT_TYPE.JSON.name().equalsIgnoreCase(comboResultType.getText())) {
+				if(ExecuteDMLCommand.RESULT_TYPE.JSON.name().equalsIgnoreCase(comboResultType.getText())) {
 					strExecuteResultData += getSelect(userDB, dao.getStrSQL(), dao.getListParam()) + ","; //$NON-NLS-1$
 				} else {
 					strExecuteResultData += getSelect(userDB, dao.getStrSQL(), dao.getListParam());
@@ -291,7 +291,7 @@ public class MainSQLEditorAPIServiceDialog extends Dialog {
 			}
 			
 			if(intSQLCnt > 1) {	
-				if(QueryUtils.RESULT_TYPE.JSON.name().equalsIgnoreCase(comboResultType.getText())) {
+				if(ExecuteDMLCommand.RESULT_TYPE.JSON.name().equalsIgnoreCase(comboResultType.getText())) {
 					strExecuteResultData = "[" + StringUtils.removeEnd(strExecuteResultData, ",") + "]";  //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 				}
 			}
@@ -334,18 +334,18 @@ public class MainSQLEditorAPIServiceDialog extends Dialog {
 		
 		if(SQLUtil.isStatement(strSQL)) {
 			
-			if(QueryUtils.RESULT_TYPE.JSON.name().equals(comboResultType.getText())) {
-				JsonArray jsonArry = QueryUtils.selectToJson(userDB, strSQL, listParam);
+			if(ExecuteDMLCommand.RESULT_TYPE.JSON.name().equals(comboResultType.getText())) {
+				JsonArray jsonArry = ExecuteDMLCommand.selectToJson(userDB, strSQL, listParam);
 				strResult = JSONUtil.getPretty(jsonArry.toString());
-			} else if(QueryUtils.RESULT_TYPE.CSV.name().equals(comboResultType.getText())) {
-				strResult = QueryUtils.selectToCSV(userDB, strSQL, listParam, btnAddHeader.getSelection(), textDelimiter.getText());
-			} else if(QueryUtils.RESULT_TYPE.XML.name().equals(comboResultType.getText())) {
-				strResult = QueryUtils.selectToXML(userDB, strSQL, listParam);
+			} else if(ExecuteDMLCommand.RESULT_TYPE.CSV.name().equals(comboResultType.getText())) {
+				strResult = ExecuteDMLCommand.selectToCSV(userDB, strSQL, listParam, btnAddHeader.getSelection(), textDelimiter.getText());
+			} else if(ExecuteDMLCommand.RESULT_TYPE.XML.name().equals(comboResultType.getText())) {
+				strResult = ExecuteDMLCommand.selectToXML(userDB, strSQL, listParam);
 			} else {
-				strResult = QueryUtils.selectToHTML_TABLE(userDB, strSQL, listParam);
+				strResult = ExecuteDMLCommand.selectToHTML_TABLE(userDB, strSQL, listParam);
 			}
 		} else {
-			strResult = QueryUtils.executeDML(userDB, strSQL, listParam, comboResultType.getText());
+			strResult = ExecuteDMLCommand.executeDML(userDB, strSQL, listParam, comboResultType.getText());
 		}
 		
 		return strResult;

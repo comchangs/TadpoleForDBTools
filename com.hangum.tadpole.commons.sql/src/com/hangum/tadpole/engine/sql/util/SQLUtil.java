@@ -11,6 +11,8 @@
 package com.hangum.tadpole.engine.sql.util;
 
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.regex.Pattern;
 
 import org.apache.commons.lang.StringEscapeUtils;
@@ -80,6 +82,21 @@ public class SQLUtil {
 		/* MSSQL- USE DATABASE명 */
 //		"USE"
 //	};
+	
+	/**
+	 * index of column name 
+	 * 
+	 * @param mapColumnLableName
+	 * @return
+	 */
+	public static Map<String, Integer> columnNameToIndex(Map<Integer, String> mapColumnLableName) {
+		Map<String, Integer> _reverseColumnName = new HashMap<String, Integer>();
+		for(int i=0; i<mapColumnLableName.size(); i++) {
+			_reverseColumnName.put(mapColumnLableName.get(i).toUpperCase(), i);	
+		}
+		
+		return _reverseColumnName;
+	}
 	
 	/**
 	 * tadpole 에서 사용하는 특수 컬럼여부 
