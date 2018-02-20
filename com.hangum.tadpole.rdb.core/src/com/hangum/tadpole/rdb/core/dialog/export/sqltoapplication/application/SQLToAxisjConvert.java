@@ -18,8 +18,8 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 
 import com.hangum.tadpole.engine.query.dao.system.UserDBDAO;
-import com.hangum.tadpole.engine.sql.util.ExecuteDMLCommand;
 import com.hangum.tadpole.engine.sql.util.RDBTypeToJavaTypeUtils;
+import com.hangum.tadpole.engine.sql.util.executer.ExecuteDMLCommand;
 import com.hangum.tadpole.engine.sql.util.resultset.QueryExecuteResultDTO;
 import com.hangum.tadpole.engine.sql.util.resultset.TadpoleResultSet;
 import com.hangum.tadpole.rdb.core.dialog.export.sqltoapplication.composites.axisj.AxisjConsts;

@@ -8,7 +8,7 @@
  * Contributors:
  *     hangum - initial API and implementation
  ******************************************************************************/
-package com.hangum.tadpole.engine.sql.util;
+package com.hangum.tadpole.engine.sql.util.executer;
 
 import java.io.StringWriter;
 import java.sql.PreparedStatement;
@@ -48,6 +48,8 @@ import com.hangum.tadpole.engine.manager.TadpoleSQLManager;
 import com.hangum.tadpole.engine.manager.TadpoleSQLTransactionManager;
 import com.hangum.tadpole.engine.query.dao.system.UserDBDAO;
 import com.hangum.tadpole.engine.query.sql.TadpoleSystem_ExecutedSQL;
+import com.hangum.tadpole.engine.sql.util.PartQueryUtil;
+import com.hangum.tadpole.engine.sql.util.SQLUtil;
 import com.hangum.tadpole.engine.sql.util.resultset.QueryExecuteResultDTO;
 import com.hangum.tadpole.engine.utils.RequestQuery;
 import com.hangum.tadpole.session.manager.SessionManager;
@@ -250,12 +252,12 @@ public class ExecuteDMLCommand {
 	 * @param resultType
 	 * @throws Exception
 	 */
-	public static String executeDML(final UserDBDAO userDB, final String strQuery, final List<Object> listParam, final String resultType) throws Exception {
+	public static String executeDML(final UserDBDAO userDB, final String strQuery, final List<Object> listParam, final ExecuteDMLCommand.RESULT_TYPE user_RESULTTYPE) throws Exception {
 //		SqlMapClient client = TadpoleSQLManager.getInstance(userDB);
 		Object effectObject = runSQLOther(userDB, strQuery, listParam);
 		
 		String strReturn = "";
-		if(resultType.equals(RESULT_TYPE.CSV.name())) {
+		if(user_RESULTTYPE == RESULT_TYPE.CSV) {
 			final StringWriter stWriter = new StringWriter();
 			CSVWriter csvWriter = new CSVWriter(stWriter, ',');
 			
@@ -265,7 +267,7 @@ public class ExecuteDMLCommand {
 			csvWriter.writeNext(arryString);
 			
 			strReturn = stWriter.toString();
-		} else if(resultType.equals(RESULT_TYPE.JSON.name())) {
+		} else if(user_RESULTTYPE == RESULT_TYPE.JSON) {
 			final JsonArray jsonArry = new JsonArray();
 			JsonObject jsonObj = new JsonObject();
 			jsonObj.addProperty("effectrow", String.valueOf(effectObject));

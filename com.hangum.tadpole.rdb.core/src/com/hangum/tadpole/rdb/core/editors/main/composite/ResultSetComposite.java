@@ -77,9 +77,9 @@ import com.hangum.tadpole.engine.sql.paremeter.lang.OracleStyleSQLNamedParameter
 import com.hangum.tadpole.engine.sql.util.ObjectCompileUtil;
 import com.hangum.tadpole.engine.sql.util.OracleDbmsOutputUtil;
 import com.hangum.tadpole.engine.sql.util.PartQueryUtil;
-import com.hangum.tadpole.engine.sql.util.ExecuteDMLCommand;
 import com.hangum.tadpole.engine.sql.util.SQLConvertCharUtil;
 import com.hangum.tadpole.engine.sql.util.SQLUtil;
+import com.hangum.tadpole.engine.sql.util.executer.ExecuteDMLCommand;
 import com.hangum.tadpole.engine.sql.util.resultset.QueryExecuteResultDTO;
 import com.hangum.tadpole.engine.sql.util.resultset.TadpoleResultSet;
 import com.hangum.tadpole.engine.utils.EditorDefine;

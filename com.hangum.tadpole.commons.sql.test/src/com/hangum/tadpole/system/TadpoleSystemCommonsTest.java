@@ -11,13 +11,13 @@
 package com.hangum.tadpole.system;
 
 import com.hangum.tadpole.engine.initialize.TadpoleEngineUserDB;
-import com.hangum.tadpole.engine.sql.util.ExecuteDDLCommand;
+import com.hangum.tadpole.engine.sql.util.executer.ExecuteDDLCommand;
 import com.hangum.tadpole.engine.utils.RequestQueryUtil;
 
 import junit.framework.TestCase;
 
 /**
- * {@link com.hangum.tadpole.engine.sql.util.ExecuteDDLCommand 시스템쿼리}
+ * {@link com.hangum.tadpole.engine.sql.util.executer.ExecuteDDLCommand 시스템쿼리}
  * 
  * @author hangum
  *
@@ -25,7 +25,7 @@ import junit.framework.TestCase;
 public class TadpoleSystemCommonsTest extends TestCase {
 
 	/**
-	 * {@link com.hangum.tadpole.engine.sql.util.ExecuteDDLCommand#executSQL(com.hangum.db.dao.system.UserDBDAO, String) 쿼리실행(select 제외)}executeSQL
+	 * {@link com.hangum.tadpole.engine.sql.util.executer.ExecuteDDLCommand#executSQL(com.hangum.db.dao.system.UserDBDAO, String) 쿼리실행(select 제외)}executeSQL
 	 */
 	public void testExecutSQL() {
 		try {

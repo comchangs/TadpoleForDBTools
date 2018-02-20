@@ -20,9 +20,9 @@ import com.hangum.tadpole.engine.define.DBGroupDefine;
 import com.hangum.tadpole.engine.query.dao.mysql.TableColumnDAO;
 import com.hangum.tadpole.engine.query.dao.mysql.TableDAO;
 import com.hangum.tadpole.engine.query.dao.system.UserDBDAO;
-import com.hangum.tadpole.engine.sql.util.ExecuteDDLCommand;
 import com.hangum.tadpole.engine.sql.util.RDBTypeToJavaTypeUtils;
 import com.hangum.tadpole.engine.sql.util.SQLUtil;
+import com.hangum.tadpole.engine.sql.util.executer.ExecuteDDLCommand;
 import com.hangum.tadpole.engine.utils.RequestQueryUtil;
 import com.hangum.tadpole.rdb.core.dialog.table.mysql.TableColumnUpdateDAO;
 

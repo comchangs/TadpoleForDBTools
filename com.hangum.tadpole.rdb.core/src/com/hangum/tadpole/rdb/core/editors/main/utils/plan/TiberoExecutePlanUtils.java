@@ -21,7 +21,7 @@ import com.hangum.tadpole.commons.libs.core.define.PublicTadpoleDefine;
 import com.hangum.tadpole.commons.util.Utils;
 import com.hangum.tadpole.engine.query.dao.system.UserDBDAO;
 import com.hangum.tadpole.engine.sql.util.PartQueryUtil;
-import com.hangum.tadpole.engine.sql.util.ExecuteDMLCommand;
+import com.hangum.tadpole.engine.sql.util.executer.ExecuteDMLCommand;
 import com.hangum.tadpole.engine.sql.util.resultset.QueryExecuteResultDTO;
 import com.hangum.tadpole.engine.utils.RequestQuery;
 

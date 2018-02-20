@@ -33,8 +33,8 @@ import com.hangum.tadpole.engine.query.dao.mysql.TableDAO;
 import com.hangum.tadpole.engine.query.dao.sqlite.SQLiteForeignKeyListDAO;
 import com.hangum.tadpole.engine.query.dao.system.UserDBDAO;
 import com.hangum.tadpole.engine.security.DBAccessCtlManager;
-import com.hangum.tadpole.engine.sql.util.ExecuteDDLCommand;
 import com.hangum.tadpole.engine.sql.util.SQLUtil;
+import com.hangum.tadpole.engine.sql.util.executer.ExecuteDDLCommand;
 import com.hangum.tadpole.engine.utils.RequestQueryUtil;
 import com.ibatis.sqlmap.client.SqlMapClient;
 
