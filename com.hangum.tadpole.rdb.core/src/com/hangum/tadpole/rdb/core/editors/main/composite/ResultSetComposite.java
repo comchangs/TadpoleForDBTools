@@ -427,20 +427,9 @@ public class ResultSetComposite extends Composite {
 		try {
 			if(!GrantCheckerUtils.ifExecuteQuery(getUserDB(), reqQuery)) return false;
 		} catch(TadpoleException e) {
-			// 에러 로그를 기록해야한다.
-			// 히스토리 정보 메타디비에 저장 - RequestResultDAO
-			reqResultDAO.setEndDateExecute(new Timestamp(System.currentTimeMillis()));
-			reqResultDAO.setResult(PublicTadpoleDefine.SUCCESS_FAIL.F.name()); //$NON-NLS-1$
-			reqResultDAO.setTdb_result_code(e.getErrorCode());
-			reqResultDAO.setMesssage(e.getMessage());
 			
 			executeErrorProgress(reqQuery, e, e.getMessage());
 			return false;
-		} finally {
-			TadpoleSystem_ExecutedSQL.insertExecuteHistory(
-					getRdbResultComposite().getUserSeq(), 
-					getRdbResultComposite().getUserDB(), 
-					reqResultDAO);
 		}
 		
 		///////////////////////////////////////////////////////////////////////////
