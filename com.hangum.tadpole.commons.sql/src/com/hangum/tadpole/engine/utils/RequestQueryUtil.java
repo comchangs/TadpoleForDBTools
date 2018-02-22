@@ -21,6 +21,20 @@ import com.hangum.tadpole.engine.query.dao.system.UserDBDAO;
  *
  */
 public class RequestQueryUtil {
+	
+	/**
+	 * simple request query
+	 * 	ps) invalid thread 익셥션이 나오는 곳에서는 사용하면 안된다.
+	 * 
+	 * @param userDB
+	 * @param connectID
+	 * @param strQuery
+	 * @return
+	 */
+	public static RequestQuery simpleRequestQuery(final UserDBDAO userDB, final String connectID, final String strSQL) {
+		return new RequestQuery(connectID, userDB, strSQL, PublicTadpoleDefine.OBJECT_TYPE.TABLES, 
+				EditorDefine.QUERY_MODE.QUERY, EditorDefine.EXECUTE_TYPE.BLOCK, true);
+	}
 
 	/**
 	 * simple request query
@@ -30,7 +44,7 @@ public class RequestQueryUtil {
 	 * @param strQuery
 	 * @return
 	 */
-	public static RequestQuery simpleRequestQuery(UserDBDAO userDB, String strSQL) {
+	public static RequestQuery simpleRequestQuery(final UserDBDAO userDB, final String strSQL) {
 		return new RequestQuery(Utils.getUniqueID(), userDB, strSQL, PublicTadpoleDefine.OBJECT_TYPE.TABLES, 
 				EditorDefine.QUERY_MODE.QUERY, EditorDefine.EXECUTE_TYPE.BLOCK, true);
 	}
@@ -44,7 +58,7 @@ public class RequestQueryUtil {
 	 * @param strQuery
 	 * @return
 	 */
-	public static RequestQuery simpleRequestQuery(String loginIp, String sqlHead, UserDBDAO userDB, String strSQL) {
+	public static RequestQuery simpleRequestQuery(final String loginIp, final String sqlHead, final UserDBDAO userDB, final String strSQL) {
 		return new RequestQuery(loginIp, sqlHead, Utils.getUniqueID(), userDB, strSQL, PublicTadpoleDefine.OBJECT_TYPE.TABLES, 
 				EditorDefine.QUERY_MODE.QUERY, EditorDefine.EXECUTE_TYPE.BLOCK, true);
 	}
