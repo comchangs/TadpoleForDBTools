@@ -78,11 +78,11 @@ public class HistoryHubConnectionGroup extends AbstractOthersConnection {
 	public OthersConnectionInfoDAO getOthersConnectionInfo() {
 		otherConnectionDAO.setHistoryHubLocation(btnHistoryHubLocation.getSelection());
 		otherConnectionDAO.setReadOnlyConnection(true);
-		otherConnectionDAO.setAutoCommit(false);
+		otherConnectionDAO.setAutoCommit(true);
 		otherConnectionDAO.setShowTables(false);
 		
 		otherConnectionDAO.setProfiling(true);
-		otherConnectionDAO.setDMLStatement(true);
+		otherConnectionDAO.setDMLStatement(false);
 		
 		return otherConnectionDAO;
 	}
