@@ -352,11 +352,6 @@ public class MainEditor extends EditorExtension {
 						comboSchema.add(mapData.get("SCHEMA"));
 						userDB.addSchema(mapData.get("SCHEMA"));
 					}
-					if(userDB.getDBGroup() == DBGroupDefine.ORACLE_GROUP) {
-						userDB.setSchema(userDB.getUsers());
-					} else if(userDB.getDBGroup() == DBGroupDefine.MYSQL_GROUP) {
-						userDB.setSchema(userDB.getDb());
-					}
 				} catch(Exception e) {
 					logger.error("get schema list " + e.getMessage());
 				}
@@ -366,6 +361,15 @@ public class MainEditor extends EditorExtension {
 				}
 			}
 			comboSchema.setVisibleItemCount(comboSchema.getItemCount() > 15 ? 15 : comboSchema.getItemCount());
+			
+			// 기본 스키마가 설정되어 있지 않는다면 기본 스키마를 설정한다.
+			if("".equals(userDB.getSchema())) {
+				if(userDB.getDBGroup() == DBGroupDefine.ORACLE_GROUP) {
+					userDB.setSchema(StringUtils.upperCase(userDB.getUsers()));
+				} else if(userDB.getDBGroup() == DBGroupDefine.MYSQL_GROUP) {
+					userDB.setSchema(userDB.getDb());
+				}
+			}
 			
 			comboSchema.setText(userDB.getSchema());
 			comboSchema.pack();

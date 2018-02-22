@@ -182,6 +182,8 @@ public class TadpoleSQLManager extends AbstractTadpoleManager {
 	 */
 	public static Connection getConnection(final UserDBDAO userDB) throws TadpoleSQLManagerException, SQLException {
 		Connection javaConn = getInstance(userDB).getDataSource().getConnection();
+		// 엔진디비는 메타데이터를 저장하지 않는다.
+//		if(userDB.getDBDefine() == DBDefine.TADPOLE_SYSTEM_DEFAULT || userDB.getDBDefine() == DBDefine.TADPOLE_SYSTEM_MYSQL_DEFAULT) return javaConn;
 		
 		Statement statement = null;
 		try {
