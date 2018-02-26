@@ -53,16 +53,15 @@ import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.part.EditorPart;
 
-import com.hangum.tadpole.commons.dialogs.message.dao.RequestResultDAO;
 import com.hangum.tadpole.commons.exception.dialog.ExceptionDetailsErrorDialog;
 import com.hangum.tadpole.commons.google.analytics.AnalyticCaller;
-import com.hangum.tadpole.commons.libs.core.define.PublicTadpoleDefine;
 import com.hangum.tadpole.commons.libs.core.message.CommonMessages;
 import com.hangum.tadpole.engine.manager.TadpoleSQLManager;
 import com.hangum.tadpole.engine.query.dao.rdb.OracleTablespaceDAO;
 import com.hangum.tadpole.engine.query.dao.system.UserDBDAO;
-import com.hangum.tadpole.engine.sql.util.ExecuteDDLCommand;
-import com.hangum.tadpole.engine.sql.util.QueryUtils;
+import com.hangum.tadpole.engine.sql.util.executer.ExecuteDDLCommand;
+import com.hangum.tadpole.engine.sql.util.executer.ExecuteDMLCommand;
+import com.hangum.tadpole.engine.utils.RequestQueryUtil;
 import com.hangum.tadpole.rdb.core.Activator;
 import com.hangum.tadpole.rdb.core.Messages;
 import com.hangum.tadpole.rdb.core.editors.dbinfos.composites.ColumnHeaderCreator;
@@ -468,21 +467,17 @@ public class TableSapceManageEditor extends EditorPart {
 		btnDrop.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
-
 				//Excute script
-				RequestResultDAO reqReResultDAO = new RequestResultDAO();
 				try {
-					ExecuteDDLCommand.executSQL(userDB, reqReResultDAO, textDropScript.getText().trim());
-				} catch (Exception ex) {
-					logger.error(ex);
-				} //$NON-NLS-1$
-				if (PublicTadpoleDefine.SUCCESS_FAIL.F.name().equals(reqReResultDAO.getResult())) {
-					MessageDialog.openError(getSite().getShell(),CommonMessages.get().Error, Messages.get().RiseError + reqReResultDAO.getMesssage() + reqReResultDAO.getException().getMessage());
-				} else {
+					ExecuteDDLCommand.executSQL(RequestQueryUtil.simpleRequestQuery(userDB, textDropScript.getText().trim()));
+					
 					MessageDialog.openInformation(getSite().getShell(), CommonMessages.get().Information, Messages.get().WorkHasCompleted);
 					refreshTablespaceList();
-				}
-
+				} catch (Exception ex) {
+					logger.error(ex);
+					
+					MessageDialog.openError(getSite().getShell(),CommonMessages.get().Error, Messages.get().RiseError + ex.getMessage());
+				} //$NON-NLS-1$
 			}
 		});
 		btnDrop.setSize(94, 28);
@@ -503,19 +498,17 @@ public class TableSapceManageEditor extends EditorPart {
 			public void widgetSelected(SelectionEvent e) {
 
 				//Excute script
-				RequestResultDAO reqReResultDAO = new RequestResultDAO();
 				try {
-					ExecuteDDLCommand.executSQL(userDB, reqReResultDAO, textScript.getText().trim());
-				} catch (Exception ex) {
-					logger.error(ex);
-				} //$NON-NLS-1$
-				if (PublicTadpoleDefine.SUCCESS_FAIL.F.name().equals(reqReResultDAO.getResult())) {
-					MessageDialog.openError(getSite().getShell(),CommonMessages.get().Error, Messages.get().RiseError + reqReResultDAO.getMesssage() + reqReResultDAO.getException().getMessage());
-				} else {
+					ExecuteDDLCommand.executSQL(RequestQueryUtil.simpleRequestQuery(userDB, textScript.getText().trim()));
+					
 					MessageDialog.openInformation(getSite().getShell(), CommonMessages.get().Information, Messages.get().WorkHasCompleted);
 					refreshTablespaceList();
 					refreshDatafileInformation();
-				}
+				} catch (Exception ex) {
+					logger.error(ex);
+					
+					MessageDialog.openError(getSite().getShell(),CommonMessages.get().Error, Messages.get().RiseError + ex.getMessage());
+				} //$NON-NLS-1$
 			}
 		});
 		btnExecute.setBounds(0, 0, 150, 28);
@@ -663,7 +656,7 @@ public class TableSapceManageEditor extends EditorPart {
 		String map_key = "getTablespaceList";
 
 		try {
-			QueryUtils.executeQuery(userDB, "SELECT 1 FROM SYS.DBA_DATA_FILES A,SYS.DBA_FREE_SPACE B,SYS.V_$TEMP_SPACE_HEADER C,SYS.V_$TEMP_EXTENT_POOL D,SYS.DBA_TEMP_FILES E,V$PARAMETER F WHERE 0=1", 0, 1);
+			ExecuteDMLCommand.executeQuery(userDB, "SELECT 1 FROM SYS.DBA_DATA_FILES A,SYS.DBA_FREE_SPACE B,SYS.V_$TEMP_SPACE_HEADER C,SYS.V_$TEMP_EXTENT_POOL D,SYS.DBA_TEMP_FILES E,V$PARAMETER F WHERE 0=1", 0, 1);
 		} catch (Exception e) {
 			map_key = "getUserTablespaceList";
 			//MessageDialog.openError(this.getSite().getShell(),CommonMessages.get().Error, "Tablespace 정보를 조회하기 위한 시스템 테이블 접근 권한이 부족합니다.\n" + e.getMessage() );

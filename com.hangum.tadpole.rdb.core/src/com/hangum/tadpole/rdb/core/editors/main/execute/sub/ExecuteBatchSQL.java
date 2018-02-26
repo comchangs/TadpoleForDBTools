@@ -19,18 +19,14 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 
 import com.hangum.tadpole.commons.libs.core.define.PublicTadpoleDefine;
-import com.hangum.tadpole.commons.libs.core.define.PublicTadpoleDefine.QUERY_DML_TYPE;
-import com.hangum.tadpole.commons.libs.core.define.PublicTadpoleDefine.SQL_TYPE;
-import com.hangum.tadpole.engine.define.TDBResultCodeDefine;
 import com.hangum.tadpole.engine.manager.TadpoleSQLManager;
 import com.hangum.tadpole.engine.manager.TadpoleSQLTransactionManager;
 import com.hangum.tadpole.engine.manager.TransactionManger;
-import com.hangum.tadpole.engine.permission.PermissionChecker;
 import com.hangum.tadpole.engine.query.dao.system.UserDBDAO;
 import com.hangum.tadpole.engine.restful.TadpoleException;
 import com.hangum.tadpole.engine.sql.util.SQLConvertCharUtil;
-import com.hangum.tadpole.engine.sql.util.SQLUtil;
 import com.hangum.tadpole.engine.utils.RequestQuery;
+import com.hangum.tadpole.rdb.core.editors.main.utils.AcessControlUtils;
 
 /**
  * batch 처리해야하는 sql
@@ -45,75 +41,48 @@ public class ExecuteBatchSQL {
 	 * select문의 execute 쿼리를 수행합니다.
 	 * @param errMsg 
 	 * 
-	 * @param listQuery
-	 * @param reqQuery
-	 * @param userDB
+	 * @param listReqQuery
 	 * @param userType
 	 * @param intCommitCount
 	 * @param connectId
 	 * @param userEmail
 	 * @throws Exception
 	 */     
-	public static void runSQLExecuteBatch(String errMsg, List<String> listQuery, 
-			final RequestQuery reqQuery,
-			final UserDBDAO userDB,
-			final String userType,
+	public static void runSQLExecuteBatch(String errMsg,  
+			final List<RequestQuery> listReqQuery,
 			final int intCommitCount,
 			final String userEmail
 	) throws TadpoleException, SQLException {
-		PermissionChecker.isExecute(userType, userDB, listQuery);
+		if(listReqQuery.isEmpty()) return;
 		
-		// Check the db access control 
-		for (String strQuery : listQuery) {
-			if(PublicTadpoleDefine.YES_NO.YES.name().equals(userDB.getDbAccessCtl().getDdl_lock())) {
-				throw new TadpoleException(TDBResultCodeDefine.FORBIDDEN, errMsg);
-			}
-			
-			PublicTadpoleDefine.QUERY_DML_TYPE queryType = SQLUtil.sqlQueryType(strQuery);
-			if(reqQuery.getSqlType() == SQL_TYPE.DDL) {
-				if(PublicTadpoleDefine.YES_NO.YES.name().equals(userDB.getDbAccessCtl().getDdl_lock())) {
-					throw new TadpoleException(TDBResultCodeDefine.FORBIDDEN, errMsg);
-				}
-			}
-			if(queryType == QUERY_DML_TYPE.INSERT) {
-				if(PublicTadpoleDefine.YES_NO.YES.name().equals(userDB.getDbAccessCtl().getInsert_lock())) {
-					throw new TadpoleException(TDBResultCodeDefine.FORBIDDEN, errMsg);
-				}
-			}
-			if(queryType == QUERY_DML_TYPE.UPDATE) {
-				if(PublicTadpoleDefine.YES_NO.YES.name().equals(userDB.getDbAccessCtl().getUpdate_lock())) {
-					throw new TadpoleException(TDBResultCodeDefine.FORBIDDEN, errMsg);
-				}
-			}
-			if(queryType == QUERY_DML_TYPE.DELETE) {
-				if(PublicTadpoleDefine.YES_NO.YES.name().equals(userDB.getDbAccessCtl().getDelete_locl())) {
-					throw new TadpoleException(TDBResultCodeDefine.FORBIDDEN, errMsg);
-				}
-			}
-		}
+		final RequestQuery _reqQuery = listReqQuery.get(0);
+		final UserDBDAO userDB = _reqQuery.getUserDB();
+		
+		AcessControlUtils.SQLPermissionCheck(errMsg, listReqQuery);
 		
 		java.sql.Connection javaConn = null;
 		Statement statement = null;
 		
 		try {
-			if(reqQuery.isAutoCommit()) {
+			if(_reqQuery.isAutoCommit()) {
 				javaConn = TadpoleSQLManager.getConnection(userDB);
 			} else {
-				javaConn = TadpoleSQLTransactionManager.getInstance(reqQuery.getConnectId(), userEmail, userDB);
+				javaConn = TadpoleSQLTransactionManager.getInstance(_reqQuery.getConnectId(), userEmail, userDB);
 			}
 			statement = javaConn.createStatement();
 			
 			int count = 0;
-			for (String strQuery : listQuery) {
+			for (RequestQuery reqQuery : listReqQuery) {
+				String strSQL = StringUtils.trimToEmpty(reqQuery.getSql());
+				
 				// 쿼리 중간에 commit이나 rollback이 있으면 어떻게 해야 하나???
-				if(!TransactionManger.calledCommitOrRollback(reqQuery.getSql(), reqQuery.getConnectId(), userEmail, userDB)) {
+				if(!TransactionManger.calledCommitOrRollback(strSQL, reqQuery.getConnectId(), userEmail, userDB)) {
 					
-					if(StringUtils.startsWithIgnoreCase(strQuery.trim(), "CREATE TABLE")) { //$NON-NLS-1$
-						strQuery = StringUtils.replaceOnce(strQuery, "(", " ("); //$NON-NLS-1$ //$NON-NLS-2$
+					if(StringUtils.startsWithIgnoreCase(StringUtils.trimToEmpty(reqQuery.getSql()), "CREATE TABLE")) { //$NON-NLS-1$
+						strSQL = StringUtils.replaceOnce(strSQL, "(", " ("); //$NON-NLS-1$ //$NON-NLS-2$
 					}
 				}
-				
-				statement.addBatch(SQLConvertCharUtil.toServer(userDB, strQuery));
+				statement.addBatch(SQLConvertCharUtil.toServer(userDB, strSQL));
 				
 				if (++count % intCommitCount == 0) {
 					statement.executeBatch();
@@ -128,12 +97,12 @@ public class ExecuteBatchSQL {
 			if(e instanceof BatchUpdateException) {
 				BatchUpdateException batchException = (BatchUpdateException)e;
 
-				String[] strQuery = listQuery.toArray(new String[listQuery.size()]);
+				RequestQuery[] strQuery = listReqQuery.toArray(new RequestQuery[listReqQuery.size()]);
 				// 업데이트에서 실패한 쿼리를 찾는다.
 				int[] intUpdateCnts = batchException.getUpdateCounts();
 				for(int i=0; i<intUpdateCnts.length; i++) {
 					if(intUpdateCnts[i] < 0) {
-						strErrMsg += strQuery[i] + PublicTadpoleDefine.LINE_SEPARATOR;
+						strErrMsg += strQuery[i].getSql() + PublicTadpoleDefine.LINE_SEPARATOR;
 					}
 				}
 				
@@ -152,7 +121,7 @@ public class ExecuteBatchSQL {
 		} finally {
 			try { if(statement != null) statement.close();} catch(Exception e) {}
 
-			if(reqQuery.isAutoCommit()) {
+			if(_reqQuery.isAutoCommit()) {
 				try { if(javaConn != null) javaConn.close(); } catch(Exception e){}
 			}
 		}

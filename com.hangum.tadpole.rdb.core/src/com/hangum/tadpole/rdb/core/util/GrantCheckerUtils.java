@@ -64,7 +64,7 @@ public class GrantCheckerUtils {
 	 * 
 	 * - DB lock 상태인지?
 	 * - dml 을 묻는 상태인지?
-	 * - 프러덕, 백업 디비라서 select가 아닌지 묻는지?
+	 * - 프러덕, 백업 디비라면 예상 삭제 데이터 묻는다.
 	 * 
 	 * @param userDB
 	 * @param reqQuery
@@ -108,7 +108,7 @@ public class GrantCheckerUtils {
 					if(isDDLQuestion) {
 						PublicTadpoleDefine.QUERY_DML_TYPE dmlType = reqQuery.getSqlDMLType();
 						if(PublicTadpoleDefine.QUERY_DML_TYPE.UPDATE == dmlType || PublicTadpoleDefine.QUERY_DML_TYPE.DELETE == dmlType) {
-							UpdateDeleteConfirmDialog dialog = new UpdateDeleteConfirmDialog(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(), reqQuery.getConnectId(), userDB, reqQuery);
+							UpdateDeleteConfirmDialog dialog = new UpdateDeleteConfirmDialog(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(), reqQuery);
 							if(dialog.open() != Dialog.OK) return false;
 						} else {
 							MessageDialog dialog = new MessageDialog(null, Messages.get().Execute, null, Messages.get().GrantCheckerUtils_0, MessageDialog.QUESTION, new String[] {CommonMessages.get().Yes, CommonMessages.get().No}, 1);

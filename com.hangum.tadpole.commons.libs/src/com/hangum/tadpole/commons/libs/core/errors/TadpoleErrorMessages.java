@@ -13,7 +13,7 @@ package com.hangum.tadpole.commons.libs.core.errors;
 import org.eclipse.rap.rwt.RWT;
 
 public class TadpoleErrorMessages {
-	private static final String BUNDLE_NAME = "com.hangum.tadpole.commons.libs.core.TadpoleErrorMessages"; 
+	private static final String BUNDLE_NAME = "com.hangum.tadpole.commons.libs.core.errors.TadpoleErrorMessages"; 
 	
 	public String NoError;
 	
@@ -27,7 +27,7 @@ public class TadpoleErrorMessages {
 	public String InvalidRange_L;
 	
 	/* password */
-	public String PasswordRule;
+//	public String PasswordRule;
 	public String InvalidPassword;
 	public String PasswordsDoNotMatch;
 	

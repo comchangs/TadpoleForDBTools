@@ -637,7 +637,7 @@ public class SessionListEditor extends EditorPart {
 				
 				RequestQuery reqQuery = new RequestQuery(Utils.getUniqueID(), userDB, String.format("ALTER DATABASE %s SESSION CLOSE %s", sl.getDb(), sl.getId()), PublicTadpoleDefine.OBJECT_TYPE.TABLES, 
 						EditorDefine.QUERY_MODE.QUERY, EditorDefine.EXECUTE_TYPE.BLOCK, true);
-				ExecuteOtherSQL.runSQLOther(reqQuery, userDB, SessionManager.getRepresentRole(), SessionManager.getEMAIL());
+				ExecuteOtherSQL.runSQLOther(reqQuery, SessionManager.getEMAIL());
 			} else {
 				client.queryForObject("killProcess", sl.getId()); //$NON-NLS-1$
 			}

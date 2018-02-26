@@ -41,7 +41,6 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
 
-import com.hangum.tadpole.commons.dialogs.message.dao.RequestResultDAO;
 import com.hangum.tadpole.commons.google.analytics.AnalyticCaller;
 import com.hangum.tadpole.commons.libs.core.define.PublicTadpoleDefine;
 import com.hangum.tadpole.commons.libs.core.message.CommonMessages;
@@ -51,8 +50,9 @@ import com.hangum.tadpole.engine.query.dao.mysql.ProcedureFunctionDAO;
 import com.hangum.tadpole.engine.query.dao.rdb.InOutParameterDAO;
 import com.hangum.tadpole.engine.query.dao.rdb.OracleJobDAO;
 import com.hangum.tadpole.engine.query.dao.system.UserDBDAO;
-import com.hangum.tadpole.engine.sql.util.ExecuteDDLCommand;
 import com.hangum.tadpole.engine.sql.util.SQLUtil;
+import com.hangum.tadpole.engine.sql.util.executer.ExecuteDDLCommand;
+import com.hangum.tadpole.engine.utils.RequestQueryUtil;
 import com.hangum.tadpole.rdb.core.Messages;
 import com.ibatis.sqlmap.client.SqlMapClient;
 
@@ -77,12 +77,10 @@ public class CreateJobDialog extends Dialog {
 
 	private List<ProcedureFunctionDAO> showObjects;
 
-	private Button btnCreateJob;
 	private Button btnSpecify;
 	private Button btnNext;
 	private Button btnParse;
 	private Button btnNoParse;
-	private Button btnDropJob;
 	private Combo comboRepeat;
 	private Combo comboObject;
 	private Combo comboSubObject;
@@ -610,63 +608,55 @@ public class CreateJobDialog extends Dialog {
 	@Override
 	protected void createButtonsForButtonBar(Composite parent) {
 		if (this.jobDao.getJob() > 0) {
-			btnCreateJob = createButton(parent, ID_CREATE_JOB, Messages.get().ChangeJob, false);
-			btnDropJob = createButton(parent, ID_DROP_JOB, Messages.get().RemoveJob, false);
+			createButton(parent, ID_CREATE_JOB, Messages.get().ChangeJob, false);
+			createButton(parent, ID_DROP_JOB, Messages.get().RemoveJob, false);
 		} else {
-			btnCreateJob = createButton(parent, ID_CREATE_JOB, Messages.get().CreateJob, false);
+			createButton(parent, ID_CREATE_JOB, Messages.get().CreateJob, false);
 		}
 		createButton(parent, IDialogConstants.OK_ID, CommonMessages.get().Close, false);
 	}
 
 	@Override
 	protected void buttonPressed(int buttonId) {
+		
 		if (buttonId == ID_CREATE_JOB) {
-			//Excute script
-			RequestResultDAO reqReResultDAO = new RequestResultDAO();
 			try {
-				String stmt = this.textPreview.getText().trim();
+				String strSQL = this.textPreview.getText().trim();
 
 				if (StringUtils.isBlank(this.textScript.getText().trim())) {
 					MessageDialog.openInformation(this.getShell(), CommonMessages.get().Information, Messages.get().CreateJobDialog_JobSelectMsg);
 					return;
 				}
-				if(!StringUtils.endsWith(stmt, ";")) {
-					stmt += ";";
+				if(!StringUtils.endsWith(strSQL, ";")) {
+					strSQL += ";";
 				}
 
-				ExecuteDDLCommand.executSQL(userDB, reqReResultDAO, this.textPreview.getText().trim());
+				ExecuteDDLCommand.executSQL(RequestQueryUtil.simpleRequestQuery(userDB, strSQL));
+				
+				MessageDialog.openInformation(this.getShell(), CommonMessages.get().Information, Messages.get().CreateJobDialog_JobCompleted);
+				this.okPressed();
 			} catch (Exception e) {
 				logger.error(e);
-			} finally {
-				if (PublicTadpoleDefine.SUCCESS_FAIL.F.name().equals(reqReResultDAO.getResult())) {
-					MessageDialog.openError(this.getShell(),CommonMessages.get().Error, Messages.get().CreateJobDialog_RegException + reqReResultDAO.getMesssage() + reqReResultDAO.getException().getMessage());
-				} else {
-					MessageDialog.openInformation(this.getShell(), CommonMessages.get().Information, Messages.get().CreateJobDialog_JobCompleted);
-					this.okPressed();
-				}
+				
+				MessageDialog.openError(this.getShell(),CommonMessages.get().Error, Messages.get().CreateJobDialog_RegException + e.getMessage());
 			}
 		} else if (buttonId == ID_DROP_JOB) {
-			//Excute script
-			RequestResultDAO reqReResultDAO = new RequestResultDAO();
+			
 			try {
-				String drop_stmp = "";
 				if (jobDao.getJob() <= 0) {
 					// job_id가 없으면 ...에러.
 					MessageDialog.openWarning(getShell(), CommonMessages.get().Warning, Messages.get().CreateJobDialog_DoesnotDeleteTarget);
 					return;
-				} else {
-					drop_stmp = "begin sys.dbms_job.remove('" + jobDao.getJob() + "'); commit;end;";
-					ExecuteDDLCommand.executSQL(userDB, reqReResultDAO, drop_stmp);
 				}
+				
+				ExecuteDDLCommand.executSQL(RequestQueryUtil.simpleRequestQuery(userDB, "begin sys.dbms_job.remove('" + jobDao.getJob() + "'); commit;end;"));
+				
+				MessageDialog.openInformation(this.getShell(), CommonMessages.get().Information, Messages.get().CreateJobDialog_JobDeleted);
+				okPressed();
 			} catch (Exception e) {
 				logger.error(e);
-			} finally {
-				if (PublicTadpoleDefine.SUCCESS_FAIL.F.name().equals(reqReResultDAO.getResult())) {
-					MessageDialog.openError(this.getShell(),CommonMessages.get().Error, Messages.get().CreateJobDialog_DelException + reqReResultDAO.getMesssage() + reqReResultDAO.getException().getMessage()); 
-				} else {
-					MessageDialog.openInformation(this.getShell(), CommonMessages.get().Information, Messages.get().CreateJobDialog_JobDeleted);
-					okPressed();
-				}
+				
+				MessageDialog.openError(this.getShell(),CommonMessages.get().Error, Messages.get().CreateJobDialog_DelException + e.getMessage());
 			}
 		} else {
 			okPressed();

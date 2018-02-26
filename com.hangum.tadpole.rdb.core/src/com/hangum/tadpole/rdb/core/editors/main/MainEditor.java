@@ -182,11 +182,6 @@ public class MainEditor extends EditorExtension {
 			}
 		}
 		strLastContent = initDefaultEditorStr;
-
-		strRoleType = userDB.getRole_id();
-		super.setUserType(strRoleType);
-		
-		// schema 변경
 		
 		setSite(site);
 		setInput(input);
@@ -357,11 +352,6 @@ public class MainEditor extends EditorExtension {
 						comboSchema.add(mapData.get("SCHEMA"));
 						userDB.addSchema(mapData.get("SCHEMA"));
 					}
-					if(userDB.getDBGroup() == DBGroupDefine.ORACLE_GROUP) {
-						userDB.setSchema(userDB.getUsers());
-					} else if(userDB.getDBGroup() == DBGroupDefine.MYSQL_GROUP) {
-						userDB.setSchema(userDB.getDb());
-					}
 				} catch(Exception e) {
 					logger.error("get schema list " + e.getMessage());
 				}
@@ -371,6 +361,15 @@ public class MainEditor extends EditorExtension {
 				}
 			}
 			comboSchema.setVisibleItemCount(comboSchema.getItemCount() > 15 ? 15 : comboSchema.getItemCount());
+			
+			// 기본 스키마가 설정되어 있지 않는다면 기본 스키마를 설정한다.
+			if("".equals(userDB.getSchema())) {
+				if(userDB.getDBGroup() == DBGroupDefine.ORACLE_GROUP) {
+					userDB.setSchema(StringUtils.upperCase(userDB.getUsers()));
+				} else if(userDB.getDBGroup() == DBGroupDefine.MYSQL_GROUP) {
+					userDB.setSchema(userDB.getDb());
+				}
+			}
 			
 			comboSchema.setText(userDB.getSchema());
 			comboSchema.pack();
@@ -698,7 +697,6 @@ public class MainEditor extends EditorExtension {
 	protected void addBrowserService() {
 		browserQueryEditor.setUrl(REAL_DB_URL);
 	    	
-//	    final String strConstList = findDefaultKeyword();
 		// 기존 리소스를 가져왔으면 auto save mode 는 false
 	    final String varAutoSave 	= dBResource != null?"fasle":""+GetPreferenceGeneral.getEditorAutoSave();
 	    
@@ -851,17 +849,10 @@ public class MainEditor extends EditorExtension {
 		// 요청쿼리가 없다면 무시합니다. 
 		if(StringUtils.isEmpty(reqQuery.getSql())) return;
 		
-//		if(logger.isDebugEnabled()) {
-//			logger.debug("===> [connection id]" + reqQuery.getConnectId());
-//		}
-		
 		//
 		//  schema test code start
 		//
 		final UserDBDAO userDB = getUserDB();
-//		if(logger.isDebugEnabled()) {
-//			logger.debug("======= schema name : " + userDB.getSchema());
-//		}
 
 		// do not execute query
 //		if(System.currentTimeMillis() > SessionManager.getServiceEnd().getTime()) {

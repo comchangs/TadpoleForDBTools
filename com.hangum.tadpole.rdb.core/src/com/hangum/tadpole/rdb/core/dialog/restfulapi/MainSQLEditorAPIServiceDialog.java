@@ -10,11 +10,8 @@
  ******************************************************************************/
 package com.hangum.tadpole.rdb.core.dialog.restfulapi;
 
-import java.sql.Timestamp;
-import java.util.List;
 import java.util.Map;
 
-import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.dialogs.IDialogConstants;
@@ -35,23 +32,17 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
 
-import com.google.gson.JsonArray;
-import com.hangum.tadpole.commons.dialogs.message.dao.RequestResultDAO;
 import com.hangum.tadpole.commons.google.analytics.AnalyticCaller;
-import com.hangum.tadpole.commons.libs.core.define.PublicTadpoleDefine;
 import com.hangum.tadpole.commons.libs.core.message.CommonMessages;
 import com.hangum.tadpole.commons.libs.core.utils.VelocityUtils;
 import com.hangum.tadpole.commons.util.GlobalImageUtils;
-import com.hangum.tadpole.commons.util.JSONUtil;
 import com.hangum.tadpole.engine.query.dao.system.UserDBDAO;
-import com.hangum.tadpole.engine.query.sql.TadpoleSystem_ExecutedSQL;
 import com.hangum.tadpole.engine.restful.RESTfulAPIUtils;
-import com.hangum.tadpole.engine.sql.paremeter.NamedParameterDAO;
-import com.hangum.tadpole.engine.sql.paremeter.NamedParameterUtil;
-import com.hangum.tadpole.engine.sql.util.QueryUtils;
-import com.hangum.tadpole.engine.sql.util.SQLUtil;
+import com.hangum.tadpole.engine.sql.util.executer.ExecuteDMLCommand;
+import com.hangum.tadpole.engine.sql.util.executer.ExecuteDMLCommand.RESULT_TYPE;
+import com.hangum.tadpole.engine.sql.util.executer.ExecuteSQLCommand;
+import com.hangum.tadpole.engine.utils.RequestQueryUtil;
 import com.hangum.tadpole.rdb.core.Messages;
-import com.hangum.tadpole.session.manager.SessionManager;
 
 /**
  * Test API service dialog
@@ -136,7 +127,7 @@ public class MainSQLEditorAPIServiceDialog extends Dialog {
 			}
 		});
 		comboResultType.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
-		for (QueryUtils.RESULT_TYPE resultType : QueryUtils.RESULT_TYPE.values()) {
+		for (ExecuteDMLCommand.RESULT_TYPE resultType : ExecuteDMLCommand.RESULT_TYPE.values()) {
 			comboResultType.add(resultType.name());
 		}
 		comboResultType.select(0);
@@ -198,7 +189,7 @@ public class MainSQLEditorAPIServiceDialog extends Dialog {
 	 */
 	private void initResultType() {
 		boolean isEnable = false;
-		if(QueryUtils.RESULT_TYPE.CSV.name().equals(comboResultType.getText())) {
+		if(ExecuteDMLCommand.RESULT_TYPE.CSV == RESULT_TYPE.valueOf(comboResultType.getText())) {
 			isEnable = true;
 		}
 		
@@ -245,100 +236,20 @@ public class MainSQLEditorAPIServiceDialog extends Dialog {
 	}
 	
 	/**
-	 * 검색
+	 * 쿼리 수행
 	 * 
 	 * @param strSQL
 	 * @param strArgument
 	 */
 	private void executeQuery(String strSQL, String strArgument) {
-		String strExecuteResultData = ""; //$NON-NLS-1$
-		String strSQLs = "";
-		
-		RequestResultDAO reqResultDAO = new RequestResultDAO();
-		reqResultDAO.setEXECUSTE_SQL_TYPE(PublicTadpoleDefine.EXECUTE_SQL_TYPE.API_USER);
-		reqResultDAO.setDbSeq(userDB.getSeq());
-		reqResultDAO.setStartDateExecute(new Timestamp(System.currentTimeMillis()));
-		reqResultDAO.setIpAddress(SessionManager.getLoginIp());
-		
 		try {
-			int intSQLCnt = 0;
-			// velocity 로 if else 가 있는지 검사합니다. 
-			strSQLs = RESTfulAPIUtils.makeTemplateTOSQL("APIServiceDialog", strSQL, strArgument); //$NON-NLS-1$
-			// 분리자 만큼 실행한다.
-			for (String strTmpSQL : strSQLs.split(PublicTadpoleDefine.SQL_DELIMITER)) {
-				String strRealSQL = SQLUtil.removeCommentAndOthers(userDB, strTmpSQL);
-				if(StringUtils.trim(strRealSQL).equals("")) continue;
-				intSQLCnt++;
-				
-				NamedParameterDAO dao = NamedParameterUtil.parseParameterUtils(userDB, strTmpSQL, strArgument);
-				if(QueryUtils.RESULT_TYPE.JSON.name().equalsIgnoreCase(comboResultType.getText())) {
-					strExecuteResultData += getSelect(userDB, dao.getStrSQL(), dao.getListParam()) + ","; //$NON-NLS-1$
-				} else {
-					strExecuteResultData += getSelect(userDB, dao.getStrSQL(), dao.getListParam());
-				}
-			}
-			
-			if(intSQLCnt > 1) {	
-				if(QueryUtils.RESULT_TYPE.JSON.name().equalsIgnoreCase(comboResultType.getText())) {
-					strExecuteResultData = "[" + StringUtils.removeEnd(strExecuteResultData, ",") + "]";  //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-				}
-			}
-			
+			String strExecuteResultData = ExecuteSQLCommand.executeQuerForAPI(RequestQueryUtil.simpleRequestQuery(userDB, strSQL), strArgument, RESULT_TYPE.valueOf(comboResultType.getText()), btnAddHeader.getSelection(), textDelimiter.getText());
 			textResult.setText(strExecuteResultData);
-			
-			reqResultDAO.setResult(PublicTadpoleDefine.SUCCESS_FAIL.S.toString());
-		} catch (Exception e) {
-			logger.error("api exception", e); //$NON-NLS-1$
-			
-			MessageDialog.openError(getShell(),CommonMessages.get().Error, e.getMessage()); //$NON-NLS-1$ //$NON-NLS-2$
-		} finally {
-			reqResultDAO.setEndDateExecute(new Timestamp(System.currentTimeMillis()));
-			reqResultDAO.setTdb_sql_head("/** api key : API Hub Manager */\r\n/**" + strArgument + "*/");
-			reqResultDAO.setSql_text(strSQLs);
-			reqResultDAO.setResultData(strExecuteResultData);
-			
-			try {
-				TadpoleSystem_ExecutedSQL.saveExecuteSQUeryResource(SessionManager.getUserSeq(), 
-						userDB, 
-						reqResultDAO
-					);
-			} catch(Exception e) {
-				logger.error("save history", e);
-			}
+		} catch(Exception e) {
+			MessageDialog.openError(null, CommonMessages.get().Error, e.getMessage()); //$NON-NLS-1$ //$NON-NLS-2$
 		}
 	}
 	
-	/**
-	 * called sql
-	 * 
-	 * @param userDB
-	 * @param strSQL
-	 * @param listParam
-	 * @return
-	 * @throws Exception
-	 */
-	private String getSelect(final UserDBDAO userDB, String strSQL, List<Object> listParam) throws Exception {
-		String strResult = ""; //$NON-NLS-1$
-		
-		if(SQLUtil.isStatement(strSQL)) {
-			
-			if(QueryUtils.RESULT_TYPE.JSON.name().equals(comboResultType.getText())) {
-				JsonArray jsonArry = QueryUtils.selectToJson(userDB, strSQL, listParam);
-				strResult = JSONUtil.getPretty(jsonArry.toString());
-			} else if(QueryUtils.RESULT_TYPE.CSV.name().equals(comboResultType.getText())) {
-				strResult = QueryUtils.selectToCSV(userDB, strSQL, listParam, btnAddHeader.getSelection(), textDelimiter.getText());
-			} else if(QueryUtils.RESULT_TYPE.XML.name().equals(comboResultType.getText())) {
-				strResult = QueryUtils.selectToXML(userDB, strSQL, listParam);
-			} else {
-				strResult = QueryUtils.selectToHTML_TABLE(userDB, strSQL, listParam);
-			}
-		} else {
-			strResult = QueryUtils.executeDML(userDB, strSQL, listParam, comboResultType.getText());
-		}
-		
-		return strResult;
-	}
-
 	/**
 	 * Create contents of the button bar.
 	 * @param parent

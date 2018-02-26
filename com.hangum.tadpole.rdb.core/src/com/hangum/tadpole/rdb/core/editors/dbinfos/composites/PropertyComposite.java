@@ -210,13 +210,13 @@ public class PropertyComposite extends DBInfosComposite {
 	 */
 	private void downloadCSVFile() {
 		if(propertyViewer.getTable().getItemCount() == 0) return;
-		if(!MessageDialog.openConfirm(null, CommonMessages.get().Confirm, Messages.get().TablesComposite_3)) return;
+		if(!MessageDialog.openConfirm(null, CommonMessages.get().Confirm, CommonMessages.get().DoYouWantDownload)) return;
 		
 		try {
 			byte[] strCVSContent = CSVUtils.tableToCSV(propertyViewer.getTable());//makeData(propertyViewer.getTable());
 			downloadExtFile(userDB.getDisplay_name() + "_Properties.csv", strCVSContent); //$NON-NLS-1$
 			
-			MessageDialog.openInformation(null, CommonMessages.get().Information, Messages.get().TablesComposite_5);
+			MessageDialog.openInformation(null, CommonMessages.get().Information, CommonMessages.get().DownloadIsComplete);
 		} catch (Exception e) {
 			logger.error("An exception occurred while writing into a csv file.", e); //$NON-NLS-1$
 		}		

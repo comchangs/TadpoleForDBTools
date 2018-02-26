@@ -12,7 +12,6 @@ package com.hangum.tadpole.rdb.core.editors.main.composite.resultdetail;
 
 import java.util.List;
 
-import org.apache.log4j.Logger;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Event;
 
@@ -34,8 +33,8 @@ import com.hangum.tadpole.rdb.core.editors.main.composite.tail.ResultTailComposi
  *
  */
 public abstract class AbstractResultDetailComposite extends Composite {
-	/**  Logger for this class. */
-	private static final Logger logger = Logger.getLogger(AbstractResultDetailComposite.class);
+//	/**  Logger for this class. */
+//	private static final Logger logger = Logger.getLogger(AbstractResultDetailComposite.class);
 	
 	protected RequestQuery reqQuery;
 	/** table 타입으로 데이터를 출력할때 */
@@ -183,7 +182,7 @@ public abstract class AbstractResultDetailComposite extends Composite {
 	 * @return the reqResultDAO
 	 */
 	public RequestResultDAO getReqResultDAO() {
-		return reqQuery.getResultDao();
+		return reqQuery.getRequestResultDao();
 	}
 
 	@Override

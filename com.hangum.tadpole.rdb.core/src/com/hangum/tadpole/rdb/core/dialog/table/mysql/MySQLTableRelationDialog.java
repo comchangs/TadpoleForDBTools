@@ -32,15 +32,15 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.PlatformUI;
 
-import com.hangum.tadpole.commons.dialogs.message.dao.RequestResultDAO;
 import com.hangum.tadpole.commons.google.analytics.AnalyticCaller;
 import com.hangum.tadpole.commons.libs.core.message.CommonMessages;
 import com.hangum.tadpole.commons.util.GlobalImageUtils;
 import com.hangum.tadpole.engine.query.dao.mysql.TableColumnDAO;
 import com.hangum.tadpole.engine.query.dao.mysql.TableDAO;
 import com.hangum.tadpole.engine.query.dao.system.UserDBDAO;
-import com.hangum.tadpole.engine.sql.util.ExecuteDDLCommand;
 import com.hangum.tadpole.engine.sql.util.SQLUtil;
+import com.hangum.tadpole.engine.sql.util.executer.ExecuteDDLCommand;
+import com.hangum.tadpole.engine.utils.RequestQueryUtil;
 import com.hangum.tadpole.rdb.core.Messages;
 import com.hangum.tadpole.rdb.core.dialog.msg.TDBErroDialog;
 import com.hangum.tadpole.rdb.core.viewers.object.ExplorerViewer;
@@ -258,7 +258,7 @@ public class MySQLTableRelationDialog extends Dialog {
 		String strOriColumn = ((TableColumnDAO)comboOriColumn.getData(comboOriColumn.getText())).getField();
 		String strRefTable = ((TableDAO)comboRefTableName.getData(comboRefTableName.getText())).getName();
 		String strRefColumn = ((TableColumnDAO)comboRefColumnName.getData(comboRefColumnName.getText())).getField();
-		String strCreateIndex = String.format(TEMP_REFERENCE_SQL, tableDAO.getFullName(), 
+		String strSQL = String.format(TEMP_REFERENCE_SQL, tableDAO.getFullName(), 
 				    SQLUtil.makeIdentifierName(userDB, strReferenceName), 
 				    SQLUtil.makeIdentifierName(userDB, strOriColumn),
 				    SQLUtil.makeIdentifierName(userDB, tableDAO.getSchema_name()) +"."+ SQLUtil.makeIdentifierName(userDB,strRefTable), 
@@ -266,8 +266,7 @@ public class MySQLTableRelationDialog extends Dialog {
 					comboOnUpdate.getText(), comboOnDelete.getText()
 				);
 		try {
-			RequestResultDAO reqReResultDAO = new RequestResultDAO();
-			ExecuteDDLCommand.executSQL(userDB, reqReResultDAO, strCreateIndex);
+			ExecuteDDLCommand.executSQL(RequestQueryUtil.simpleRequestQuery(userDB, strSQL));
 			
 			ExplorerViewer ev = (ExplorerViewer)PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().findView(ExplorerViewer.ID);
 			if(ev != null) ev.refreshTable(true, tableDAO.getName());

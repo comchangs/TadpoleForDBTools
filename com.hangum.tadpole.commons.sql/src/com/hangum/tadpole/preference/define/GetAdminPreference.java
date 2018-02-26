@@ -19,11 +19,13 @@ import org.apache.log4j.Logger;
 import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.service.ApplicationContext;
 
+import com.hangum.tadpole.commons.libs.core.define.PublicTadpoleDefine;
 import com.hangum.tadpole.commons.libs.core.mails.dto.SMTPDTO;
 import com.hangum.tadpole.commons.util.ApplicationArgumentUtils;
 import com.hangum.tadpole.engine.manager.TadpoleApplicationContextManager;
 import com.hangum.tadpole.engine.query.dao.system.UserInfoDataDAO;
 import com.hangum.tadpole.engine.query.sql.TadpoleSystem_UserInfoData;
+import com.hangum.tadpole.session.manager.SessionManager;
 
 /**
  * get administrator preference
@@ -279,6 +281,16 @@ public class GetAdminPreference extends AbstractPreference {
 	public static String getIsPasswdCacheUse() {
 		Map<String, UserInfoDataDAO> mapUserInfoData = TadpoleApplicationContextManager.getAdminSystemEnv();
 		return getAdminValue(mapUserInfoData, AdminPreferenceDefine.IS_PASSWD_CACHE, AdminPreferenceDefine.IS_PASSWD_CACHE_VALUE);
+	}
+	
+	/**
+	 * 사용자 SQL 헤더에 TADPOLE 코멘트 추가 여부
+	 * 예를들어 : {@code SessionManager#getHeadComment()}
+	 * @return
+	 */
+	public static String getAddTadpoleSQLHead() {
+		Map<String, UserInfoDataDAO> mapUserInfoData = TadpoleApplicationContextManager.getAdminSystemEnv();
+		return getAdminValue(mapUserInfoData, AdminPreferenceDefine.ADD_TADPOLE_SQL_HEAD, AdminPreferenceDefine.ADD_TADPOLE_SQL_HEAD_VALUE);
 	}
 	
 	/**

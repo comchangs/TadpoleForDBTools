@@ -42,6 +42,7 @@ import com.hangum.tadpole.engine.query.dao.system.UserDBDAO;
 import com.hangum.tadpole.engine.query.dao.system.UserInfoDataDAO;
 import com.hangum.tadpole.engine.query.sql.TadpoleSystem_UserInfoData;
 import com.hangum.tadpole.engine.utils.HttpSessionCollectorUtil;
+import com.hangum.tadpole.preference.define.GetAdminPreference;
 
 /**
  * tadpole의 session manager입니다
@@ -95,6 +96,22 @@ public class SessionManager {
 														
 														ALL_MANAGER_DB_LIST
 														}
+	
+	/**
+	 * TadpoleDBHub head comment
+	 * 
+	 * 사용자가 데이터베이스에 전달하는 명령문 헤더에 전달하는 쿼리 SQL
+	 * 
+	 * @return
+	 */
+	public static String getHeadComment() {
+		if(PublicTadpoleDefine.YES_NO.YES.name().equals(GetAdminPreference.getAddTadpoleSQLHead())) {
+			return String.format("/* %s, %s */ ", PublicTadpoleDefine.ACTIVE_PRODUCT_TYPE.name(), SessionManager.getEMAIL());
+		} else {
+			return "";
+		}
+	}
+	
 	/**
 	 * UserManager Object list를 설정한다.
 	 * 

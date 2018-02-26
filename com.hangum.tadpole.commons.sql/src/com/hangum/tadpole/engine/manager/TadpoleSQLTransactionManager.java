@@ -83,7 +83,6 @@ public class TadpoleSQLTransactionManager extends AbstractTadpoleManager {
 		Connection _conn = null;;
 		TransactionDAO transactionDAO = dbManager.get(searchKey);
 		if (transactionDAO == null) {
-				
 			try {
 				DataSource ds = null;
 				// gate way 서버에 연결하려는 디비 정보가 있는지
@@ -140,6 +139,7 @@ public class TadpoleSQLTransactionManager extends AbstractTadpoleManager {
 	 * @throws SQLException
 	 */
 	private static Connection changeSchema(final String userId, final String searchKey, final UserDBDAO userDB, Connection javaConn) throws TadpoleSQLManagerException, SQLException {
+		if(userDB.getDBDefine() == DBDefine.TADPOLE_SYSTEM_MYSQL_DEFAULT || userDB.getDBDefine() == DBDefine.TADPOLE_SYSTEM_DEFAULT) return javaConn;
 		
 		String strSQL = "";
 		if(userDB.getDBGroup() == DBGroupDefine.MYSQL_GROUP) {
@@ -160,7 +160,7 @@ public class TadpoleSQLTransactionManager extends AbstractTadpoleManager {
 			statement = javaConn.createStatement();
 			statement.executeUpdate(strSQL);
 		} catch(Exception e) {
-			logger.error("Transaction Connection disconnected. and now connect of newone. user id is " + userId);
+			logger.error("Transaction Connection disconnected. and now connect of newone. user id is " + userId, e);
 			
 			removeInstance(searchKey);
 			
@@ -194,7 +194,7 @@ public class TadpoleSQLTransactionManager extends AbstractTadpoleManager {
 		final String searchKey = getKey(connectId, userId, userDB);
 		if (logger.isDebugEnabled()) {
 			logger.debug("=============================================================================");
-			logger.debug("\t commit [userId]" + searchKey);
+			logger.debug("\t commit [key]\t[" + searchKey + "]");
 			logger.debug("=============================================================================");
 		}
 

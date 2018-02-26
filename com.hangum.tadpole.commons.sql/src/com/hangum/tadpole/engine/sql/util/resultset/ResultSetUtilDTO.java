@@ -100,6 +100,7 @@ public class ResultSetUtilDTO {
 		this.userDB 	= userDB;
 		this.reqQuery 	= reqQuery;
 		this.columnName = columnName;
+		this.columnLabelName = columnName;
 		this.columnTableName = columnTableName;
 		this.columnType = columnType;
 		this.dataList 	= dataList;

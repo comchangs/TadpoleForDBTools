@@ -46,7 +46,7 @@ import com.hangum.tadpole.commons.libs.core.message.CommonMessages;
 import com.hangum.tadpole.engine.manager.TadpoleSQLManager;
 import com.hangum.tadpole.engine.query.dao.rdb.OracleJavaDAO;
 import com.hangum.tadpole.engine.query.dao.system.UserDBDAO;
-import com.hangum.tadpole.engine.sql.util.QueryUtils;
+import com.hangum.tadpole.engine.sql.util.executer.ExecuteDMLCommand;
 import com.hangum.tadpole.engine.sql.util.tables.TableUtil;
 import com.hangum.tadpole.rdb.core.Activator;
 import com.hangum.tadpole.rdb.core.Messages;
@@ -219,7 +219,7 @@ public class TadpoleJavaComposite extends AbstractObjectComposite {
 	 */
 	private boolean isSupportObject() {
 		try {
-			QueryUtils.executeQuery(userDB, "select 1 from javasnm where 1=0 ", 0, 1);
+			ExecuteDMLCommand.executeQuery(userDB, "select 1 from javasnm where 1=0 ", 0, 1);
 			
 			isSupportJavaObject = true;
 		} catch (Exception e) {

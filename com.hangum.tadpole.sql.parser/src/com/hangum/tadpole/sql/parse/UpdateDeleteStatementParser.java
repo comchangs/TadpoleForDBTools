@@ -31,7 +31,7 @@ public class UpdateDeleteStatementParser {
 	private static final Logger logger = Logger.getLogger(UpdateDeleteStatementParser.class);
 	
 	/**
-	 * 
+	 * SQL statement parser
 	 * 
 	 * @param userDB
 	 * @param strSQL
@@ -63,29 +63,6 @@ public class UpdateDeleteStatementParser {
 			logger.error("update delete parser", e);
 			throw new Exception("SQL parse exception. " + e.getMessage());
 		}
-//		
-//		QueryDMLInfoDTO dmlInfoDto = new QueryDMLInfoDTO();
-//		UpdateDeleteParser parser = new UpdateDeleteParser();
-//		parser.parseQuery(strSQL, dmlInfoDto);
-//		
-//		String strObjecName = dmlInfoDto.getObjectName();
-//		String strWhereAfter = StringUtils.substringAfterLast(strSQL, "where");
-//		if("".equals(strWhereAfter)) {
-//			strWhereAfter = StringUtils.substringAfterLast(strSQL, "WHERE");
-//		}
-//		
-//		if(logger.isDebugEnabled()) {
-//			logger.debug("=============================================================================");
-//			logger.debug("object name : " + strObjecName);
-//			logger.debug("where after query: " + strWhereAfter);
-//			logger.debug("=============================================================================");
-//		}
-//		
-//		if("".equals(strObjecName)) throw new Exception("Table not found");
-//		
-//		
-//		sqlStatementStruce.setObjectName(strObjecName);
-//		sqlStatementStruce.setWhere(strWhereAfter);
 		
 		return sqlStatementStruce;
 	}

@@ -93,7 +93,6 @@ public class Messages {
 	public String Table;
 	public String CreatePlanTable;
 	public String GeneralPreferencePage_lblExportDilimit_text;
-	public String GeneralPreferencePage_text_text;
 	public String GeneralPreferencePage_lblHomePage_text;
 	public String GeneralPreferencePage_btnCheckButton_text;
 
@@ -200,6 +199,8 @@ public class Messages {
 	public String General;
 	
 	public String PleaseCreateOraclePlanTable;
+	
+	public String DatabaseSetting;
 	
 	public static Messages get() {
 		return RWT.NLS.getISO8859_1Encoded(BUNDLE_NAME, Messages.class);

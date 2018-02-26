@@ -12,7 +12,6 @@ package com.hangum.tadpole.rdb.core.editors.main.composite;
 
 import java.util.Date;
 
-import org.apache.log4j.Logger;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.CTabFolder;
 import org.eclipse.swt.custom.CTabItem;
@@ -38,14 +37,14 @@ import com.hangum.tadpole.rdb.core.editors.main.MainEditor;
  *
  */
 public class ResultMainComposite extends Composite {
-	/**  Logger for this class. */
-	private static final Logger logger = Logger.getLogger(ResultMainComposite.class);
+//	/**  Logger for this class. */
+//	private static final Logger logger = Logger.getLogger(ResultMainComposite.class);
 	
 	/** sql main editor */
 	private MainEditor mainEditor;
 	
-	/** 사용자가 요청한 쿼리 */
-	private RequestQuery reqQuery;
+//	/** 사용자가 요청한 쿼리 */
+//	private RequestQuery reqQuery;
 	
 	/** query 결과 창 */
 	private CTabFolder tabFolderResult;
@@ -148,7 +147,6 @@ public class ResultMainComposite extends Composite {
 	public void setMainEditor(MainEditor mainEditor) {
 		this.mainEditor = mainEditor;
 		this.compositeResultSet.setSelect(SQLUtil.isSELECTEditor(mainEditor.getDbAction()));
-		this.compositeResultSet.setDbUserRoleType(mainEditor.getUserType());
 	}
 	
 	/**
@@ -157,7 +155,7 @@ public class ResultMainComposite extends Composite {
 	 * @param reqQuery
 	 */
 	public void executeCommand(final RequestQuery reqQuery) {
-		this.reqQuery = reqQuery;
+//		this.reqQuery = reqQuery;
 		
 		// 
 //		if(DBGroupDefine.DYNAMODB_GROUP == getUserDB().getDBGroup()) {

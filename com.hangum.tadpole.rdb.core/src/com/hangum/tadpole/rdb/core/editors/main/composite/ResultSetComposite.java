@@ -77,13 +77,14 @@ import com.hangum.tadpole.engine.sql.paremeter.lang.OracleStyleSQLNamedParameter
 import com.hangum.tadpole.engine.sql.util.ObjectCompileUtil;
 import com.hangum.tadpole.engine.sql.util.OracleDbmsOutputUtil;
 import com.hangum.tadpole.engine.sql.util.PartQueryUtil;
-import com.hangum.tadpole.engine.sql.util.QueryUtils;
 import com.hangum.tadpole.engine.sql.util.SQLConvertCharUtil;
 import com.hangum.tadpole.engine.sql.util.SQLUtil;
+import com.hangum.tadpole.engine.sql.util.executer.ExecuteDMLCommand;
 import com.hangum.tadpole.engine.sql.util.resultset.QueryExecuteResultDTO;
 import com.hangum.tadpole.engine.sql.util.resultset.TadpoleResultSet;
 import com.hangum.tadpole.engine.utils.EditorDefine;
 import com.hangum.tadpole.engine.utils.RequestQuery;
+import com.hangum.tadpole.engine.utils.RequestQueryUtil;
 import com.hangum.tadpole.preference.get.GetPreferenceGeneral;
 import com.hangum.tadpole.rdb.core.Activator;
 import com.hangum.tadpole.rdb.core.Messages;
@@ -121,7 +122,7 @@ public class ResultSetComposite extends Composite {
 	
 	/** 몇 행이 변경 되었습니다. 메시지 */
 	private static final String MSG_ROW_CHAGE = Messages.get().RowChangeCount;
-	
+
 	/** 쿼리를 배치실행했을때 수행 할 수 있는 SQL 수 */
 	private int BATCH_EXECUTE_SQL_LIMIT = 5;
 	
@@ -129,10 +130,6 @@ public class ResultSetComposite extends Composite {
 	 * 에디터가 select 에디터인지 즉 구분자로 쿼리를 검색하는 상태인지 나타냅니다.
 	 */
 	private boolean isSelect = true;
-	/**
-	 * 현재 사용자의 데이터의 궈한타입.
-	 */
-	private String dbUserRoleType = ""; //$NON-NLS-1$
 	
 	/** execute job */
 	private Job jobQueryManager = null;
@@ -319,7 +316,8 @@ public class ResultSetComposite extends Composite {
 		// oracle parameter
 		try {
 			OracleStyleSQLNamedParameterUtil oracleNamedParamUtil = new OracleStyleSQLNamedParameterUtil();
-			String strSQL = oracleNamedParamUtil.parse(SQLUtil.removeComment(reqQuery.getSql()));
+//			String strSQL = oracleNamedParamUtil.parse(SQLUtil.removeComment(reqQuery.getSql()));
+			String strSQL = oracleNamedParamUtil.parse(reqQuery.getSql());
 			
 			Map<Integer, String> mapIndexToName = oracleNamedParamUtil.getMapIndexToName();
 			if(!mapIndexToName.isEmpty()) {
@@ -412,7 +410,7 @@ public class ResultSetComposite extends Composite {
 		reqResultDAO.setIpAddress(reqQuery.getUserIp());
 		
 		// prepared statement 일 경우는 인자도 넣어준다.
-		StringBuffer sbParameter = new StringBuffer("/* Type is ").append(reqQuery.getMode());
+		StringBuffer sbParameter = new StringBuffer("/* TadpoleDBHub SQL Type is ").append(reqQuery.getMode());
 		if(reqQuery.getSqlStatementType() == SQL_STATEMENT_TYPE.PREPARED_STATEMENT) {
 			sbParameter.append(", Parameter is ");
 			for (int i=0; i<reqQuery.getStatementParameter().length; i++) {
@@ -422,23 +420,13 @@ public class ResultSetComposite extends Composite {
 		}
 		sbParameter.append(" */ \n");
 		reqResultDAO.setTdb_sql_head(sbParameter.toString());
-		reqResultDAO.setSql_text(reqQuery.getOriginalSql());
+		reqResultDAO.setSql_text(reqQuery.getSql());
 		
 		// 쿼리가 실행 가능한 상태인지(디비 락상태인지?, 프러덕디비이고 select가 아닌지?,설정인지?) 
+		// 프러덕 디비이고, update, delete 문이면 예상 삭제 데이터 보여준다. 
 		try {
 			if(!GrantCheckerUtils.ifExecuteQuery(getUserDB(), reqQuery)) return false;
 		} catch(TadpoleException e) {
-			// 에러 로그를 기록해야한다.
-			// 히스토리 정보 메타디비에 저장 - RequestResultDAO
-			reqResultDAO.setEndDateExecute(new Timestamp(System.currentTimeMillis()));
-			reqResultDAO.setResult(PublicTadpoleDefine.SUCCESS_FAIL.F.name()); //$NON-NLS-1$
-			reqResultDAO.setTdb_result_code(e.getErrorCode());
-			reqResultDAO.setMesssage(e.getMessage());
-			
-			TadpoleSystem_ExecutedSQL.insertExecuteHistory(
-						getRdbResultComposite().getUserSeq(), 
-						getRdbResultComposite().getUserDB(), 
-						reqResultDAO);
 			
 			executeErrorProgress(reqQuery, e, e.getMessage());
 			return false;
@@ -452,8 +440,8 @@ public class ResultSetComposite extends Composite {
 		if(compositeResult != null) compositeResult.initUI();
 		
 		/** 쿼리 */
-		final List<String> listStrSQL = new ArrayList<String>();
-		final List<String> listStrExecuteQuery = new ArrayList<String>();
+		final List<RequestQuery> listStmtRequestQuery = new ArrayList<RequestQuery>();
+		final List<RequestQuery> listNotStmtRequestQuery = new ArrayList<RequestQuery>();
 		/** 쿼리 결과 */
 		final List<QueryExecuteResultDTO> listRSDao = new ArrayList<>();
 		
@@ -468,6 +456,9 @@ public class ResultSetComposite extends Composite {
 		// is profilling
 		final boolean isProfilling = GetPreferenceGeneral.getRDBQueryProfilling();
 		
+		final String strLoginIP = SessionManager.getLoginIp();
+		final String strSQLHead = SessionManager.getHeadComment();
+		
 		jobQueryManager = new Job(Messages.get().MainEditor_45) {
 			@Override
 			public IStatus run(IProgressMonitor monitor) {
@@ -481,21 +472,21 @@ public class ResultSetComposite extends Composite {
 							if(!strExeSQL.equals("")) { 
 								// execute batch update는 ddl문이 있으면 안되어서 실행할 수 있는 쿼리만 걸러 줍니다.
 								if(!SQLUtil.isStatement(strExeSQL)) {
-									listStrExecuteQuery.add(strExeSQL);
+									listNotStmtRequestQuery.add(RequestQueryUtil.simpleRequestQuery(strLoginIP, strSQLHead, tmpUserDB, strExeSQL));
 								} else {
-									listStrSQL.add(strExeSQL);
+									listStmtRequestQuery.add(RequestQueryUtil.simpleRequestQuery(strLoginIP, strSQLHead, tmpUserDB, strExeSQL));
 								}
 							}
 						}
 						// select 이외의 쿼리 실행
-						if(!listStrExecuteQuery.isEmpty()) {
-							ExecuteBatchSQL.runSQLExecuteBatch(errMsg, listStrExecuteQuery, reqQuery, getUserDB(), getDbUserRoleType(), intCommitCount, strUserEmail);
+						if(!listNotStmtRequestQuery.isEmpty()) {
+							ExecuteBatchSQL.runSQLExecuteBatch(errMsg, listNotStmtRequestQuery, intCommitCount, strUserEmail);
 						}
 						
-						if(!listStrSQL.isEmpty()) {
-							for(int i=0;i<listStrSQL.size(); i++) {
+						if(!listStmtRequestQuery.isEmpty()) {
+							for(int i=0;i<listStmtRequestQuery.size(); i++) {
 								if(i >= BATCH_EXECUTE_SQL_LIMIT) break;
-								reqQuery.setSql(listStrSQL.get(i));
+								reqQuery.setSql(listStmtRequestQuery.get(i).getSql());
 								QueryExecuteResultDTO qeResultDao = runSelect(reqQuery, queryTimeOut, strUserEmail, intSelectLimitCnt, 0);
 								listRSDao.add(qeResultDao);
 							}
@@ -517,37 +508,38 @@ public class ResultSetComposite extends Composite {
 								if(DBGroupDefine.MYSQL_GROUP == getUserDB().getDBGroup()) {
 									if(isProfilling) {
 
-										QueryUtils.executeQuery(tmpUserDB, "SET PROFILING = 1", 0, 10);
-										QueryUtils.executeQuery(tmpUserDB, "SET profiling_history_size = 0", 0, 10);
-										QueryUtils.executeQuery(tmpUserDB, "SET profiling_history_size = 15", 0, 10);
+										ExecuteDMLCommand.executeQuery(tmpUserDB, "SET PROFILING = 1", 0, 10);
+										ExecuteDMLCommand.executeQuery(tmpUserDB, "SET profiling_history_size = 0", 0, 10);
+										ExecuteDMLCommand.executeQuery(tmpUserDB, "SET profiling_history_size = 15", 0, 10);
 
 										// 사용자 쿼리를 날리고. 
-										QueryExecuteResultDTO startStatus = QueryUtils.executeQuery(tmpUserDB, "SHOW STATUS", 0, 500);
+										final QueryExecuteResultDTO startStatus = ExecuteDMLCommand.executeQuery(tmpUserDB, "SHOW STATUS", 0, 500);
 										
 										//
 										rsDAO = runSelect(reqQuery, queryTimeOut, strUserEmail, intSelectLimitCnt, 0);
 										listRSDao.add(rsDAO);
 										//
-										QueryExecuteResultDTO endStatus = QueryUtils.executeQuery(tmpUserDB, "SHOW STATUS", 0, 500);
-										QueryExecuteResultDTO _tmppShowProfiles = QueryUtils.executeQuery(tmpUserDB, "SHOW PROFILES", 0, 100);
-										String strQueryID = getLastQueryID(_tmppShowProfiles);
+										final QueryExecuteResultDTO endStatus = ExecuteDMLCommand.executeQuery(tmpUserDB, "SHOW STATUS", 0, 500);
+										final QueryExecuteResultDTO _tmppShowProfiles = ExecuteDMLCommand.executeQuery(tmpUserDB, "SHOW PROFILES", 0, 100);
+										final String strQueryID = getLastQueryID(_tmppShowProfiles);
 
 										if(logger.isDebugEnabled()) logger.debug("profile query id is : " + strQueryID);
-										QueryExecuteResultDTO showProfiles = QueryUtils.executeQuery(tmpUserDB, 
+										final QueryExecuteResultDTO showProfiles = ExecuteDMLCommand.executeQuery(tmpUserDB, 
 												String.format("SELECT state, ROUND(SUM(duration),5) AS `duration(sec)` FROM information_schema.profiling WHERE query_id=%s GROUP BY state ORDER BY `duration(sec)` DESC", strQueryID), 0, 100);
 										rsDAO.setMapExtendResult(MySQLExtensionViewDialog.MYSQL_EXTENSION_VIEW.SHOW_PROFILLING.name(), showProfiles);
 										
 										// diff data
-										QueryExecuteResultDTO diffStatusDAO = diffStatus(startStatus, endStatus);
+										final QueryExecuteResultDTO diffStatusDAO = diffStatus(startStatus, endStatus);
 										rsDAO.setMapExtendResult(MySQLExtensionViewDialog.MYSQL_EXTENSION_VIEW.STATUS_VARIABLE.name(), diffStatusDAO);
 										
 										// free profiling
-										QueryUtils.executeQuery(tmpUserDB, "SET PROFILING = 0", 0, 10);
+										ExecuteDMLCommand.executeQuery(tmpUserDB, "SET PROFILING = 0", 0, 10);
 										
 										// EXECUTE_PLAN
-										if(!(StringUtils.startsWithIgnoreCase(StringUtils.trimToEmpty(reqQuery.getSql()), "SET") ||
-											StringUtils.startsWithIgnoreCase(StringUtils.trimToEmpty(reqQuery.getSql()), "CALL") ||
-											StringUtils.startsWithIgnoreCase(StringUtils.trimToEmpty(reqQuery.getSql()), "SHOW"))
+										final String _checkSQL = SQLUtil.removeCommentAndOthers(reqQuery.getUserDB(), reqQuery.getSql());
+										if(!(StringUtils.startsWithIgnoreCase(_checkSQL, "SET") ||
+											StringUtils.startsWithIgnoreCase(_checkSQL, "CALL") ||
+											StringUtils.startsWithIgnoreCase(_checkSQL, "SHOW"))
 										) {
 											try {
 												QueryExecuteResultDTO queryPlanDAO = ExecuteQueryPlan.runSQLExplainPlan(getUserDB(), reqQuery, strPlanTBName);
@@ -583,7 +575,7 @@ public class ResultSetComposite extends Composite {
 									TransactionManger.calledCommitOrRollback(reqQuery.getSql(), reqQuery.getConnectId(), strUserEmail, getUserDB());
 								}
 							} else {
-								int intEfficeCnt = ExecuteOtherSQL.runPermissionSQLExecution(errMsg, reqQuery, getUserDB(), getDbUserRoleType(), strUserEmail);
+								int intEfficeCnt = ExecuteOtherSQL.runPermissionSQLExecution(errMsg, reqQuery, strUserEmail);
 								if(intEfficeCnt != -1) {
 									long longUseTime = System.currentTimeMillis() - reqResultDAO.getStartDateExecute().getTime();
 									reqResultDAO.setMesssage(String.format(MSG_ROW_CHAGE, intEfficeCnt, longUseTime));
@@ -655,6 +647,7 @@ public class ResultSetComposite extends Composite {
 				columnLabelName.put(0, "variable");
 				columnLabelName.put(1, "value");
 				renewDiffObject.setColumnName(columnLabelName);
+				renewDiffObject.setColumnLabelName(columnLabelName);
 				
 				TadpoleResultSet dataList = new TadpoleResultSet();
 				List<Map<Integer, Object>> diffData = new ArrayList<>();
@@ -692,20 +685,20 @@ public class ResultSetComposite extends Composite {
 				getDisplay().asyncExec(new Runnable() {
 					public void run() {
 						// 처리를 위해 결과를 담아 둡니다.
-						reqQuery.setResultDao(reqResultDAO);
+						reqQuery.setRequestResultDao(reqResultDAO);
 						
 						try {
 							// 히스토리 화면을 갱신합니다.
 							List<Long> listLongHistorySeq = new ArrayList<>();
-							if(listStrSQL.isEmpty()) {
+							if(listStmtRequestQuery.isEmpty()) {
 								if(listRSDao.isEmpty()) {
 									listLongHistorySeq.add(getRdbResultComposite().getCompositeQueryHistory().saveExecutedSQLData(reqResultDAO, null));
 								} else {
 									listLongHistorySeq.add(getRdbResultComposite().getCompositeQueryHistory().saveExecutedSQLData(reqResultDAO, listRSDao.get(0)));
 								}
 							} else {
-								for(int i=0; i<listStrSQL.size(); i++) {
-									String strSQL = listStrSQL.get(i);
+								for(int i=0; i<listStmtRequestQuery.size(); i++) {
+									String strSQL = listStmtRequestQuery.get(i).getSql();
 									reqResultDAO.setSql_text(strSQL);
 									// 배치 쿼리를 수행했을 경우 SELECT 결과가 없을수도 있다.
 									try {
@@ -718,7 +711,7 @@ public class ResultSetComposite extends Composite {
 							
 							// 쿼리가 정상일 경우 결과를 테이블에 출력하고, 히스토리를 남기며, 필요하면 오브젝트익스플로에 리프레쉬한다.
 							if(jobEvent.getResult().isOK()) {
-								executeFinish(reqQuery, listRSDao, listLongHistorySeq, listStrExecuteQuery);
+								executeFinish(reqQuery, listRSDao, listLongHistorySeq, listNotStmtRequestQuery);
 							} else {
 								executeErrorProgress(reqQuery, jobEvent.getResult().getException(), jobEvent.getResult().getMessage());
 								getRdbResultComposite().getMainEditor().browserEvaluateToStr(EditorFunctionService.SET_SELECTED_TEXT); //$NON-NLS-1$
@@ -773,7 +766,7 @@ public class ResultSetComposite extends Composite {
 			throws TadpoleSQLManagerException, TadpoleException, SQLException {
 		String strSQL = reqQuery.getSql();
 
-		PermissionChecker.isExecute(getDbUserRoleType(), getUserDB(), strSQL);
+		PermissionChecker.isExecute(reqQuery);
 		if(logger.isDebugEnabled()) logger.debug("==> real execute query : " + strSQL);
 		
 		tadpole_system_message = "";
@@ -1117,22 +1110,15 @@ public class ResultSetComposite extends Composite {
 		}
 	}
 
-	public void setDbUserRoleType(String userRoleType) {
-		dbUserRoleType = userRoleType;
-	}
-	public String getDbUserRoleType() {
-		return dbUserRoleType;
-	}
-
 	/**
 	 * 쿼리 결과를 화면에 출력하고 로그를 쌓습니다.
 	 * 
 	 * @param reqQuery
 	 * @param listRSDao
 	 * @param listLongHistorySeq
-	 * @param listStrExecuteQuery
+	 * @param listRequestQuery
 	 */
-	private void executeFinish(final RequestQuery reqQuery, final List<QueryExecuteResultDTO> listRSDao, List<Long> listLongHistorySeq, List<String> listStrExecuteQuery) {
+	private void executeFinish(final RequestQuery reqQuery, final List<QueryExecuteResultDTO> listRSDao, List<Long> listLongHistorySeq, List<RequestQuery> listRequestQuery) {
 		// 결과에 메시지가 있으면 시스템 메시지에 결과 메시지를 출력한다. (오라클 시스템 메시지 등)
 		StringBuffer sbMSG = new StringBuffer();
 		for (QueryExecuteResultDTO queryExecuteResultDTO : listRSDao) {
@@ -1142,7 +1128,7 @@ public class ResultSetComposite extends Composite {
 		
 		// 모든 쿼리 실행 했을 경우 
 		if(reqQuery.getExecuteType() == EditorDefine.EXECUTE_TYPE.ALL) {
-			if(!listStrExecuteQuery.isEmpty()) {
+			if(!listRequestQuery.isEmpty()) {
 				String strDefaultMsg = Messages.get().ResultSetComposite_10 + reqQuery.getOriginalSql();
 				String retMsg = ObjectCompileUtil.validateObject(getUserDB(), reqQuery.getSqlDDLType(), reqQuery.getSqlObjectName());
 				if(!"".equals(retMsg)) { //$NON-NLS-1$
@@ -1156,8 +1142,7 @@ public class ResultSetComposite extends Composite {
 				refreshExplorerView(getUserDB(), reqQuery);
 				
 				// ddl history 를 기록한다.
-				for (String strQuery : listStrExecuteQuery) {
-					RequestQuery _rq = new RequestQuery(reqQuery.getConnectId(), getUserDB(), strQuery, reqQuery.getDbAction(), EditorDefine.QUERY_MODE.QUERY, reqQuery.getExecuteType(), false);
+				for (RequestQuery _rq : listRequestQuery) {
 					saveSchemaHistory(_rq);
 				}
 			}
@@ -1172,13 +1157,13 @@ public class ResultSetComposite extends Composite {
 				// 결과에 메시지가 있으면 시스템 메시지에 결과 메시지를 출력한다. 종료.
 			} else if(reqQuery.isStatement()) {
 				getRdbResultComposite().refreshErrorMessageView(reqQuery, null, _strBasicMsg);
-			
-				if(reqQuery.getExecuteType() == EditorDefine.EXECUTE_TYPE.ALL) {
-					getRdbResultComposite().refreshInfoMessageView(reqQuery, Messages.get().ResultSetComposite_10 + reqQuery.getResultDao().getMesssage() + PublicTadpoleDefine.LINE_SEPARATOR + _strBasicMsg  + StringUtils.abbreviate(reqQuery.getOriginalSql(), 200));
+				
+				if(listRSDao.get(0).getDataList() == null) { 
+					getRdbResultComposite().refreshInfoMessageView(reqQuery, Messages.get().ResultSetComposite_10 + reqQuery.getRequestResultDao().getMesssage() + PublicTadpoleDefine.LINE_SEPARATOR + _strBasicMsg  + StringUtils.abbreviate(reqQuery.getOriginalSql(), 200));
 					getRdbResultComposite().resultFolderSel(EditorDefine.RESULT_TAB.TADPOLE_MESSAGE);
-					refreshExplorerView(getUserDB(), reqQuery);
+				} else {
+					if(!listRSDao.isEmpty()) showResultView(reqQuery, listRSDao, listLongHistorySeq);
 				}
-				if(!listRSDao.isEmpty()) showResultView(reqQuery, listRSDao, listLongHistorySeq);
 			} else {
 				if(reqQuery.getSqlType() == SQL_TYPE.DDL) {
 					String strDefaultMsg = Messages.get().ResultSetComposite_10 + reqQuery.getOriginalSql();
@@ -1193,7 +1178,7 @@ public class ResultSetComposite extends Composite {
 					// explorer viewer를 리프레쉬하여 최신정보가 반영되게한다.
 					refreshExplorerView(getUserDB(), reqQuery);
 				} else {
-					getRdbResultComposite().refreshInfoMessageView(reqQuery, Messages.get().ResultSetComposite_10 + reqQuery.getResultDao().getMesssage() + PublicTadpoleDefine.LINE_SEPARATOR + _strBasicMsg  +  StringUtils.abbreviate(reqQuery.getOriginalSql(), 200));
+					getRdbResultComposite().refreshInfoMessageView(reqQuery, Messages.get().ResultSetComposite_10 + reqQuery.getRequestResultDao().getMesssage() + PublicTadpoleDefine.LINE_SEPARATOR + _strBasicMsg  +  StringUtils.abbreviate(reqQuery.getOriginalSql(), 200));
 					getRdbResultComposite().resultFolderSel(EditorDefine.RESULT_TAB.TADPOLE_MESSAGE);
 				}
 				
@@ -1221,7 +1206,7 @@ public class ResultSetComposite extends Composite {
 							reqQuery.getQueryStatus().name(), //$NON-NLS-1$
 							reqQuery.getSqlDDLType().name(),
 							reqQuery.getSqlObjectName(),
-							reqQuery.getOriginalSql()
+							reqQuery.getSql()
 						);
 				} catch(Exception e) {
 					logger.error("save schemahistory", e); //$NON-NLS-1$

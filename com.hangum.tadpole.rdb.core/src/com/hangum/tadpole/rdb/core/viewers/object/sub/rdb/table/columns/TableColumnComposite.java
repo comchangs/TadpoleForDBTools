@@ -202,11 +202,9 @@ public class TableColumnComposite extends AbstractTableComposite {
 			if (objDAO != null) {
 				TableDAO tableDao = (TableDAO) objDAO;
 
-				getTableComposite().setSelectTableName(tableDao.getName());
 				showTableColumns = TadpoleObjectQuery.getTableColumns(getUserDB(), tableDao);
 			} else {
 				showTableColumns = new ArrayList<>();
-				getTableComposite().setSelectTableName("");
 			}
 		} catch (Exception e) {
 			logger.error("get table column", e); //$NON-NLS-1$

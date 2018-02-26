@@ -14,24 +14,21 @@ import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.sql.Statement;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 
 import com.hangum.tadpole.commons.exception.TadpoleSQLManagerException;
-import com.hangum.tadpole.commons.libs.core.define.PublicTadpoleDefine;
-import com.hangum.tadpole.commons.libs.core.define.PublicTadpoleDefine.QUERY_DML_TYPE;
 import com.hangum.tadpole.commons.libs.core.define.PublicTadpoleDefine.SQL_STATEMENT_TYPE;
-import com.hangum.tadpole.commons.libs.core.define.PublicTadpoleDefine.SQL_TYPE;
 import com.hangum.tadpole.engine.define.DBGroupDefine;
-import com.hangum.tadpole.engine.define.TDBResultCodeDefine;
 import com.hangum.tadpole.engine.manager.TadpoleSQLExtManager;
 import com.hangum.tadpole.engine.manager.TadpoleSQLManager;
 import com.hangum.tadpole.engine.manager.TadpoleSQLTransactionManager;
 import com.hangum.tadpole.engine.manager.TransactionManger;
-import com.hangum.tadpole.engine.permission.PermissionChecker;
 import com.hangum.tadpole.engine.query.dao.system.UserDBDAO;
 import com.hangum.tadpole.engine.restful.TadpoleException;
 import com.hangum.tadpole.engine.sql.util.SQLConvertCharUtil;
 import com.hangum.tadpole.engine.utils.RequestQuery;
+import com.hangum.tadpole.rdb.core.editors.main.utils.AcessControlUtils;
 
 /**
  * Execute ddl, insert, update, delete etc..
@@ -45,47 +42,21 @@ public class ExecuteOtherSQL {
 	
 	/**
 	 * other sql execution
-	 * @param errMsg 
 	 * 
+	 * @param errMsg 
 	 * @param reqQuery
-	 * @param userDB
-	 * @param userType
 	 * @param userEmail
 	 * @throws SQLException
 	 * @throws Exception
 	 */
 	public static int runPermissionSQLExecution(
-			String errMsg, 
-			final RequestQuery reqQuery, 
-			final UserDBDAO userDB,
-			final String userType,
-			final String userEmail) throws TadpoleSQLManagerException, SQLException, TadpoleException 
-	{
-		PermissionChecker.isExecute(userType, userDB, reqQuery.getSql());
+								String errMsg, 
+								final RequestQuery reqQuery, 
+								final String userEmail
+			) throws TadpoleSQLManagerException, SQLException, TadpoleException {
 		
-		if(reqQuery.getSqlType() == SQL_TYPE.DDL) {
-			if(PublicTadpoleDefine.YES_NO.YES.name().equals(userDB.getDbAccessCtl().getDdl_lock())) {
-				throw new TadpoleException(TDBResultCodeDefine.FORBIDDEN, errMsg);
-			}
-		}
-		PublicTadpoleDefine.QUERY_DML_TYPE queryType = reqQuery.getSqlDMLType();
-		if(queryType == QUERY_DML_TYPE.INSERT) {
-			if(PublicTadpoleDefine.YES_NO.YES.name().equals(userDB.getDbAccessCtl().getInsert_lock())) {
-				throw new TadpoleException(TDBResultCodeDefine.FORBIDDEN, errMsg);
-			}
-		}
-		if(queryType == QUERY_DML_TYPE.UPDATE) {
-			if(PublicTadpoleDefine.YES_NO.YES.name().equals(userDB.getDbAccessCtl().getUpdate_lock())) {
-				throw new TadpoleException(TDBResultCodeDefine.FORBIDDEN, errMsg);
-			}
-		}
-		if(queryType == QUERY_DML_TYPE.DELETE) {
-			if(PublicTadpoleDefine.YES_NO.YES.name().equals(userDB.getDbAccessCtl().getDelete_locl())) {
-				throw new TadpoleException(TDBResultCodeDefine.FORBIDDEN, errMsg);
-			}
-		}
-		
-		return runSQLOther(reqQuery, userDB, userType, userEmail);
+		AcessControlUtils.SQLPermissionCheck(errMsg, reqQuery);
+		return runSQLOther(reqQuery, userEmail);
 	}
 	
 	/**
@@ -96,10 +67,10 @@ public class ExecuteOtherSQL {
 	 */
 	public static int runSQLOther(
 			final RequestQuery reqQuery, 
-			final UserDBDAO userDB,
-			final String userType,
 			final String userEmail) throws TadpoleSQLManagerException, SQLException, TadpoleException 
 	{
+		final UserDBDAO userDB = reqQuery.getUserDB();
+
 		// 데이터 변경 수를 지정.
 		int intEChangeCnt = -1;
 		
@@ -121,14 +92,14 @@ public class ExecuteOtherSQL {
 			}
 			
 			// TODO mysql일 경우 https://github.com/hangum/TadpoleForDBTools/issues/3 와 같은 문제가 있어 create table 테이블명 다음의 '(' 다음에 공백을 넣어주도록 합니다.
-//				if(DBGroupDefine.MYSQL_GROUP == userDB.getDBGroup()) {
-//					final String checkSQL = reqQuery.getSql().trim().toUpperCase();
-//					if(StringUtils.startsWithIgnoreCase(checkSQL, "CREATE TABLE")) { //$NON-NLS-1$
-//						String strTmpCreateStmt = StringUtils.replaceOnce(reqQuery.getSql(), "(", " (");  //$NON-NLS-1$ //$NON-NLS-2$
-//						
-//						reqQuery.setSql(strTmpCreateStmt);
-//					}
-//				}
+			if(DBGroupDefine.MYSQL_GROUP == userDB.getDBGroup()) {
+				final String checkSQL = reqQuery.getSql().trim().toUpperCase();
+				if(StringUtils.startsWithIgnoreCase(checkSQL, "CREATE TABLE")) { //$NON-NLS-1$
+					String strTmpCreateStmt = StringUtils.replaceOnce(reqQuery.getSql(), "(", " (");  //$NON-NLS-1$ //$NON-NLS-2$
+					
+					reqQuery.setSql(strTmpCreateStmt);
+				}
+			}
 			
 			final String strSQL = SQLConvertCharUtil.toServer(userDB, reqQuery.getSql());
 			if(reqQuery.getSqlStatementType() == SQL_STATEMENT_TYPE.NONE) {

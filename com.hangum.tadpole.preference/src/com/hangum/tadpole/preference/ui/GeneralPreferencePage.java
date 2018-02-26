@@ -111,7 +111,7 @@ public class GeneralPreferencePage extends TadpoleDefaulPreferencePage implement
 		lblExportDilimit.setText(Messages.get().GeneralPreferencePage_lblExportDilimit_text);
 		
 		textExportDelimit = new Text(container, SWT.BORDER);
-		textExportDelimit.setText(Messages.get().GeneralPreferencePage_text_text);
+		textExportDelimit.setText(",");
 		textExportDelimit.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
 		
 		Label lblHomePage = new Label(container, SWT.NONE);

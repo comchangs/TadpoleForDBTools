@@ -117,8 +117,6 @@ public class TadpoleTableComposite extends AbstractObjectComposite {
 	private ITableDecorationExtension tableDecorationExtension;
 	
 	private CTabItem tbtmTable;	
-	/** selected table name */
-	private String selectTableName = ""; //$NON-NLS-1$
 
 	// table info
 	private TableViewer tableListViewer;
@@ -224,9 +222,6 @@ public class TadpoleTableComposite extends AbstractObjectComposite {
 					TableDAO tableDao = (TableDAO) objDAO;
 					// SelectionChanged 이벤트는 어차피 테이블 선택이 변경되었을때 발생하니까 굳이 한번더 비교하지 않아도 되지 않을까요?
 					//if (selectTableName.equals(tableDao.getName())) return;
-					
-					// column이 리프레쉬 될때만 selectTableName 값이 갱신되서 인덱스, 제약조건, 트리거 리프레쉬 전에 현재 선택된 테이블명 설정해줌.
-					setSelectTableName(tableDao.getName());
 					
 					String selTabName = (String)tabTableFolder.getSelection().getData(TAB_DATA_KEY);
 					if(PublicTadpoleDefine.OBJECT_TYPE.INDEXES.name().equals(selTabName)){
@@ -680,8 +675,6 @@ public class TadpoleTableComposite extends AbstractObjectComposite {
 		if(!boolRefresh) if(!listTablesDAO.isEmpty()) return;
 		this.userDB = selectUserDb;
 		
-		selectTableName = ""; //$NON-NLS-1$
-		
 		// 테이블 등록시 테이블 목록 보이지 않는 옵션을 선택했는지.
 		if(PublicTadpoleDefine.YES_NO.NO.name().equals(this.userDB.getIs_showtables())) {
 			listTablesDAO.clear();
@@ -939,10 +932,6 @@ public class TadpoleTableComposite extends AbstractObjectComposite {
 		tableColumnComposite.refreshTableColumn(getTableListViewer());
 	}
 	
-	public void setSelectTableName(String tableName) {
-		selectTableName = tableName;
-	}
-
 	public TadpoleIndexesComposite getIndexComposite() {
 		return indexComposite;
 	}

@@ -57,7 +57,7 @@ public enum TadpoleErrors implements ErrorCodable {
 	TDP_200("TDP-200", Level.WARNING, TadpoleErrorMessages.get().UserNotFound), 
 	
 	/* Password */
-	TDP_250("TDP-250", Level.WARNING, TadpoleErrorMessages.get().PasswordRule), 
+//	TDP_250("TDP-250", Level.WARNING, TadpoleErrorMessages.get().PasswordRule), 
 	TDP_251("TDP-251", Level.WARNING, TadpoleErrorMessages.get().InvalidPassword),
 	TDP_252("TDP-252", Level.WARNING, TadpoleErrorMessages.get().PasswordsDoNotMatch),
 	

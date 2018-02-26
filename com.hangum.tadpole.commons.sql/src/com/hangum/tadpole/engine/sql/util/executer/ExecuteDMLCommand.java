@@ -8,7 +8,7 @@
  * Contributors:
  *     hangum - initial API and implementation
  ******************************************************************************/
-package com.hangum.tadpole.engine.sql.util;
+package com.hangum.tadpole.engine.sql.util.executer;
 
 import java.io.StringWriter;
 import java.sql.PreparedStatement;
@@ -16,10 +16,9 @@ import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.sql.Timestamp;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -33,19 +32,26 @@ import org.apache.commons.dbutils.QueryRunner;
 import org.apache.commons.dbutils.ResultSetHandler;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
+import org.eclipse.rap.rwt.RWT;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
+import com.hangum.tadpole.commons.dialogs.message.dao.RequestResultDAO;
 import com.hangum.tadpole.commons.exception.TadpoleSQLManagerException;
+import com.hangum.tadpole.commons.libs.core.define.PublicTadpoleDefine;
 import com.hangum.tadpole.commons.util.JSONUtil;
 import com.hangum.tadpole.commons.util.ResultSetToHTMLUtil;
 import com.hangum.tadpole.engine.define.DBGroupDefine;
 import com.hangum.tadpole.engine.manager.TadpoleSQLManager;
 import com.hangum.tadpole.engine.manager.TadpoleSQLTransactionManager;
 import com.hangum.tadpole.engine.query.dao.system.UserDBDAO;
+import com.hangum.tadpole.engine.query.sql.TadpoleSystem_ExecutedSQL;
+import com.hangum.tadpole.engine.sql.util.PartQueryUtil;
+import com.hangum.tadpole.engine.sql.util.SQLUtil;
 import com.hangum.tadpole.engine.sql.util.resultset.QueryExecuteResultDTO;
+import com.hangum.tadpole.engine.utils.RequestQuery;
 import com.hangum.tadpole.session.manager.SessionManager;
 import com.ibatis.sqlmap.client.SqlMapClient;
 import com.opencsv.CSVWriter;
@@ -56,26 +62,11 @@ import com.opencsv.CSVWriter;
  * @author hangum
  *
  */
-public class QueryUtils {
-	private static final Logger logger = Logger.getLogger(QueryUtils.class);
+public class ExecuteDMLCommand {
+	private static final Logger logger = Logger.getLogger(ExecuteDMLCommand.class);
 	
 	/** SUPPORT RESULT TYPE */
 	public static enum RESULT_TYPE {JSON, CSV, XML, HTML_TABLE};
-	
-	/**
-	 * index of column name 
-	 * 
-	 * @param mapColumnLableName
-	 * @return
-	 */
-	public static Map<String, Integer> columnNameToIndex(Map<Integer, String> mapColumnLableName) {
-		Map<String, Integer> _reverseColumnName = new HashMap<String, Integer>();
-		for(int i=0; i<mapColumnLableName.size(); i++) {
-			_reverseColumnName.put(mapColumnLableName.get(i).toUpperCase(), i);	
-		}
-		
-		return _reverseColumnName;
-	}
 	
 	/**
 	 * select문 이외의 쿼리를 실행합니다
@@ -125,44 +116,87 @@ public class QueryUtils {
 	}
 	
 	/**
+	 * 쿼리중에 quote sql을 반영해서 작업합니다.
+	 * 
+	 * @param userDB
+	 * @param reqResultDAO
+	 * @param reqQuery
+	 * @throws Exception
+	 */
+	public static QueryExecuteResultDTO executSQL(RequestQuery reqQuery, final int intStartCnt, final int intSelectLimitCnt) throws Exception {
+		if(logger.isDebugEnabled()) logger.debug("\t ### "+ reqQuery.getSql());
+		
+		RequestResultDAO reqResultDAO = new RequestResultDAO(); 
+		reqResultDAO.setStartDateExecute(new Timestamp(System.currentTimeMillis()));
+		reqResultDAO.setIpAddress(RWT.getRequest().getRemoteAddr());
+		reqResultDAO.setSql_text(reqQuery.getSql());
+	
+		try {
+			QueryExecuteResultDTO queryExecuteResult =  _executeQuery(reqQuery, intStartCnt, intSelectLimitCnt);
+			reqQuery.setRequestResultDao(reqResultDAO);
+			
+			return queryExecuteResult;
+		} catch(Exception e) {
+			logger.error("execute sql", e);
+			reqResultDAO.setResult(PublicTadpoleDefine.SUCCESS_FAIL.F.name()); //$NON-NLS-1$
+			reqResultDAO.setMesssage(e.getMessage());
+			reqResultDAO.setException(e);
+			
+			throw e;
+		} finally {
+			reqResultDAO.setEndDateExecute(new Timestamp(System.currentTimeMillis()));
+			reqQuery.setRequestResultDao(reqResultDAO);
+			
+			// 히스토리 정보 메타디비에 저장
+			TadpoleSystem_ExecutedSQL.insertExecuteHistory(
+					SessionManager.getUserSeq(), reqQuery.getUserDB(), 
+						reqResultDAO,
+						null
+						);
+		}
+	}
+	
+	/**
 	 * execute query
 	 * 
-	 * @param connectId
-	 * @param userDB
-	 * @param strQuery
+	 * @param reqQuery
 	 * @param intStartCnt
 	 * @param intSelectLimitCnt
 	 * @return
 	 * @throws Exception
 	 */
-	public static QueryExecuteResultDTO executeQueryIsTransaction(final String connectId, final UserDBDAO userDB, String strSQL, final int intStartCnt, final int intSelectLimitCnt) throws Exception {
+	private static QueryExecuteResultDTO _executeQuery(RequestQuery reqQuery, final int intStartCnt, final int intSelectLimitCnt) throws TadpoleSQLManagerException, SQLException {
 		ResultSet resultSet = null;
 		java.sql.Connection javaConn = null;
 		Statement statement = null;
 		
-		strSQL = SQLUtil.makeExecutableSQL(userDB, strSQL);
+		String strSQL = SQLUtil.makeExecutableSQL(reqQuery.getUserDB(), reqQuery.getSql());
 		try {
-			javaConn = TadpoleSQLTransactionManager.getInstance(connectId, SessionManager.getEMAIL(), userDB);
+			if(reqQuery.isAutoCommit()) {
+				javaConn = TadpoleSQLManager.getConnection(reqQuery.getUserDB());
+			} else {
+				javaConn = TadpoleSQLTransactionManager.getInstance(reqQuery.getConnectId(), SessionManager.getEMAIL(), reqQuery.getUserDB());
+			}
 			statement = javaConn.createStatement();
 			
 			if(intStartCnt == 0) {
+				if(logger.isDebugEnabled()) logger.debug("[sql called]: " + strSQL);
+				
 				statement.execute(strSQL);
 				resultSet = statement.getResultSet();
 			} else {
-				strSQL = PartQueryUtil.makeSelect(userDB, strSQL, intStartCnt, intSelectLimitCnt);
+				strSQL = PartQueryUtil.makeSelect(reqQuery.getUserDB(), strSQL, intStartCnt, intSelectLimitCnt);
 				
-				if(logger.isDebugEnabled()) logger.debug("part sql called : " + strSQL);
+				if(logger.isDebugEnabled()) logger.debug("[part sql called]: " + strSQL);
 				statement.execute(strSQL);
 				resultSet = statement.getResultSet();
 			}
-			return new QueryExecuteResultDTO(userDB, strSQL, false, resultSet, intSelectLimitCnt, intStartCnt);
+			return new QueryExecuteResultDTO(reqQuery.getUserDB(), strSQL, false, resultSet, intSelectLimitCnt, intStartCnt);
 			
-		} catch(Exception e) {
-			logger.error(String.format("execute query %s", e.getMessage()));
-			throw e;
 		} finally {
 			if(statement != null) statement.close();
 			if(resultSet != null) resultSet.close();
+			if(javaConn != null) javaConn.close();
 		}
 		
 	}
@@ -218,12 +252,12 @@ public class QueryUtils {
 	 * @param resultType
 	 * @throws Exception
 	 */
-	public static String executeDML(final UserDBDAO userDB, final String strQuery, final List<Object> listParam, final String resultType) throws Exception {
+	public static String executeDML(final UserDBDAO userDB, final String strQuery, final List<Object> listParam, final ExecuteDMLCommand.RESULT_TYPE user_RESULTTYPE) throws Exception {
 //		SqlMapClient client = TadpoleSQLManager.getInstance(userDB);
 		Object effectObject = runSQLOther(userDB, strQuery, listParam);
 		
 		String strReturn = "";
-		if(resultType.equals(RESULT_TYPE.CSV.name())) {
+		if(user_RESULTTYPE == RESULT_TYPE.CSV) {
 			final StringWriter stWriter = new StringWriter();
 			CSVWriter csvWriter = new CSVWriter(stWriter, ',');
 			
@@ -233,7 +267,7 @@ public class QueryUtils {
 			csvWriter.writeNext(arryString);
 			
 			strReturn = stWriter.toString();
-		} else if(resultType.equals(RESULT_TYPE.JSON.name())) {
+		} else if(user_RESULTTYPE == RESULT_TYPE.JSON) {
 			final JsonArray jsonArry = new JsonArray();
 			JsonObject jsonObj = new JsonObject();
 			jsonObj.addProperty("effectrow", String.valueOf(effectObject));

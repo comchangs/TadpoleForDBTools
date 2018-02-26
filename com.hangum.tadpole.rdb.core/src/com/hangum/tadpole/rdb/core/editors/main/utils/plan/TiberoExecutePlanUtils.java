@@ -21,7 +21,7 @@ import com.hangum.tadpole.commons.libs.core.define.PublicTadpoleDefine;
 import com.hangum.tadpole.commons.util.Utils;
 import com.hangum.tadpole.engine.query.dao.system.UserDBDAO;
 import com.hangum.tadpole.engine.sql.util.PartQueryUtil;
-import com.hangum.tadpole.engine.sql.util.QueryUtils;
+import com.hangum.tadpole.engine.sql.util.executer.ExecuteDMLCommand;
 import com.hangum.tadpole.engine.sql.util.resultset.QueryExecuteResultDTO;
 import com.hangum.tadpole.engine.utils.RequestQuery;
 
@@ -48,7 +48,7 @@ public class TiberoExecutePlanUtils {
 		String strExeSQL = "-- " + strUUID + PublicTadpoleDefine.LINE_SEPARATOR + reqQuery.getSql();
 		
 		// 사용자 쿼리를 날린다.
-		QueryExecuteResultDTO queryResultDTO = QueryUtils.executeQuery(userDB, strExeSQL, 0, 10000);
+		QueryExecuteResultDTO queryResultDTO = ExecuteDMLCommand.executeQuery(userDB, strExeSQL, 0, 10000);
 		
 		// 사용자 쿼리의 실행 아이디를 얻는다.
 		// 티베로에서 처음의 주석문자이면 해당 문자를 삭제해야한다.
@@ -57,7 +57,7 @@ public class TiberoExecutePlanUtils {
 		String query = PartQueryUtil.makeExplainQuery(userDB, strUUID);
 		if(logger.isDebugEnabled()) logger.debug("[plan query] " + strUUID);
 	
-		QueryExecuteResultDTO planIDResultDTO = QueryUtils.executeQuery(userDB, query, 0, 1000);
+		QueryExecuteResultDTO planIDResultDTO = ExecuteDMLCommand.executeQuery(userDB, query, 0, 1000);
 		
 		List<Map<Integer, Object>> resultData = planIDResultDTO.getDataList().getData();
 		if(resultData.isEmpty()) {

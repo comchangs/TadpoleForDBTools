@@ -137,8 +137,8 @@ public class AboutDialog extends Dialog {
 		new Label(composite_1, SWT.NONE);
 		
 		Label lblNewLabelUseLicense = new Label(composite_1, SWT.NONE);
-		lblNewLabelUseLicense.setData( RWT.MARKUP_ENABLED, Boolean.TRUE );
-		lblNewLabelUseLicense.setText(Messages.get().UseLicense);
+		lblNewLabelUseLicense.setData(RWT.MARKUP_ENABLED, Boolean.TRUE);
+		lblNewLabelUseLicense.setText(CommonMessages.get().UseLicense);
 		
 		Label lblNewLabel4 = new Label(composite_1, SWT.NONE);
 		lblNewLabel4.setData( RWT.MARKUP_ENABLED, Boolean.TRUE );
