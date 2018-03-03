@@ -21,7 +21,6 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 
 import com.hangum.tadpole.commons.libs.core.define.PublicTadpoleDefine;
-import com.hangum.tadpole.commons.sql.core.manager.TDBObjectParser;
 import com.hangum.tadpole.engine.define.TDBResultCodeDefine;
 import com.hangum.tadpole.engine.query.dao.mysql.ProcedureFunctionDAO;
 import com.hangum.tadpole.engine.query.dao.mysql.TableColumnDAO;
@@ -134,91 +133,92 @@ public class DBAccessCtlManager {
 				}
 
 			}
-		} else {
-
-			final TDBObjectParser tableFunctionFinder = new TDBObjectParser();
-			final List<String> _listTables = tableFunctionFinder.getTableList(statement);
-			final List<String> _listFunctionProcedure = tableFunctionFinder.getFunctionProcedureList();
-
-			final Map<String, AccessCtlObjectDAO> mapTableAccessCtl = userDB.getDbAccessCtl().getMapSelectTableAccessCtl();
-			if(!mapTableAccessCtl.isEmpty()) {
-				final AccessCtlObjectDAO accCtlObj = (AccessCtlObjectDAO)mapTableAccessCtl.get(""+mapTableAccessCtl.keySet().toArray()[0]);
-				final String strFilterType = accCtlObj.getFilter_type();
-				
-				List<String> _listObject = new ArrayList<String>();
-				boolean isFindTable = true;
-				if(PublicTadpoleDefine.FILTER_TYPE.EXCLUDE.name().equals(strFilterType)) {
-					for(String tableName : _listTables) {
-		                String fullName = StringUtils.contains(tableName, ".")?tableName:userDB.getSchema() + "." + tableName;
-		                
-		                if(logger.isDebugEnabled()) logger.debug("\t#### parse tableName " + fullName);
-		                if(mapTableAccessCtl.containsKey(fullName)) {
-		                	_listObject.add(fullName);
-		                	if(logger.isDebugEnabled()) logger.debug(String.format("\t type: %s, table: %s 있습니다.", PublicTadpoleDefine.FILTER_TYPE.EXCLUDE.name(), fullName));
-		                	isFindTable = false;
-		                }
-		            }	
-				} else {
-					for(String tableName : _listTables) {
-		                String fullName = StringUtils.contains(tableName, ".")?tableName:userDB.getSchema() + "." + tableName;
-		                
-		                if(logger.isDebugEnabled()) logger.debug("\t#### parse tableName " + fullName);
-		                if(!mapTableAccessCtl.containsKey(fullName)) {
-		                	_listObject.add(fullName);
-		                	if(logger.isDebugEnabled()) logger.debug(String.format("\t type: %s, table: %s 있습니다.", PublicTadpoleDefine.FILTER_TYPE.INCLUDE.name(), fullName));
-		                	isFindTable = false;
-		                }
-		            }
-				}
-				
-				if(!isFindTable) {
-					isClearTable = false;
-		            strMsgTable = String.format("Table: %s은 접근 할 수 없습니다.\n", StringUtils.join(_listObject.toArray(), ", " ));
-				}
-			}
-			
-			// =========[function]=====================================================================================================================================================
-			final Map<String, AccessCtlObjectDAO> mapFunctionAccessCtl = userDB.getDbAccessCtl().getMapSelectFunctionAccessCtl();
-			if(!mapFunctionAccessCtl.isEmpty()) {
-				final AccessCtlObjectDAO accCtlObj = (AccessCtlObjectDAO)mapFunctionAccessCtl.get(""+mapFunctionAccessCtl.keySet().toArray()[0]);
-				final String strFilterType = accCtlObj.getFilter_type();
-
-				List<String> _listObject = new ArrayList<String>();
-				boolean isFindTable = true;
-				if(PublicTadpoleDefine.FILTER_TYPE.EXCLUDE.name().equals(strFilterType)) {
-					for(String procedureName : _listFunctionProcedure) {
-		                String fullName = StringUtils.contains(procedureName, ".")?procedureName:userDB.getSchema() + "." + procedureName;
-		                
-		                if(logger.isDebugEnabled()) logger.debug("\t#### parse function " + fullName);
-		                if(mapFunctionAccessCtl.containsKey(fullName)) {
-		                	_listObject.add(fullName);
-		                	if(logger.isDebugEnabled()) logger.debug(String.format("\t type: %s, table: %s 있습니다.", PublicTadpoleDefine.FILTER_TYPE.EXCLUDE.name(), fullName));
-		                	isFindTable = false;
-		                }
-		            }	
-				} else {
-					for(String procedureName : _listFunctionProcedure) {
-		                String fullName = StringUtils.contains(procedureName, ".")?procedureName:userDB.getSchema() + "." + procedureName;
-		                
-		                if(logger.isDebugEnabled()) logger.debug("\t#### parse function " + fullName);
-		                if(!mapFunctionAccessCtl.containsKey(fullName)) {
-		                	_listObject.add(fullName);
-		                	if(logger.isDebugEnabled()) logger.debug(String.format("\t type: %s, table: %s 있습니다.", PublicTadpoleDefine.FILTER_TYPE.INCLUDE.name(), fullName));
-		                	isFindTable = false;
-		                }
-		            }
-				}
-				
-				if(!isFindTable) {
-					isClearFunction = false;
-	                strMsgFunction = String.format("Function: %s은 접근 할 수 없습니다.\n", StringUtils.join(_listObject.toArray(), ", " ));
-				}
-			}
 		}
-				
-		if(!isClearTable || !isClearFunction) {
-			throw new TadpoleException(TDBResultCodeDefine.FORBIDDEN, String.format("%s%s", strMsgTable, strMsgFunction));
-		}
+//		} else {
+
+//			final TDBObjectParser tableFunctionFinder = new TDBObjectParser();
+//			final List<String> _listTables = tableFunctionFinder.getTableList(statement);
+//			final List<String> _listFunctionProcedure = tableFunctionFinder.getFunctionProcedureList();
+//
+//			final Map<String, AccessCtlObjectDAO> mapTableAccessCtl = userDB.getDbAccessCtl().getMapSelectTableAccessCtl();
+//			if(!mapTableAccessCtl.isEmpty()) {
+//				final AccessCtlObjectDAO accCtlObj = (AccessCtlObjectDAO)mapTableAccessCtl.get(""+mapTableAccessCtl.keySet().toArray()[0]);
+//				final String strFilterType = accCtlObj.getFilter_type();
+//				
+//				List<String> _listObject = new ArrayList<String>();
+//				boolean isFindTable = true;
+//				if(PublicTadpoleDefine.FILTER_TYPE.EXCLUDE.name().equals(strFilterType)) {
+//					for(String tableName : _listTables) {
+//		                String fullName = StringUtils.contains(tableName, ".")?tableName:userDB.getSchema() + "." + tableName;
+//		                
+//		                if(logger.isDebugEnabled()) logger.debug("\t#### parse tableName " + fullName);
+//		                if(mapTableAccessCtl.containsKey(fullName)) {
+//		                	_listObject.add(fullName);
+//		                	if(logger.isDebugEnabled()) logger.debug(String.format("\t type: %s, table: %s 있습니다.", PublicTadpoleDefine.FILTER_TYPE.EXCLUDE.name(), fullName));
+//		                	isFindTable = false;
+//		                }
+//		            }	
+//				} else {
+//					for(String tableName : _listTables) {
+//		                String fullName = StringUtils.contains(tableName, ".")?tableName:userDB.getSchema() + "." + tableName;
+//		                
+//		                if(logger.isDebugEnabled()) logger.debug("\t#### parse tableName " + fullName);
+//		                if(!mapTableAccessCtl.containsKey(fullName)) {
+//		                	_listObject.add(fullName);
+//		                	if(logger.isDebugEnabled()) logger.debug(String.format("\t type: %s, table: %s 있습니다.", PublicTadpoleDefine.FILTER_TYPE.INCLUDE.name(), fullName));
+//		                	isFindTable = false;
+//		                }
+//		            }
+//				}
+//				
+//				if(!isFindTable) {
+//					isClearTable = false;
+//		            strMsgTable = String.format("Table: %s은 접근 할 수 없습니다.\n", StringUtils.join(_listObject.toArray(), ", " ));
+//				}
+//			}
+//			
+//			// =========[function]=====================================================================================================================================================
+//			final Map<String, AccessCtlObjectDAO> mapFunctionAccessCtl = userDB.getDbAccessCtl().getMapSelectFunctionAccessCtl();
+//			if(!mapFunctionAccessCtl.isEmpty()) {
+//				final AccessCtlObjectDAO accCtlObj = (AccessCtlObjectDAO)mapFunctionAccessCtl.get(""+mapFunctionAccessCtl.keySet().toArray()[0]);
+//				final String strFilterType = accCtlObj.getFilter_type();
+//
+//				List<String> _listObject = new ArrayList<String>();
+//				boolean isFindTable = true;
+//				if(PublicTadpoleDefine.FILTER_TYPE.EXCLUDE.name().equals(strFilterType)) {
+//					for(String procedureName : _listFunctionProcedure) {
+//		                String fullName = StringUtils.contains(procedureName, ".")?procedureName:userDB.getSchema() + "." + procedureName;
+//		                
+//		                if(logger.isDebugEnabled()) logger.debug("\t#### parse function " + fullName);
+//		                if(mapFunctionAccessCtl.containsKey(fullName)) {
+//		                	_listObject.add(fullName);
+//		                	if(logger.isDebugEnabled()) logger.debug(String.format("\t type: %s, table: %s 있습니다.", PublicTadpoleDefine.FILTER_TYPE.EXCLUDE.name(), fullName));
+//		                	isFindTable = false;
+//		                }
+//		            }	
+//				} else {
+//					for(String procedureName : _listFunctionProcedure) {
+//		                String fullName = StringUtils.contains(procedureName, ".")?procedureName:userDB.getSchema() + "." + procedureName;
+//		                
+//		                if(logger.isDebugEnabled()) logger.debug("\t#### parse function " + fullName);
+//		                if(!mapFunctionAccessCtl.containsKey(fullName)) {
+//		                	_listObject.add(fullName);
+//		                	if(logger.isDebugEnabled()) logger.debug(String.format("\t type: %s, table: %s 있습니다.", PublicTadpoleDefine.FILTER_TYPE.INCLUDE.name(), fullName));
+//		                	isFindTable = false;
+//		                }
+//		            }
+//				}
+//				
+//				if(!isFindTable) {
+//					isClearFunction = false;
+//	                strMsgFunction = String.format("Function: %s은 접근 할 수 없습니다.\n", StringUtils.join(_listObject.toArray(), ", " ));
+//				}
+//			}
+//		}
+//				
+//		if(!isClearTable || !isClearFunction) {
+//			throw new TadpoleException(TDBResultCodeDefine.FORBIDDEN, String.format("%s%s", strMsgTable, strMsgFunction));
+//		}
 	}
 	
 	/**

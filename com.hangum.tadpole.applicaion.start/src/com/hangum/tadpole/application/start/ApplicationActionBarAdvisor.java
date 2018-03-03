@@ -37,6 +37,7 @@ import com.hangum.tadpole.commons.admin.core.actions.JDBCDriverManagerAction;
 import com.hangum.tadpole.commons.admin.core.actions.SendMessageAction;
 import com.hangum.tadpole.commons.libs.core.define.PublicTadpoleDefine;
 import com.hangum.tadpole.commons.libs.core.message.CommonMessages;
+import com.hangum.tadpole.commons.libs.core.utils.LicenseValidator;
 import com.hangum.tadpole.engine.permission.PermissionChecker;
 import com.hangum.tadpole.manager.core.actions.global.AdminTransactionConnectionManagerAction;
 import com.hangum.tadpole.manager.core.actions.global.DBManagerAction;
@@ -253,18 +254,18 @@ public class ApplicationActionBarAdvisor extends ActionBarAdvisor {
 			fileMenu.add(new Separator());
 			fileMenu.add(exitAction);
 //		}
-		
+
+		boolean isEnterprise = LicenseValidator.isEnterprise();
 		// Manage menu
-		manageMenu.add(restFulAPIAction);
+		if(isEnterprise) manageMenu.add(restFulAPIAction);
 		
 		// 일반 유저는 모두 표시해 준다.
 		if(!PublicTadpoleDefine.USER_ROLE_TYPE.API_USER.name().equals(SessionManager.getRepresentRole())) {
 			manageMenu.add(transactionConnectionAction);
 			manageMenu.add(resourceManageAction);
-			manageMenu.add(dbMgmtAction);
-			
-			manageMenu.add(executedSQLAction);
-			manageMenu.add(schemaHistoryAction);
+			if(isEnterprise) manageMenu.add(dbMgmtAction);
+			if(isEnterprise) manageMenu.add(executedSQLAction);
+			if(isEnterprise) manageMenu.add(schemaHistoryAction);
 		}
 //		manageMenu.add(openCompareAction);
 		
