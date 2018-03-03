@@ -93,23 +93,21 @@ License
 
 Contacts
 -
-* Home : https://sites.google.com/site/tadpolefordb/
+* Home : https://www.tadpolehub.com/
 * Email: hangum@tadpolehub.com
 * google talk : hangum@gmail.com
 
 Contributor
 -
 * nilriri 	(jeongjaehong@gmail.com)
-* develo 	(suhyunjun@gmail.com)
 * hangum 	(hangum@gmail.com)
 * BillyGoo 	(sangmo.gu@gmail.com)
-* BJJang 	(bjjang@gaia3d.com)
-* SunYoung Han(sun.sy.han@gmail.com) : Altibase extension
-* Wahyu Kristianto (w.kristories@gmail.com) : Indonesia localization
 
 Special thanks
 -
 * Kakaobank InfraTeam.
+* SunYoung Han(sun.sy.han@gmail.com) : Altibase extension
+* Wahyu Kristianto (w.kristories@gmail.com) : Indonesia localization
 
 Customer
 - 
